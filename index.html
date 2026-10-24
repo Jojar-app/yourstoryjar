@@ -390,11 +390,15 @@
             <!-- 60fps 連續線條變形畫布 -->
             <svg id="morph-svg-layer" viewBox="-370 -140 740 280">
                 <defs>
-                    <!-- 內部鏤空飛白遮罩：直接在粗線條內部刻出右下角月牙形飛白，外緣 100% 平滑不外露 -->
+                    <!-- 【精準收細版】右下角極細飛白遮罩：將空隙寬度收細至 0.9px，緊貼外緣，完美對齊原圖比例 -->
                     <mask id="brush-split-mask" maskUnits="userSpaceOnUse" x="-120" y="-120" width="240" height="240">
                         <rect x="-120" y="-120" width="240" height="240" fill="white" />
-                        <path d="M 62.5 22 C 63.5 46, 59 64.5, 45 72.5 C 34 77.5, 18 78.8, 2 78.2 C 18 76.8, 33 74.5, 43.2 69.2 C 55.8 61.5, 60.5 44, 62.5 22 Z" fill="black" />
-                        <path d="M -18.5 16.5 L -16.2 11.5 L -15.2 16.8 Z" fill="black" />
+                        <!-- 右下角極細月牙飛白微縫 (最大寬度僅 0.95 單位，比原先減少 75% 空隙) -->
+                        <path d="M 65.3 30.0 C 65.6 45.2, 62.5 53.8, 60.38 59.47 C 53.4 74.4, 36.0 80.4, 12.0 79.9 C 35.8 79.6, 52.8 73.6, 59.49 59.14 C 61.6 53.4, 64.7 45.0, 65.3 30.0 Z" fill="black" />
+                        <!-- 右側壁下段極細微的筆刷分叉絲 -->
+                        <path d="M 66.2 18.0 C 66.5 25.0, 66.4 31.0, 65.8 36.5 C 66.0 31.0, 66.0 25.0, 66.2 18.0 Z" fill="black" />
+                        <!-- 內圓反光弧左下尾端的微小筆刷分叉 -->
+                        <path d="M -18.0 16.5 L -16.8 13.5 L -16.0 16.6 Z" fill="black" />
                     </mask>
 
                     <!-- 1. 單一連續罐子外輪廓 (瓶蓋+瓶頸+瓶身合一，供右圈分裂時同步變形為空心外框) -->
@@ -451,8 +455,9 @@
                             </linearGradient>
                             <mask id="splash-jar-mask" maskUnits="userSpaceOnUse" x="-120" y="-120" width="240" height="240">
                                 <rect x="-120" y="-120" width="240" height="240" fill="white" />
-                                <path d="M 62.5 22 C 63.5 46, 59 64.5, 45 72.5 C 34 77.5, 18 78.8, 2 78.2 C 18 76.8, 33 74.5, 43.2 69.2 C 55.8 61.5, 60.5 44, 62.5 22 Z" fill="black" />
-                                <path d="M -18.5 16.5 L -16.2 11.5 L -15.2 16.8 Z" fill="black" />
+                                <path d="M 65.3 30.0 C 65.6 45.2, 62.5 53.8, 60.38 59.47 C 53.4 74.4, 36.0 80.4, 12.0 79.9 C 35.8 79.6, 52.8 73.6, 59.49 59.14 C 61.6 53.4, 64.7 45.0, 65.3 30.0 Z" fill="black" />
+                                <path d="M 66.2 18.0 C 66.5 25.0, 66.4 31.0, 65.8 36.5 C 66.0 31.0, 66.0 25.0, 66.2 18.0 Z" fill="black" />
+                                <path d="M -18.0 16.5 L -16.8 13.5 L -16.0 16.6 Z" fill="black" />
                             </mask>
                         </defs>
                         <!-- 1. 分裂完成時的黑線外框層 (只有罐子外型輪廓，裡面全空) -->
@@ -498,8 +503,9 @@
                             </linearGradient>
                             <mask id="header-jar-mask" maskUnits="userSpaceOnUse" x="-120" y="-120" width="240" height="240">
                                 <rect x="-120" y="-120" width="240" height="240" fill="white" />
-                                <path d="M 62.5 22 C 63.5 46, 59 64.5, 45 72.5 C 34 77.5, 18 78.8, 2 78.2 C 18 76.8, 33 74.5, 43.2 69.2 C 55.8 61.5, 60.5 44, 62.5 22 Z" fill="black" />
-                                <path d="M -18.5 16.5 L -16.2 11.5 L -15.2 16.8 Z" fill="black" />
+                                <path d="M 65.3 30.0 C 65.6 45.2, 62.5 53.8, 60.38 59.47 C 53.4 74.4, 36.0 80.4, 12.0 79.9 C 35.8 79.6, 52.8 73.6, 59.49 59.14 C 61.6 53.4, 64.7 45.0, 65.3 30.0 Z" fill="black" />
+                                <path d="M 66.2 18.0 C 66.5 25.0, 66.4 31.0, 65.8 36.5 C 66.0 31.0, 66.0 25.0, 66.2 18.0 Z" fill="black" />
+                                <path d="M -18.0 16.5 L -16.8 13.5 L -16.0 16.6 Z" fill="black" />
                             </mask>
                         </defs>
                         <g class="jar-layer-holo" mask="url(#header-jar-mask)" stroke="url(#holo-grad-header)" fill="none" stroke-linecap="round" stroke-linejoin="round">
@@ -699,7 +705,7 @@
             const infLeftPts  = samplePath('ref-inf-left', 0, 0, 0.95);
             const infRightPts = samplePath('ref-inf-right', 0, 0, 0.95);
 
-            // 將左右迴圈與目標形狀皆對齊至各自局部中心 (0,0)，方便左圈逆時針、右圈順時針旋轉並同時分離變形
+            // 將左右迴圈與目標形狀皆對齊至各自局部中心 (0,0)
             const LOOP_CENTER_OFFSET = 32.3;
             const infLeftLocalPts  = samplePath('ref-inf-left', LOOP_CENTER_OFFSET, 0, 0.95);
             const infRightLocalPts = samplePath('ref-inf-right', -LOOP_CENTER_OFFSET, 0, 0.95);
@@ -714,8 +720,8 @@
             const T_FADE_IN     = 280;  // 0.00s - 0.28s: 圖一清晰浮現
             const T_SPIN_HALF   = 820;  // 0.28s - 0.82s: 前 50% 旋轉 (0° -> 180°) 100% 保持原貌不變形
             const T_SPIN_DONE   = 1160; // 0.82s - 1.16s: 後 50% 旋轉 (180° -> 360°) 速度加快 50% 轉變為無限符號 ♾️
-            const T_HOLD_INF    = 1460; // 1.16s - 1.46s: 【減少 0.2 秒】完整的無限符號 ♾️ 停留 0.3 秒 (300ms)
-            const T_MORPH_BRAND = 2280; // 1.46s - 2.28s: 【減少變形前兩圈】直接開始左圓逆時針轉一圈、右圓順時針轉一圈並同步分裂變形
+            const T_HOLD_INF    = 1460; // 1.16s - 1.46s: 完整的無限符號 ♾️ 停留 0.3 秒
+            const T_MORPH_BRAND = 2280; // 1.46s - 2.28s: 旋轉與分裂完全同步啟動（少轉兩圈，直接左逆轉1圈、右順轉1圈並同步分裂變形）
 
             function step(now) {
                 const elapsed = now - startTime;
@@ -754,7 +760,7 @@
                     mRight.setAttribute('stroke-width', String(w));
                 } 
                 else if (elapsed <= T_HOLD_INF) {
-                    // 階段 2：完整的無限符號 ♾️ 清晰停留 0.3 秒 (比原先減少 0.2 秒)
+                    // 階段 2：完整的無限符號 ♾️ 清晰停留 0.3 秒
                     intactJar.style.opacity = '0';
                     mLeft.setAttribute('opacity', '1');
                     mRight.setAttribute('opacity', '1');
@@ -764,23 +770,24 @@
                     mRight.setAttribute('stroke-width', '6.4');
                 } 
                 else if (elapsed <= T_MORPH_BRAND) {
-                    // 階段 3：不額外原地多轉兩圈，直接左圓逆時針轉 1 圈 (-360°)、右圓順時針轉 1 圈 (+360°) 並同步分裂變形
+                    // 階段 3：【時機完全還原上一次，僅少轉兩圈】
+                    // 將「旋轉角度 (leftAngle/rightAngle)」、「水平分裂 (moveT)」與「形狀變形 (morphT)」完全鎖定在同一條同步曲線 t 上
                     intactJar.style.opacity = '0';
                     const rawP = (elapsed - T_HOLD_INF) / (T_MORPH_BRAND - T_HOLD_INF);
-                    const moveT  = easeOutCubic(rawP);
-                    const morphT = easeInOutCubic(rawP);
+                    const syncT = easeInOutCubic(rawP);
 
-                    const leftAngle  = -morphT * 360; // 左圓逆時針旋轉 1 圈
-                    const rightAngle = +morphT * 360; // 右圓順時針旋轉 1 圈
+                    // 旋轉與分裂在同一毫秒同步啟動，不再有「先分開才開始轉」的落差
+                    const leftAngle  = -syncT * 360; // 左圓逆時針轉 1 圈
+                    const rightAngle = +syncT * 360; // 右圓順時針轉 1 圈
 
-                    // 1. 左圓：逆時針旋轉的同時，往左滑開並化為 YourStory
-                    const currentLeftX = -LOOP_CENTER_OFFSET + (textOffsetX - (-LOOP_CENTER_OFFSET)) * moveT;
-                    mLeft.setAttribute('d', morphAndTranslatePath(infLeftLocalPts, textWaveLocalPts, morphT, leftAngle, currentLeftX));
+                    // 1. 左圓：逆時針旋轉的同時，同步往左分開並化為 YourStory
+                    const currentLeftX = -LOOP_CENTER_OFFSET + (textOffsetX - (-LOOP_CENTER_OFFSET)) * syncT;
+                    mLeft.setAttribute('d', morphAndTranslatePath(infLeftLocalPts, textWaveLocalPts, syncT, leftAngle, currentLeftX));
                     mLeft.setAttribute('opacity', String(Math.max(0, 1 - Math.pow(rawP, 1.45) * 1.3)));
 
                     svgText.setAttribute('opacity', '1');
                     svgText.setAttribute('x', currentLeftX);
-                    const dashOffset = 320 * (1 - easeOutCubic(Math.min(1, rawP * 1.25)));
+                    const dashOffset = 320 * (1 - easeInOutCubic(Math.min(1, rawP * 1.2)));
                     svgText.setAttribute('stroke-dashoffset', String(dashOffset));
 
                     if (rawP > 0.38) {
@@ -788,13 +795,13 @@
                         svgText.setAttribute('fill', `rgba(29, 29, 31, ${fillAlpha})`);
                     }
 
-                    // 2. 右圓：順時針旋轉的同時，往右滑開並化為「空心罐子外框」
-                    const currentRightX = LOOP_CENTER_OFFSET + (iconOffsetX - LOOP_CENTER_OFFSET) * moveT;
-                    mRight.setAttribute('d', morphAndTranslatePath(infRightLocalPts, finalEmptyJarLocalPts, morphT, rightAngle, currentRightX));
+                    // 2. 右圓：順時針旋轉的同時，同步往右分開並化為「空心罐子外框」
+                    const currentRightX = LOOP_CENTER_OFFSET + (iconOffsetX - LOOP_CENTER_OFFSET) * syncT;
+                    mRight.setAttribute('d', morphAndTranslatePath(infRightLocalPts, finalEmptyJarLocalPts, syncT, rightAngle, currentRightX));
                     
                     const startW = 6.4;
                     const endW = 11.5 * S_FINAL;
-                    mRight.setAttribute('stroke-width', String(startW + (endW - startW) * morphT));
+                    mRight.setAttribute('stroke-width', String(startW + (endW - startW) * syncT));
 
                     if (rawP > 0.78) {
                         splashIcon2.classList.add('visible');
