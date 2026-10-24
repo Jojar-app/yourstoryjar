@@ -699,7 +699,7 @@
             const infLeftPts  = samplePath('ref-inf-left', 0, 0, 0.95);
             const infRightPts = samplePath('ref-inf-right', 0, 0, 0.95);
 
-            // 將左右迴圈與目標形狀皆對齊至各自局部中心 (0,0)，方便各自繞自身中心連轉 3 圈
+            // 將左右迴圈與目標形狀皆對齊至各自局部中心 (0,0)，方便左圈逆時針、右圈順時針旋轉並同時分離變形
             const LOOP_CENTER_OFFSET = 32.3;
             const infLeftLocalPts  = samplePath('ref-inf-left', LOOP_CENTER_OFFSET, 0, 0.95);
             const infRightLocalPts = samplePath('ref-inf-right', -LOOP_CENTER_OFFSET, 0, 0.95);
@@ -711,14 +711,11 @@
             const startTime = performance.now();
 
             // ================= 動畫時間軸定義 (毫秒) =================
-            const T_FADE_IN          = 280;  // 0.00s - 0.28s: 圖一清晰浮現
-            const T_SPIN_HALF        = 820;  // 0.28s - 0.82s: 前 50% 旋轉 (0° -> 180°) 100% 保持原貌不變形
-            const T_SPIN_DONE        = 1160; // 0.82s - 1.16s: 後 50% 旋轉 (180° -> 360°) 速度加快 50% 轉變為無限符號 ♾️
-            const T_HOLD_INF         = 1660; // 1.16s - 1.66s: 完整的無限符號 ♾️ 停留 0.5 秒 (500ms)
-            const T_THREE_TURNS_DONE = 3310; // 1.66s - 3.31s: 左圈逆時針、右圈順時針連轉 3 圈（前 2 圈原地旋轉，第 3 圈無縫接上分裂變形）
-
-            // 在 easeInOutCubic(u) * 3 曲線中，完成第 2 圈 (totalTurns = 2.0) 對應的正規化時間點 u_split
-            const U_SPLIT = 1 - Math.pow(1 / 12, 1 / 3); // 約 0.5632
+            const T_FADE_IN     = 280;  // 0.00s - 0.28s: 圖一清晰浮現
+            const T_SPIN_HALF   = 820;  // 0.28s - 0.82s: 前 50% 旋轉 (0° -> 180°) 100% 保持原貌不變形
+            const T_SPIN_DONE   = 1160; // 0.82s - 1.16s: 後 50% 旋轉 (180° -> 360°) 速度加快 50% 轉變為無限符號 ♾️
+            const T_HOLD_INF    = 1460; // 1.16s - 1.46s: 【減少 0.2 秒】完整的無限符號 ♾️ 停留 0.3 秒 (300ms)
+            const T_MORPH_BRAND = 2280; // 1.46s - 2.28s: 【減少變形前兩圈】直接開始左圓逆時針轉一圈、右圓順時針轉一圈並同步分裂變形
 
             function step(now) {
                 const elapsed = now - startTime;
@@ -757,7 +754,7 @@
                     mRight.setAttribute('stroke-width', String(w));
                 } 
                 else if (elapsed <= T_HOLD_INF) {
-                    // 階段 2：完整的無限符號 ♾️ 清晰停留 0.5 秒
+                    // 階段 2：完整的無限符號 ♾️ 清晰停留 0.3 秒 (比原先減少 0.2 秒)
                     intactJar.style.opacity = '0';
                     mLeft.setAttribute('opacity', '1');
                     mRight.setAttribute('opacity', '1');
@@ -766,64 +763,50 @@
                     mLeft.setAttribute('stroke-width', '6.4');
                     mRight.setAttribute('stroke-width', '6.4');
                 } 
-                else if (elapsed <= T_THREE_TURNS_DONE) {
-                    // 階段 3：左圓逆時針轉兩圈、右圓順時針轉兩圈，各自進入第三圈時無縫接上分裂變形
+                else if (elapsed <= T_MORPH_BRAND) {
+                    // 階段 3：不額外原地多轉兩圈，直接左圓逆時針轉 1 圈 (-360°)、右圓順時針轉 1 圈 (+360°) 並同步分裂變形
                     intactJar.style.opacity = '0';
-                    const u = (elapsed - T_HOLD_INF) / (T_THREE_TURNS_DONE - T_HOLD_INF);
-                    // 單一連續 C2 平滑曲線涵蓋全部 3 圈 (0.0 -> 3.0 圈)，確保第 2 圈接第 3 圈時角速度 100% 連續無頓點
-                    const totalTurns = easeInOutCubic(u) * 3;
+                    const rawP = (elapsed - T_HOLD_INF) / (T_MORPH_BRAND - T_HOLD_INF);
+                    const moveT  = easeOutCubic(rawP);
+                    const morphT = easeInOutCubic(rawP);
 
-                    // 左圈逆時針 (-)，右圈順時針 (+)
-                    const leftAngle  = -totalTurns * 360;
-                    const rightAngle = +totalTurns * 360;
+                    const leftAngle  = -morphT * 360; // 左圓逆時針旋轉 1 圈
+                    const rightAngle = +morphT * 360; // 右圓順時針旋轉 1 圈
 
-                    if (totalTurns <= 2.0) {
-                        // 【前兩圈 (0.0 -> 2.0 圈)】：左圓逆時針轉 2 圈、右圓順時針轉 2 圈
-                        mLeft.setAttribute('opacity', '1');
-                        mRight.setAttribute('opacity', '1');
-                        mLeft.setAttribute('d', morphAndTranslatePath(infLeftLocalPts, infLeftLocalPts, 0, leftAngle, -LOOP_CENTER_OFFSET));
-                        mRight.setAttribute('d', morphAndTranslatePath(infRightLocalPts, infRightLocalPts, 0, rightAngle, LOOP_CENTER_OFFSET));
-                    } else {
-                        // 【第三圈 (2.0 -> 3.0 圈)】：各自在第三圈旋轉的同時，絲滑接上左右分裂與變形！
-                        const rawP = Math.min(1, (u - U_SPLIT) / (1 - U_SPLIT));
-                        const moveT  = totalTurns - 2.0; // 等同於 easeOutCubic(rawP)，與旋轉角速度完美同步減速定位
-                        const morphT = easeInOutCubic(rawP);
+                    // 1. 左圓：逆時針旋轉的同時，往左滑開並化為 YourStory
+                    const currentLeftX = -LOOP_CENTER_OFFSET + (textOffsetX - (-LOOP_CENTER_OFFSET)) * moveT;
+                    mLeft.setAttribute('d', morphAndTranslatePath(infLeftLocalPts, textWaveLocalPts, morphT, leftAngle, currentLeftX));
+                    mLeft.setAttribute('opacity', String(Math.max(0, 1 - Math.pow(rawP, 1.45) * 1.3)));
 
-                        // 1. 左圈：逆時針轉完第 3 圈 (-720° -> -1080°) 的同時，往左滑開並化為 YourStory
-                        const currentLeftX = -LOOP_CENTER_OFFSET + (textOffsetX - (-LOOP_CENTER_OFFSET)) * moveT;
-                        mLeft.setAttribute('d', morphAndTranslatePath(infLeftLocalPts, textWaveLocalPts, morphT, leftAngle, currentLeftX));
-                        mLeft.setAttribute('opacity', String(Math.max(0, 1 - Math.pow(rawP, 1.45) * 1.3)));
+                    svgText.setAttribute('opacity', '1');
+                    svgText.setAttribute('x', currentLeftX);
+                    const dashOffset = 320 * (1 - easeOutCubic(Math.min(1, rawP * 1.25)));
+                    svgText.setAttribute('stroke-dashoffset', String(dashOffset));
 
-                        svgText.setAttribute('opacity', '1');
-                        svgText.setAttribute('x', currentLeftX);
-                        const dashOffset = 320 * (1 - easeOutCubic(Math.min(1, rawP * 1.25)));
-                        svgText.setAttribute('stroke-dashoffset', String(dashOffset));
+                    if (rawP > 0.38) {
+                        const fillAlpha = Math.min(1, (rawP - 0.38) / 0.5);
+                        svgText.setAttribute('fill', `rgba(29, 29, 31, ${fillAlpha})`);
+                    }
 
-                        if (rawP > 0.38) {
-                            const fillAlpha = Math.min(1, (rawP - 0.38) / 0.5);
-                            svgText.setAttribute('fill', `rgba(29, 29, 31, ${fillAlpha})`);
-                        }
+                    // 2. 右圓：順時針旋轉的同時，往右滑開並化為「空心罐子外框」
+                    const currentRightX = LOOP_CENTER_OFFSET + (iconOffsetX - LOOP_CENTER_OFFSET) * moveT;
+                    mRight.setAttribute('d', morphAndTranslatePath(infRightLocalPts, finalEmptyJarLocalPts, morphT, rightAngle, currentRightX));
+                    
+                    const startW = 6.4;
+                    const endW = 11.5 * S_FINAL;
+                    mRight.setAttribute('stroke-width', String(startW + (endW - startW) * morphT));
 
-                        // 2. 右圈：順時針轉完第 3 圈 (+720° -> +1080°) 的同時，往右滑開並化為「空心罐子外框」
-                        const currentRightX = LOOP_CENTER_OFFSET + (iconOffsetX - LOOP_CENTER_OFFSET) * moveT;
-                        mRight.setAttribute('d', morphAndTranslatePath(infRightLocalPts, finalEmptyJarLocalPts, morphT, rightAngle, currentRightX));
-                        
-                        const startW = 6.4;
-                        const endW = 11.5 * S_FINAL;
-                        mRight.setAttribute('stroke-width', String(startW + (endW - startW) * morphT));
-
-                        if (rawP > 0.78) {
-                            splashIcon2.classList.add('visible');
-                            const fadeOut = Math.max(0, 1 - (rawP - 0.78) / 0.22);
-                            mRight.setAttribute('opacity', String(fadeOut));
-                        }
+                    if (rawP > 0.78) {
+                        splashIcon2.classList.add('visible');
+                        const fadeOut = Math.max(0, 1 - (rawP - 0.78) / 0.22);
+                        mRight.setAttribute('opacity', String(fadeOut));
                     }
                 }
 
-                if (elapsed < T_THREE_TURNS_DONE) {
+                if (elapsed < T_MORPH_BRAND) {
                     animFrameId = requestAnimationFrame(step);
                 } else {
-                    // 第 3 圈分裂與變形完成：固定為「YourStory」+「空心黑線罐子外框」
+                    // 分裂與變形完成：固定為「YourStory」+「空心黑線罐子外框」
                     strokesGroup.style.opacity = '0';
                     splashText.style.opacity = '1';
                     splashIcon2.classList.add('visible');
@@ -832,7 +815,7 @@
 
             animFrameId = requestAnimationFrame(step);
 
-            // 階段 4 (3.35s)：往上升的同時，空心罐子同步絲滑上色 (.coloring)
+            // 階段 4 (2.32s)：往上升的同時，空心罐子同步絲滑上色 (.coloring)
             timeouts.push(setTimeout(() => {
                 const splitLockup = document.getElementById('split-lockup');
                 const currentRect = splitLockup.getBoundingClientRect();
@@ -845,23 +828,23 @@
                 splashIcon2.classList.add('coloring');
                 overlay.classList.add('transparent-bg');
                 document.body.classList.add('page-ready');
-            }, 3350));
+            }, 2320));
 
-            // 階段 5 (4.15s)：升到頂部定位！深色背景與完整 Logo 出現，同時背後往左滑出「Jar」結合成「YourStoryJar」
+            // 階段 5 (3.12s)：升到頂部定位！深色背景與完整 Logo 出現，同時背後往左滑出「Jar」結合成「YourStoryJar」
             timeouts.push(setTimeout(() => {
                 splashIcon2.classList.add('logo-complete');
                 splashText.style.transform = 'translateX(0px)';
                 splashIcon2.style.transform = 'translateX(0px)';
                 splashJarText.style.opacity = '1';
                 splashJarText.style.transform = 'translateX(0px) scale(1)';
-            }, 4150));
+            }, 3120));
 
-            // 階段 6 (4.95s)：完全貼合固定，解除捲動鎖定
+            // 階段 6 (3.90s)：完全貼合固定，解除捲動鎖定
             timeouts.push(setTimeout(() => {
                 targetLockup.classList.add('docked');
                 overlay.classList.add('hidden');
                 document.body.classList.remove('animating');
-            }, 4950));
+            }, 3900));
         }
 
         window.addEventListener('DOMContentLoaded', playIntroAnimation);
