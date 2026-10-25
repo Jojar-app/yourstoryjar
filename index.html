@@ -88,6 +88,33 @@
             transition: opacity 0.6s cubic-bezier(0.16, 1, 0.3, 1),
                         transform 0.6s cubic-bezier(0.16, 1, 0.3, 1);
             z-index: 1;
+            overflow: hidden;
+        }
+
+        /* 若用戶上傳了 icon2.png，直接滿版顯示原圖 */
+        .custom-icon2-img {
+            position: absolute;
+            inset: 0;
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            border-radius: 18px;
+            opacity: 0;
+            transform: scale(0.82);
+            transition: opacity 0.6s cubic-bezier(0.16, 1, 0.3, 1),
+                        transform 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+            z-index: 4;
+            box-shadow: 0 12px 28px rgba(22, 19, 28, 0.28);
+            display: none;
+        }
+
+        body.has-custom-icon2 .custom-icon2-img {
+            display: block;
+        }
+
+        .app-icon-container.logo-complete .custom-icon2-img {
+            opacity: 1;
+            transform: scale(1);
         }
 
         .app-icon-container svg {
@@ -106,8 +133,8 @@
 
         .jar-layer-holo {
             opacity: 0;
-            filter: drop-shadow(0 0 3px rgba(255, 255, 255, 0.65))
-                    drop-shadow(0 0 8px rgba(195, 230, 255, 0.38));
+            filter: drop-shadow(0 0 2.5px rgba(255, 255, 255, 0.7))
+                    drop-shadow(0 0 8px rgba(195, 230, 255, 0.4));
             transition: opacity 0.75s ease;
         }
 
@@ -390,38 +417,63 @@
             <!-- 60fps 連續線條變形畫布 -->
             <svg id="morph-svg-layer" viewBox="-370 -140 740 280">
                 <defs>
-                    <!-- 【精準收細版】右下角極細飛白遮罩：將空隙寬度收細至 0.9px，緊貼外緣，完美對齊原圖比例 -->
-                    <mask id="brush-split-mask" maskUnits="userSpaceOnUse" x="-120" y="-120" width="240" height="240">
-                        <rect x="-120" y="-120" width="240" height="240" fill="white" />
-                        <!-- 右下角極細月牙飛白微縫 (最大寬度僅 0.95 單位，比原先減少 75% 空隙) -->
-                        <path d="M 65.3 30.0 C 65.6 45.2, 62.5 53.8, 60.38 59.47 C 53.4 74.4, 36.0 80.4, 12.0 79.9 C 35.8 79.6, 52.8 73.6, 59.49 59.14 C 61.6 53.4, 64.7 45.0, 65.3 30.0 Z" fill="black" />
-                        <!-- 右側壁下段極細微的筆刷分叉絲 -->
-                        <path d="M 66.2 18.0 C 66.5 25.0, 66.4 31.0, 65.8 36.5 C 66.0 31.0, 66.0 25.0, 66.2 18.0 Z" fill="black" />
-                        <!-- 內圓反光弧左下尾端的微小筆刷分叉 -->
-                        <path d="M -18.0 16.5 L -16.8 13.5 L -16.0 16.6 Z" fill="black" />
-                    </mask>
+                    <!-- ===== 【核心修正】採用真實手繪墨跡填色輪廓 (fill-rule="evenodd") ===== -->
+                    <!-- 不再使用固定粗細的 stroke，而是直接描繪內外邊界，真實還原 5 點鐘方向筆觸階梯與右下角細月牙飛白 -->
+                    <path id="true-calligraphy-jar-outer" fill-rule="evenodd" d="
+                        M -38 -72.5 L 38 -72.5 C 47.5 -72.5, 51.5 -67.5, 51.5 -57.5 C 51.5 -48.5, 48.0 -43.5, 43.8 -42.5
+                        C 44.8 -34.8, 51.5 -29.2, 58.2 -22.5 C 63.8 -16.8, 65.5 -8.0, 65.5 6.0
+                        C 65.5 24.0, 64.6 41.5, 59.8 54.5 C 54.5 67.5, 40.5 73.2, 14.2 74.8
+                        C 11.2 75.0, 10.5 76.6, 0.0 76.8 C -32.0 76.8, -51.5 71.0, -58.8 56.5
+                        C -64.5 44.5, -65.5 26.0, -65.5 6.0 C -65.5 -8.0, -63.8 -16.8, -58.2 -22.5
+                        C -51.5 -29.2, -44.8 -34.8, -43.8 -42.5 C -48.0 -43.5, -51.5 -48.5, -51.5 -57.5
+                        C -51.5 -67.5, -47.5 -72.5, -38 -72.5 Z
 
-                    <!-- 1. 單一連續罐子外輪廓 (瓶蓋+瓶頸+瓶身合一，供右圈分裂時同步變形為空心外框) -->
+                        M -36.5 -62.2 C -40.2 -62.2, -41.2 -60.2, -41.2 -57.5 C -41.2 -54.8, -40.2 -52.8, -36.5 -52.8
+                        L 36.5 -52.8 C 40.2 -52.8, 41.2 -54.8, 41.2 -57.5 C 41.2 -60.2, 40.2 -62.2, 36.5 -62.2 Z
+
+                        M -33.0 -42.2 L 33.0 -42.2 C 33.8 -32.8, 40.2 -26.2, 47.2 -19.2
+                        C 52.5 -14.0, 54.2 -6.2, 54.2 6.0 C 54.2 22.0, 53.2 38.0, 48.8 49.0
+                        C 44.0 60.2, 31.0 64.8, 0.0 65.2 C -31.5 64.8, -44.8 60.0, -49.5 49.0
+                        C -53.8 38.0, -54.5 22.0, -54.5 6.0 C -54.5 -6.2, -52.8 -14.0, -47.5 -19.2
+                        C -40.5 -26.2, -33.8 -32.8, -33.0 -42.2 Z
+
+                        M 12.5 73.2 C 36.5 71.3, 51.8 65.5, 57.4 53.2 C 61.8 42.8, 63.1 28.0, 63.2 12.0
+                        C 62.1 28.0, 60.0 41.8, 54.8 51.8 C 49.0 63.0, 34.5 69.5, 12.5 73.2 Z
+
+                        M 60.8 20.0 C 61.2 28.5, 60.3 36.5, 58.4 43.8 C 59.5 36.5, 60.2 28.5, 60.8 20.0 Z
+                    " />
+
+                    <!-- 故事罐內部中央圓環與反光弧（含左下尾端三叉毛筆筆觸） -->
+                    <path id="true-calligraphy-jar-inner" fill-rule="evenodd" d="
+                        M 0 -23.5 C 20.7 -23.5, 37.5 -6.7, 37.5 14.0 C 37.5 34.7, 20.7 51.5, 0 51.5
+                        C -20.7 51.5, -37.5 34.7, -37.5 14.0 C -37.5 -6.7, -20.7 -23.5, 0 -23.5 Z
+                        M 0 -13.0 C -14.9 -13.0, -27.0 -0.9, -27.0 14.0 C -27.0 28.9, -14.9 41.0, 0 41.0
+                        C 14.9 41.0, 27.0 28.9, 27.0 14.0 C 27.0 -0.9, 14.9 -13.0, 0 -13.0 Z
+
+                        M 1.2 -6.8 C 3.5 -6.8, 5.0 -5.2, 5.0 -3.2 C 5.0 -1.2, 3.2 0.2, 0.8 0.4
+                        C -7.2 1.0, -13.0 6.8, -14.0 14.8 C -14.2 16.5, -14.8 17.8, -15.5 18.2
+                        L -16.4 16.5 L -17.4 18.8 L -18.2 16.8 L -19.5 17.8
+                        C -20.8 15.8, -21.2 13.0, -20.8 10.2 C -19.2 0.5, -10.2 -6.8, 1.2 -6.8 Z
+                    " />
+
+                    <!-- 供 60fps 頂點取樣變形用的幾何中心線路徑 -->
                     <path id="ref-jar-silhouette" d="M -36 -66 L 36 -66 C 45 -66, 47 -62, 47 -55.5 C 47 -49, 45 -45, 38 -45 C 39 -30, 62 -22, 62 5 C 62 24, 62 43, 56.5 58 C 51 71, 35 76.5, 0 76.5 C -35 76.5, -51 71, -56.5 58 C -62 43, -62 24, -62 5 C -62 -22, -39 -30, -38 -45 C -45 -45, -47 -49, -47 -55.5 C -47 -62, -45 -66, -36 -66 Z" />
-
-                    <!-- 2. 故事罐中央內圓環 -->
                     <path id="ref-jar-inner-ring" d="M 0 -18 C 18 -18, 32 -4, 32 14 C 32 32, 18 46, 0 46 C -18 46, -32 32, -32 14 C -32 -4, -18 -18, 0 -18 Z" />
-
-                    <!-- 3. 無限符號 ♾️ 左右迴圈路徑 -->
                     <path id="ref-inf-left" d="M 0 0 C -16 -32, -68 -32, -68 0 C -68 32, -16 32, 0 0 Z" />
                     <path id="ref-inf-right" d="M 0 0 C 16 -32, 68 -32, 68 0 C 68 32, 16 32, 0 0 Z" />
-
-                    <!-- 4. 左迴圈化為 YourStory 的橫向書寫流線軌跡 -->
                     <path id="ref-text-wave" d="M -85 4 C -55 -18, -25 18, 0 -12 C 28 16, 58 -16, 85 2" />
                 </defs>
 
                 <g id="morph-strokes-group">
                     <!-- 開場圖一的完整 100% 細節組 (前 50% 旋轉保持完整原貌) -->
-                    <g id="intact-jar-group" mask="url(#brush-split-mask)" stroke="#1e1c24" fill="none" stroke-linecap="round" stroke-linejoin="round">
-                        <path d="M -36 -66 L 36 -66 C 45 -66, 47 -62, 47 -55.5 C 47 -49, 45 -45, 36 -45 L -36 -45 C -45 -45, -47 -49, -47 -55.5 C -47 -62, -45 -66, -36 -66 Z" stroke-width="11.5" />
-                        <path d="M -38 -44 C -39 -30, -62 -22, -62 5 C -62 24, -62 43, -56.5 58 C -51 71, -35 76.5, 0 76.5 C 35 76.5, 51 71, 56.5 58 C 62 43, 62 24, 62 5 C 62 -22, 39 -30, 38 -44" stroke-width="11.5" />
-                        <circle cx="0" cy="14" r="32" stroke-width="11.5" />
-                        <path d="M -17.5 15 C -16.8 3.5, -8.5 -3.5, 1.5 -3.5" stroke-width="7.8" />
+                    <g id="intact-jar-group">
+                        <!-- 預設顯示真實手繪墨跡填色向量圖 -->
+                        <g id="vector-jar1" fill="#1e1c24">
+                            <use href="#true-calligraphy-jar-outer" />
+                            <use href="#true-calligraphy-jar-inner" />
+                        </g>
+                        <!-- 若用戶上傳了 icon1.png，自動切換為原圖顯示 -->
+                        <image id="custom-jar1-image" href="" x="-82" y="-82" width="164" height="164" style="display:none; mix-blend-mode: multiply;" />
                     </g>
 
                     <!-- 參與連續變形的兩條主畫筆 (左迴圈線 & 右迴圈線) -->
@@ -444,6 +496,7 @@
                 </div>
                 <div id="splash-icon2" class="app-icon-container">
                     <div class="squircle-bg"></div>
+                    <img class="custom-icon2-img" alt="App Icon" />
                     <svg viewBox="-90 -90 180 185">
                         <defs>
                             <linearGradient id="holo-grad-splash" gradientUnits="userSpaceOnUse" x1="-65" y1="-65" x2="65" y2="80">
@@ -453,24 +506,16 @@
                                 <stop offset="75%" stop-color="#e4d0ff" />
                                 <stop offset="100%" stop-color="#ffffff" />
                             </linearGradient>
-                            <mask id="splash-jar-mask" maskUnits="userSpaceOnUse" x="-120" y="-120" width="240" height="240">
-                                <rect x="-120" y="-120" width="240" height="240" fill="white" />
-                                <path d="M 65.3 30.0 C 65.6 45.2, 62.5 53.8, 60.38 59.47 C 53.4 74.4, 36.0 80.4, 12.0 79.9 C 35.8 79.6, 52.8 73.6, 59.49 59.14 C 61.6 53.4, 64.7 45.0, 65.3 30.0 Z" fill="black" />
-                                <path d="M 66.2 18.0 C 66.5 25.0, 66.4 31.0, 65.8 36.5 C 66.0 31.0, 66.0 25.0, 66.2 18.0 Z" fill="black" />
-                                <path d="M -18.0 16.5 L -16.8 13.5 L -16.0 16.6 Z" fill="black" />
-                            </mask>
                         </defs>
                         <!-- 1. 分裂完成時的黑線外框層 (只有罐子外型輪廓，裡面全空) -->
-                        <g class="jar-layer-black" mask="url(#splash-jar-mask)" stroke="#1e1c24" fill="none" stroke-linecap="round" stroke-linejoin="round">
-                            <path d="M -36 -66 L 36 -66 C 45 -66, 47 -62, 47 -55.5 C 47 -49, 45 -45, 38 -45 C 39 -30, 62 -22, 62 5 C 62 24, 62 43, 56.5 58 C 51 71, 35 76.5, 0 76.5 C -35 76.5, -51 71, -56.5 58 C -62 43, -62 24, -62 5 C -62 -22, -39 -30, -38 -45 C -45 -45, -47 -49, -47 -55.5 C -47 -62, -45 -66, -36 -66 Z" stroke-width="11.5" />
+                        <g class="jar-layer-black" fill="#1e1c24">
+                            <use href="#true-calligraphy-jar-outer" />
                         </g>
                         <!-- 2. 上升途中同步上色的流光層 (外框先上色，抵達頂部背景出現時內圈同步浮現) -->
-                        <g class="jar-layer-holo" mask="url(#splash-jar-mask)" stroke="url(#holo-grad-splash)" fill="none" stroke-linecap="round" stroke-linejoin="round">
-                            <path d="M -36 -66 L 36 -66 C 45 -66, 47 -62, 47 -55.5 C 47 -49, 45 -45, 36 -45 L -36 -45 C -45 -45, -47 -49, -47 -55.5 C -47 -62, -45 -66, -36 -66 Z" stroke-width="11.5" />
-                            <path d="M -38 -44 C -39 -30, -62 -22, -62 5 C -62 24, -62 43, -56.5 58 C -51 71, -35 76.5, 0 76.5 C 35 76.5, 51 71, 56.5 58 C 62 43, 62 24, 62 5 C 62 -22, 39 -30, 38 -44" stroke-width="11.5" />
+                        <g class="jar-layer-holo" fill="url(#holo-grad-splash)">
+                            <use href="#true-calligraphy-jar-outer" />
                             <g class="jar-inner-details">
-                                <circle cx="0" cy="14" r="32" stroke-width="11.5" />
-                                <path d="M -17.5 15 C -16.8 3.5, -8.5 -3.5, 1.5 -3.5" stroke-width="7.8" />
+                                <use href="#true-calligraphy-jar-inner" />
                             </g>
                         </g>
                     </svg>
@@ -492,6 +537,7 @@
                 </div>
                 <div class="app-icon-container coloring logo-complete">
                     <div class="squircle-bg"></div>
+                    <img class="custom-icon2-img" alt="App Icon" />
                     <svg viewBox="-90 -90 180 185">
                         <defs>
                             <linearGradient id="holo-grad-header" gradientUnits="userSpaceOnUse" x1="-65" y1="-65" x2="65" y2="80">
@@ -501,19 +547,11 @@
                                 <stop offset="75%" stop-color="#e4d0ff" />
                                 <stop offset="100%" stop-color="#ffffff" />
                             </linearGradient>
-                            <mask id="header-jar-mask" maskUnits="userSpaceOnUse" x="-120" y="-120" width="240" height="240">
-                                <rect x="-120" y="-120" width="240" height="240" fill="white" />
-                                <path d="M 65.3 30.0 C 65.6 45.2, 62.5 53.8, 60.38 59.47 C 53.4 74.4, 36.0 80.4, 12.0 79.9 C 35.8 79.6, 52.8 73.6, 59.49 59.14 C 61.6 53.4, 64.7 45.0, 65.3 30.0 Z" fill="black" />
-                                <path d="M 66.2 18.0 C 66.5 25.0, 66.4 31.0, 65.8 36.5 C 66.0 31.0, 66.0 25.0, 66.2 18.0 Z" fill="black" />
-                                <path d="M -18.0 16.5 L -16.8 13.5 L -16.0 16.6 Z" fill="black" />
-                            </mask>
                         </defs>
-                        <g class="jar-layer-holo" mask="url(#header-jar-mask)" stroke="url(#holo-grad-header)" fill="none" stroke-linecap="round" stroke-linejoin="round">
-                            <path d="M -36 -66 L 36 -66 C 45 -66, 47 -62, 47 -55.5 C 47 -49, 45 -45, 36 -45 L -36 -45 C -45 -45, -47 -49, -47 -55.5 C -47 -62, -45 -66, -36 -66 Z" stroke-width="11.5" />
-                            <path d="M -38 -44 C -39 -30, -62 -22, -62 5 C -62 24, -62 43, -56.5 58 C -51 71, -35 76.5, 0 76.5 C 35 76.5, 51 71, 56.5 58 C 62 43, 62 24, 62 5 C 62 -22, 39 -30, 38 -44" stroke-width="11.5" />
+                        <g class="jar-layer-holo" fill="url(#holo-grad-header)">
+                            <use href="#true-calligraphy-jar-outer" />
                             <g class="jar-inner-details">
-                                <circle cx="0" cy="14" r="32" stroke-width="11.5" />
-                                <path d="M -17.5 15 C -16.8 3.5, -8.5 -3.5, 1.5 -3.5" stroke-width="7.8" />
+                                <use href="#true-calligraphy-jar-inner" />
                             </g>
                         </g>
                     </svg>
@@ -567,8 +605,32 @@
 
     </div>
 
-    <!-- ================= 動畫時間軸與座標引擎 ================= -->
+    <!-- ================= 動畫時間軸與自動原圖偵測引擎 ================= -->
     <script>
+        // 【自動偵測原圖檔】：若你在 GitHub 上傳了 icon1.png 或 icon2.png，將自動啟用 100% 原圖顯示
+        (function detectCustomIcons() {
+            const img1 = new Image();
+            img1.onload = () => {
+                const svgImg = document.getElementById('custom-jar1-image');
+                const vecJar = document.getElementById('vector-jar1');
+                if (svgImg && vecJar) {
+                    svgImg.setAttribute('href', 'icon1.png');
+                    svgImg.style.display = 'block';
+                    vecJar.style.display = 'none';
+                }
+            };
+            img1.src = 'icon1.png';
+
+            const img2 = new Image();
+            img2.onload = () => {
+                document.body.classList.add('has-custom-icon2');
+                document.querySelectorAll('.custom-icon2-img').forEach(el => {
+                    el.src = 'icon2.png';
+                });
+            };
+            img2.src = 'icon2.png';
+        })();
+
         const NUM_PTS = 120;
         let animFrameId = null;
         let timeouts = [];
@@ -587,7 +649,6 @@
             return pts;
         }
 
-        // 支援「形狀變形 (morphT)」、「自身中心旋轉 (angleDeg)」與「水平移動分開 (translateX)」三者同步進行
         function morphAndTranslatePath(ptsA, ptsB, morphT, angleDeg = 0, translateX = 0) {
             const rad = (angleDeg * Math.PI) / 180;
             const cos = Math.cos(rad);
@@ -596,7 +657,6 @@
             for (let i = 0; i <= NUM_PTS; i++) {
                 const x = ptsA[i].x + (ptsB[i].x - ptsA[i].x) * morphT;
                 const y = ptsA[i].y + (ptsB[i].y - ptsA[i].y) * morphT;
-                // 先繞自身局部中心 (0,0) 旋轉，再加上水平分離位移 translateX
                 const rx = (x * cos - y * sin) + translateX;
                 const ry = (x * sin + y * cos);
                 d += (i === 0 ? `M ${rx.toFixed(2)} ${ry.toFixed(2)}` : ` L ${rx.toFixed(2)} ${ry.toFixed(2)}`);
@@ -651,7 +711,6 @@
             splashJarText.style.transition = 'none';
             splashIcon2.style.transition = 'none';
 
-            // 先歸零以量測「Jar」文字寬度，並設定初始收合位置（讓 Jar 藏在 Logo 正後方）
             splashText.style.transform = 'translateX(0px)';
             splashJarText.style.transform = 'translateX(0px)';
             splashIcon2.style.transform = 'translateX(0px)';
@@ -701,11 +760,9 @@
             const jarOuterInitPts = samplePath('ref-jar-silhouette', 0, 0, S_INIT);
             const jarInnerInitPts = samplePath('ref-jar-inner-ring', 0, 0, S_INIT);
 
-            // 無限符號 ♾️ 左右迴圈頂點 (在中心 0,0 相交)
             const infLeftPts  = samplePath('ref-inf-left', 0, 0, 0.95);
             const infRightPts = samplePath('ref-inf-right', 0, 0, 0.95);
 
-            // 將左右迴圈與目標形狀皆對齊至各自局部中心 (0,0)
             const LOOP_CENTER_OFFSET = 32.3;
             const infLeftLocalPts  = samplePath('ref-inf-left', LOOP_CENTER_OFFSET, 0, 0.95);
             const infRightLocalPts = samplePath('ref-inf-right', -LOOP_CENTER_OFFSET, 0, 0.95);
@@ -721,26 +778,23 @@
             const T_SPIN_HALF   = 820;  // 0.28s - 0.82s: 前 50% 旋轉 (0° -> 180°) 100% 保持原貌不變形
             const T_SPIN_DONE   = 1160; // 0.82s - 1.16s: 後 50% 旋轉 (180° -> 360°) 速度加快 50% 轉變為無限符號 ♾️
             const T_HOLD_INF    = 1460; // 1.16s - 1.46s: 完整的無限符號 ♾️ 停留 0.3 秒
-            const T_MORPH_BRAND = 2280; // 1.46s - 2.28s: 旋轉與分裂完全同步啟動（少轉兩圈，直接左逆轉1圈、右順轉1圈並同步分裂變形）
+            const T_MORPH_BRAND = 2280; // 1.46s - 2.28s: 旋轉與分裂完全同步啟動（左逆轉1圈、右順轉1圈並同步分裂變形）
 
             function step(now) {
                 const elapsed = now - startTime;
 
                 if (elapsed <= T_FADE_IN) {
-                    // 階段 0：圖一淡入登場
                     const p = Math.min(1, elapsed / T_FADE_IN);
                     intactJar.style.opacity = String(p);
                     intactJar.setAttribute('transform', `scale(${S_INIT})`);
                 } 
                 else if (elapsed <= T_SPIN_HALF) {
-                    // 階段 1A：前半圈 (0° -> 180°)，保留完整圖一不變形
                     const p = (elapsed - T_FADE_IN) / (T_SPIN_HALF - T_FADE_IN);
                     const angle = easeInCubic(p) * 180;
                     intactJar.style.opacity = '1';
                     intactJar.setAttribute('transform', `rotate(${angle}) scale(${S_INIT})`);
                 } 
                 else if (elapsed <= T_SPIN_DONE) {
-                    // 階段 1B：後半圈 (180° -> 360°)，轉變速度加快 50% 化為無限符號 ♾️
                     const rawP = (elapsed - T_SPIN_HALF) / (T_SPIN_DONE - T_SPIN_HALF);
                     const p = easeOutCubic(rawP);
                     const angle = 180 + p * 180;
@@ -760,7 +814,6 @@
                     mRight.setAttribute('stroke-width', String(w));
                 } 
                 else if (elapsed <= T_HOLD_INF) {
-                    // 階段 2：完整的無限符號 ♾️ 清晰停留 0.3 秒
                     intactJar.style.opacity = '0';
                     mLeft.setAttribute('opacity', '1');
                     mRight.setAttribute('opacity', '1');
@@ -770,15 +823,12 @@
                     mRight.setAttribute('stroke-width', '6.4');
                 } 
                 else if (elapsed <= T_MORPH_BRAND) {
-                    // 階段 3：【時機完全還原上一次，僅少轉兩圈】
-                    // 將「旋轉角度 (leftAngle/rightAngle)」、「水平分裂 (moveT)」與「形狀變形 (morphT)」完全鎖定在同一條同步曲線 t 上
                     intactJar.style.opacity = '0';
                     const rawP = (elapsed - T_HOLD_INF) / (T_MORPH_BRAND - T_HOLD_INF);
                     const syncT = easeInOutCubic(rawP);
 
-                    // 旋轉與分裂在同一毫秒同步啟動，不再有「先分開才開始轉」的落差
-                    const leftAngle  = -syncT * 360; // 左圓逆時針轉 1 圈
-                    const rightAngle = +syncT * 360; // 右圓順時針轉 1 圈
+                    const leftAngle  = -syncT * 360;
+                    const rightAngle = +syncT * 360;
 
                     // 1. 左圓：逆時針旋轉的同時，同步往左分開並化為 YourStory
                     const currentLeftX = -LOOP_CENTER_OFFSET + (textOffsetX - (-LOOP_CENTER_OFFSET)) * syncT;
@@ -813,7 +863,6 @@
                 if (elapsed < T_MORPH_BRAND) {
                     animFrameId = requestAnimationFrame(step);
                 } else {
-                    // 分裂與變形完成：固定為「YourStory」+「空心黑線罐子外框」
                     strokesGroup.style.opacity = '0';
                     splashText.style.opacity = '1';
                     splashIcon2.classList.add('visible');
