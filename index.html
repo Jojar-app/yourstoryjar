@@ -84,7 +84,7 @@
         .squircle-bg {
             position: absolute;
             inset: 0;
-            border-radius: inherit;
+            border-radius: 18px;
             background: radial-gradient(circle at 26% 24%, #4e3a4d 0%, #251f2d 56%, #16131c 100%);
             box-shadow: inset 0 1px 1.5px rgba(255, 255, 255, 0.22);
             opacity: 0;
@@ -94,7 +94,6 @@
             z-index: 1;
         }
 
-        /* 針對 icon2.png 進行精準放大裁邊，100% 貼合圓角外框 */
         .custom-icon2-img {
             position: absolute;
             width: 125%;
@@ -282,9 +281,9 @@
             opacity: 1;
         }
 
-        /* ================= 主頁面與階梯式淡入動畫 ================= */
+        /* ================= 主頁面內容與分階段淡入時序 ================= */
         .main-wrapper {
-            max-width: 860px;
+            max-width: 880px;
             margin: 0 auto;
             padding: 72px 24px 100px;
         }
@@ -303,535 +302,843 @@
             opacity: 1;
         }
 
-        /* 1. 小介紹文字：在 Jar 滑出後延遲 0.3 秒淡入 */
-        .hero-desc {
+        /* 小介紹文字：在 "Jar" 滑出後延遲 0.3 秒淡入 */
+        #hero-subtitle {
             font-size: 1.15rem;
             color: var(--text-sub);
             max-width: 520px;
-            margin: 0 auto 44px;
+            margin: 0 auto 42px;
             opacity: 0;
-            transform: translateY(10px);
-            transition: opacity 0.65s ease, transform 0.65s cubic-bezier(0.16, 1, 0.3, 1);
+            transform: translateY(14px);
+            transition: opacity 0.75s cubic-bezier(0.16, 1, 0.3, 1),
+                        transform 0.75s cubic-bezier(0.16, 1, 0.3, 1);
         }
 
-        body.tagline-visible .hero-desc {
+        #hero-subtitle.show-subtitle {
             opacity: 1;
             transform: translateY(0);
         }
 
-        /* 2. 展示介面與下方區塊：在小介紹文字出現後，再隨之向上淡入 */
+        /* 主展示介面與下方區塊：在小介紹文字出現後才隨之向上淡入 */
         .showcase-fade-up {
             opacity: 0;
             transform: translateY(32px);
-            transition: opacity 0.9s cubic-bezier(0.16, 1, 0.3, 1),
-                        transform 0.9s cubic-bezier(0.16, 1, 0.3, 1);
+            transition: opacity 0.95s cubic-bezier(0.16, 1, 0.3, 1),
+                        transform 0.95s cubic-bezier(0.16, 1, 0.3, 1);
         }
 
-        body.showcase-visible .showcase-fade-up {
+        body.show-main-interface .showcase-fade-up {
             opacity: 1;
             transform: translateY(0);
         }
 
-        .delay-block-1 { transition-delay: 0.18s; }
-        .delay-block-2 { transition-delay: 0.32s; }
-        .delay-block-3 { transition-delay: 0.45s; }
+        .delay-after-1 { transition-delay: 0.18s; }
+        .delay-after-2 { transition-delay: 0.32s; }
 
-        /* ================= App 主頁頂部欄 (可脫離並變身為全頁置頂欄) ================= */
-        .director-showcase {
-            background: linear-gradient(155deg, #191521 0%, #261e34 55%, #15121c 100%);
-            border-radius: 28px;
-            color: #ffffff;
-            box-shadow: 0 22px 50px rgba(20, 16, 28, 0.22);
-            margin-bottom: 32px;
-            text-align: left;
+        /* ================= 1:1 還原 App 頂部欄 + 滑動吸頂變身 (Sticky Detach Bar) ================= */
+        #sticky-bar-sentinel {
+            width: 100%;
+            height: 64px;
             position: relative;
-            border: 1px solid rgba(255, 255, 255, 0.08);
+            z-index: 900;
         }
 
-        /* 頂部欄佔位槽：防止頂部欄脫離變成 fixed 時頁面高度跳動 */
-        #topbar-slot {
-            height: 66px;
+        #app-top-bar {
             width: 100%;
-            position: relative;
-        }
-
-        /* App 頂部欄本體 */
-        #detaching-app-topbar {
-            height: 66px;
-            width: 100%;
-            background: rgba(255, 255, 255, 0.04);
-            border-bottom: 1px solid rgba(255, 255, 255, 0.09);
-            border-radius: 28px 28px 0 0;
-            padding: 0 26px;
+            height: 64px;
+            background: 
+                repeating-linear-gradient(90deg, rgba(255, 255, 255, 0.025) 0px, rgba(255, 255, 255, 0.025) 1px, transparent 1px, transparent 18px),
+                linear-gradient(180deg, #121018 0%, #0b090f 100%);
+            border-radius: 26px 26px 0 0;
+            border-top: 1px solid rgba(255, 255, 255, 0.12);
+            border-left: 1px solid rgba(255, 255, 255, 0.08);
+            border-right: 1px solid rgba(255, 255, 255, 0.08);
+            border-bottom: 1.5px solid rgba(212, 163, 115, 0.38);
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.25);
             display: flex;
             align-items: center;
             justify-content: space-between;
+            padding: 0 24px;
             position: relative;
-            z-index: 900;
-            backdrop-filter: blur(16px);
-            -webkit-backdrop-filter: blur(16px);
-            transition: background-color 0.4s ease,
-                        box-shadow 0.4s ease,
-                        border-radius 0.4s ease,
-                        padding 0.4s ease;
+            transition: border-radius 0.35s ease, background 0.35s ease, box-shadow 0.35s ease, padding 0.35s ease;
         }
 
-        /* 當用戶滑動頁面，頂部欄到達畫面頂端時：脫離介面成為全畫面置頂欄！ */
-        #detaching-app-topbar.is-detached {
+        /* 底部微弧光暈線 (還原截圖中的弧形亮線) */
+        #app-top-bar::after {
+            content: "";
+            position: absolute;
+            bottom: -1.5px;
+            left: 10%;
+            right: 10%;
+            height: 2px;
+            background: linear-gradient(90deg, transparent 0%, rgba(235, 195, 150, 0.75) 50%, transparent 100%);
+            pointer-events: none;
+        }
+
+        /* 當用戶往下滑動、頂部欄觸頂時：脫離介面成為全螢幕頂部固定欄 */
+        #app-top-bar.is-sticky {
             position: fixed;
             top: 0;
             left: 0;
             right: 0;
             width: 100vw;
             border-radius: 0;
-            background: rgba(22, 18, 30, 0.86);
-            border-bottom: 1px solid rgba(255, 255, 255, 0.12);
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.28);
-            padding: 0 max(24px, calc((100vw - 820px) / 2));
+            border-top: none;
+            border-left: none;
+            border-right: none;
+            padding: 0 max(24px, calc((100vw - 832px) / 2));
+            background: 
+                repeating-linear-gradient(90deg, rgba(255, 255, 255, 0.025) 0px, rgba(255, 255, 255, 0.025) 1px, transparent 1px, transparent 18px),
+                rgba(14, 12, 20, 0.92);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.45);
+            z-index: 950;
         }
 
-        /* 頂部欄左側與右側的 App 狀態裝飾點 */
-        .topbar-side-dots {
-            display: flex;
-            align-items: center;
-            gap: 7px;
-            width: 68px;
+        /* 頂部欄左側 2x2 小圖示組 (還原截圖左上角圖示) */
+        .bar-left-icons {
+            display: grid;
+            grid-template-columns: repeat(2, 11px);
+            grid-template-rows: repeat(2, 11px);
+            gap: 3px;
+            opacity: 0.88;
+            flex-shrink: 0;
         }
 
-        .status-pill {
-            width: 8px;
-            height: 8px;
-            border-radius: 50%;
-            background: rgba(255, 255, 255, 0.22);
-        }
-
-        .status-pill.glow {
-            background: #b5ffe9;
-            box-shadow: 0 0 8px rgba(181, 255, 233, 0.8);
-        }
-
-        .topbar-right-tag {
-            width: 68px;
-            text-align: right;
-            font-size: 0.72rem;
-            font-weight: 600;
-            letter-spacing: 0.08em;
-            color: rgba(255, 255, 255, 0.45);
-            text-transform: uppercase;
-        }
-
-        /* 頂部欄中央的雙狀態切換區 */
-        .topbar-center-stage {
-            position: relative;
-            flex: 1;
-            height: 100%;
+        .bar-left-icons span {
             display: flex;
             align-items: center;
             justify-content: center;
+            font-size: 8px;
+            border-radius: 2.5px;
+            border: 1px solid #c89d6c;
+            color: #e6be8a;
+            line-height: 1;
+        }
+
+        /* 頂部欄右側 2x2 格狀圖示 (還原截圖右上角圖示) */
+        .bar-right-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 9px);
+            grid-template-rows: repeat(2, 9px);
+            gap: 3px;
+            flex-shrink: 0;
+        }
+
+        .bar-right-grid span {
+            background-color: #c89d6c;
+            border-radius: 2px;
+        }
+
+        /* 頂部欄中央文字切換區 */
+        .bar-center-stage {
+            position: relative;
+            height: 100%;
+            flex: 1;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
         }
 
         /* 狀態 A (在介面內)：Your Story, Directed by You. */
-        .topbar-state-quote {
-            position: absolute;
+        .bar-title-director {
             display: flex;
             flex-direction: column;
             align-items: center;
             justify-content: center;
-            opacity: 1;
-            transform: translateY(0) scale(1);
             transition: opacity 0.38s ease, transform 0.42s cubic-bezier(0.16, 1, 0.3, 1);
-            pointer-events: none;
+            opacity: 1;
+            transform: translateY(0);
         }
 
-        .topbar-en-quote {
-            font-size: clamp(1.02rem, 2.8vw, 1.28rem);
-            font-weight: 800;
-            letter-spacing: -0.01em;
-            background: linear-gradient(90deg, #ffd1dc 0%, #fff6b0 35%, #b5ffe9 70%, #e4d0ff 100%);
+        .bar-title-director .en-main {
+            font-size: clamp(1rem, 2.8vw, 1.25rem);
+            font-weight: 700;
+            letter-spacing: 0.01em;
+            background: linear-gradient(90deg, #ffffff 0%, #ffe8c8 50%, #e4d0ff 100%);
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
             line-height: 1.2;
         }
 
-        .topbar-zh-quote {
+        .bar-title-director .zh-sub {
             font-size: 0.72rem;
-            color: rgba(255, 255, 255, 0.62);
+            color: rgba(255, 255, 255, 0.6);
             letter-spacing: 0.14em;
             margin-top: 2px;
         }
 
-        /* 狀態 B (脫離成為全畫面頂部欄時)：變成 YourStoryJar + App Icon */
-        .topbar-state-brand {
+        /* 狀態 B (滑動吸頂後)：變成最上方的 YourStoryJar + App Icon */
+        .bar-title-brand {
             position: absolute;
-            display: flex;
+            display: inline-flex;
             align-items: center;
             gap: 10px;
             opacity: 0;
-            transform: translateY(10px) scale(0.92);
+            transform: translateY(22px);
             transition: opacity 0.38s ease, transform 0.42s cubic-bezier(0.16, 1, 0.3, 1);
             pointer-events: none;
         }
 
-        .topbar-brand-name {
-            font-size: 1.22rem;
-            font-weight: 800;
-            letter-spacing: -0.02em;
+        .bar-title-brand .sticky-brand-name {
+            font-size: 1.28rem;
+            font-weight: 700;
             color: #ffffff;
+            letter-spacing: -0.02em;
         }
 
-        .topbar-mini-icon {
+        .sticky-mini-icon {
             width: 34px;
             height: 34px;
-            border-radius: 9px;
+            border-radius: 8.5px;
             position: relative;
             overflow: hidden;
             background: radial-gradient(circle at 26% 24%, #4e3a4d 0%, #251f2d 56%, #16131c 100%);
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.35),
-                        inset 0 1px 1px rgba(255, 255, 255, 0.25);
+            border: 1px solid rgba(255, 255, 255, 0.22);
             display: flex;
             align-items: center;
             justify-content: center;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4);
         }
 
-        .topbar-mini-icon svg {
-            width: 100%;
-            height: 100%;
+        .sticky-mini-icon svg {
+            width: 78%;
+            height: 78%;
         }
 
-        /* 觸發脫離時的文字與圖示互換 */
-        #detaching-app-topbar.is-detached .topbar-state-quote {
+        #app-top-bar.is-sticky .bar-title-director {
             opacity: 0;
-            transform: translateY(-10px) scale(0.92);
+            transform: translateY(-22px);
+            pointer-events: none;
         }
 
-        #detaching-app-topbar.is-detached .topbar-state-brand {
+        #app-top-bar.is-sticky .bar-title-brand {
             opacity: 1;
-            transform: translateY(0) scale(1);
+            transform: translateY(0);
             pointer-events: auto;
         }
 
-        /* ================= 展示區內部：左手機介面 + 右多款式故事罐展示 ================= */
-        .showcase-body {
-            padding: 36px 34px 42px;
+        /* ================= 主展示介面機身 (宇宙星塵主題) ================= */
+        .app-showcase-body {
+            background: 
+                radial-gradient(circle at 22% 35%, rgba(105, 65, 165, 0.22) 0%, transparent 50%),
+                radial-gradient(circle at 78% 65%, rgba(215, 140, 85, 0.14) 0%, transparent 50%),
+                linear-gradient(180deg, #0d0a14 0%, #171126 55%, #0c0a12 100%);
+            border-radius: 0 0 28px 28px;
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            border-top: none;
+            padding: 38px 32px 42px;
+            color: #ffffff;
+            box-shadow: 0 24px 50px rgba(15, 12, 24, 0.22);
+            margin-bottom: 36px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        /* 星塵十字星點綴 (還原截圖中的背景星點) */
+        .star-sparkle {
+            position: absolute;
+            color: rgba(255, 255, 255, 0.45);
+            font-size: 10px;
+            pointer-events: none;
+            user-select: none;
+        }
+
+        .showcase-grid {
             display: grid;
-            grid-template-columns: 0.95fr 1.2fr;
+            grid-template-columns: 1fr 1.25fr;
             gap: 36px;
             align-items: stretch;
         }
 
-        @media (max-width: 720px) {
-            .showcase-body {
+        @media (max-width: 740px) {
+            .showcase-grid {
                 grid-template-columns: 1fr;
-                padding: 28px 20px 32px;
             }
-            .topbar-side-dots, .topbar-right-tag {
-                width: 36px;
+            .app-showcase-body {
+                padding: 28px 20px 32px;
             }
         }
 
-        /* 左側：數位時光罐手機介面 */
-        .phone-mockup {
-            background: #110e17;
-            border: 4px solid #382f47;
-            border-radius: 36px;
-            padding: 16px 16px 20px;
-            max-width: 285px;
+        /* ================= 左側：擬真 App 手機介面 (3D 玻璃罐 + 心情摺好存入) ================= */
+        .app-phone-frame {
+            background: linear-gradient(180deg, #09070e 0%, #151024 65%, #0b0910 100%);
+            border: 2.5px solid rgba(255, 255, 255, 0.13);
+            border-radius: 32px;
+            padding: 16px 16px 14px;
+            max-width: 300px;
             width: 100%;
             margin: 0 auto;
-            box-shadow: 0 18px 40px rgba(0, 0, 0, 0.5),
-                        inset 0 1px 1px rgba(255, 255, 255, 0.16);
             display: flex;
             flex-direction: column;
             justify-content: space-between;
-        }
-
-        .phone-notch {
-            width: 64px;
-            height: 14px;
-            background: #07060a;
-            border-radius: 10px;
-            margin: 0 auto 12px;
-        }
-
-        .phone-app-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding: 0 4px 10px;
-            border-bottom: 1px solid rgba(255, 255, 255, 0.07);
-            font-size: 0.72rem;
-            color: rgba(255, 255, 255, 0.6);
-        }
-
-        .phone-jar-stage {
+            box-shadow: 0 18px 40px rgba(0, 0, 0, 0.55),
+                        inset 0 1px 1px rgba(255, 255, 255, 0.12);
             position: relative;
-            height: 148px;
+        }
+
+        /* 還原 Jar Studio 頂部膠囊標籤 */
+        .phone-studio-pills {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 14px;
+        }
+
+        .pill-studio {
+            display: inline-flex;
+            align-items: center;
+            gap: 5px;
+            background: rgba(255, 255, 255, 0.06);
+            border: 1px solid rgba(212, 163, 115, 0.45);
+            color: #f3d5b5;
+            font-size: 0.72rem;
+            font-weight: 600;
+            padding: 4px 11px;
+            border-radius: 20px;
+        }
+
+        .pill-pro {
+            display: inline-flex;
+            align-items: center;
+            gap: 3px;
+            background: rgba(212, 163, 115, 0.15);
+            border: 1px solid #d4a373;
+            color: #ffd166;
+            font-size: 0.68rem;
+            font-weight: 700;
+            padding: 3px 9px;
+            border-radius: 20px;
+        }
+
+        /* 3D 擬真玻璃故事罐 (還原截圖中的直紋瓶蓋 + 玻璃斜反光 + 內部記憶) */
+        .realistic-jar-stage {
+            position: relative;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            margin: 6px 0 14px;
+        }
+
+        /* 兩側懸浮按鈕 (Letter / Lid) */
+        .floating-side-btn {
+            position: absolute;
+            width: 44px;
+            height: 48px;
+            border-radius: 13px;
+            background: rgba(255, 255, 255, 0.04);
+            border: 1px solid rgba(255, 255, 255, 0.14);
             display: flex;
             flex-direction: column;
             align-items: center;
             justify-content: center;
-            margin: 8px 0;
-            background: radial-gradient(circle at 50% 55%, rgba(181, 255, 233, 0.12) 0%, rgba(228, 208, 255, 0.05) 48%, transparent 72%);
-            border-radius: 20px;
+            gap: 2px;
+            font-size: 0.6rem;
+            color: rgba(255, 255, 255, 0.75);
+            z-index: 4;
+            backdrop-filter: blur(4px);
         }
 
-        .phone-jar-svg {
-            width: 86px;
-            height: 86px;
-            filter: drop-shadow(0 0 8px rgba(255, 255, 255, 0.45));
-            animation: floatJar 3.6s ease-in-out infinite;
+        .floating-side-btn.left-letter {
+            left: -4px;
+            top: 46%;
+            border-color: rgba(224, 122, 95, 0.5);
+            box-shadow: 0 0 12px rgba(224, 122, 95, 0.2);
         }
 
-        @keyframes floatJar {
-            0%, 100% { transform: translateY(0px); }
-            50% { transform: translateY(-5px); }
+        .floating-side-btn.right-lid {
+            right: -4px;
+            top: 38%;
+            background: rgba(212, 163, 115, 0.14);
+            border-color: rgba(212, 163, 115, 0.6);
+            box-shadow: 0 0 14px rgba(212, 163, 115, 0.25);
         }
 
-        /* 罐子內閃爍的記憶微光粒子 */
-        .memory-orb {
-            animation: pulseOrb 2.4s ease-in-out infinite alternate;
-        }
-        .memory-orb.orb-2 { animation-delay: 0.8s; }
-        .memory-orb.orb-3 { animation-delay: 1.5s; }
-
-        @keyframes pulseOrb {
-            0% { opacity: 0.45; transform: scale(0.85); }
-            100% { opacity: 1; transform: scale(1.15); }
-        }
-
-        .phone-jar-counter {
-            font-size: 0.7rem;
-            color: #fff6b0;
-            letter-spacing: 0.06em;
-            margin-top: 6px;
-        }
-
-        /* 句子 1：手機內剛摺好放進罐子的記憶卡片 */
-        .folded-memory-card {
-            background: rgba(255, 255, 255, 0.07);
-            border: 1px solid rgba(255, 255, 255, 0.14);
-            border-radius: 18px;
-            padding: 14px 15px;
+        /* 3D 瓶蓋 (預設呈現截圖中的直紋金屬/黑金質感) */
+        .jar-3d-lid {
+            width: 126px;
+            height: 24px;
+            border-radius: 4px;
+            background: 
+                repeating-linear-gradient(90deg, 
+                    rgba(255,255,255,0.22) 0px, rgba(255,255,255,0.22) 2px, 
+                    rgba(0,0,0,0.35) 2px, rgba(0,0,0,0.35) 6px),
+                linear-gradient(90deg, #52565e 0%, #aeb4bf 30%, #6c727d 55%, #d5dce6 80%, #494d54 100%);
+            border: 1.5px solid rgba(255, 255, 255, 0.4);
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.5);
             position: relative;
-            backdrop-filter: blur(10px);
+            z-index: 3;
+            transition: all 0.5s ease;
         }
 
-        .folded-memory-tag {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            font-size: 0.68rem;
-            color: #b5ffe9;
-            margin-bottom: 6px;
-            letter-spacing: 0.04em;
+        .jar-3d-neck {
+            width: 112px;
+            height: 6px;
+            background: rgba(255, 255, 255, 0.18);
+            border-left: 1px solid rgba(255, 255, 255, 0.35);
+            border-right: 1px solid rgba(255, 255, 255, 0.35);
+            z-index: 2;
         }
 
-        .folded-memory-quote {
-            font-size: 0.84rem;
-            color: rgba(255, 255, 255, 0.92);
-            line-height: 1.55;
-            font-weight: 500;
-        }
-
-        /* 右側：3 顆縮小版故事罐獨立展示 + 換款式互動 + 句子 2 & 3 */
-        .jars-showcase-column {
+        /* 3D 玻璃罐身 */
+        .jar-3d-body {
+            width: 176px;
+            height: 210px;
+            border-radius: 26px;
+            background: 
+                linear-gradient(165deg, rgba(125, 165, 205, 0.28) 0%, rgba(45, 55, 75, 0.45) 48%, rgba(165, 125, 95, 0.38) 100%);
+            border: 2px solid rgba(255, 255, 255, 0.38);
+            box-shadow: 
+                0 14px 28px rgba(215, 120, 75, 0.22),
+                inset 0 0 18px rgba(255, 255, 255, 0.18);
+            position: relative;
+            overflow: hidden;
             display: flex;
             flex-direction: column;
             justify-content: space-between;
-            gap: 18px;
+            padding: 12px 14px;
+            transition: box-shadow 0.5s ease, border-color 0.5s ease;
         }
 
-        /* 句子 3：導演理念引言框 */
-        .director-vision-box {
+        /* 玻璃罐左側標誌性的斜長白色反光條 (100% 還原你的截圖) */
+        .jar-glass-sheen {
+            position: absolute;
+            top: 8px;
+            left: 14px;
+            width: 28px;
+            height: 85%;
+            background: linear-gradient(180deg, rgba(255, 255, 255, 0.42) 0%, rgba(255, 255, 255, 0.06) 100%);
+            transform: skewX(-7deg);
+            border-radius: 8px;
+            pointer-events: none;
+        }
+
+        /* 玻璃罐右側細高光條 */
+        .jar-right-rim {
+            position: absolute;
+            top: 16px;
+            right: 7px;
+            width: 2.5px;
+            height: 76%;
+            background: rgba(255, 255, 255, 0.65);
+            border-radius: 2px;
+            pointer-events: none;
+        }
+
+        .jar-top-meta {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            position: relative;
+            z-index: 2;
+            font-size: 0.68rem;
+        }
+
+        .jar-badge-pics {
+            background: rgba(20, 22, 28, 0.68);
+            color: #ffffff;
+            padding: 2px 8px;
+            border-radius: 10px;
+            font-weight: 600;
+        }
+
+        .jar-badge-date {
+            color: rgba(255, 255, 255, 0.85);
+            font-weight: 500;
+        }
+
+        /* 罐內核心句子 1：摺好放進罐子裡收藏的心情卡 */
+        .jar-folded-note {
+            position: relative;
+            z-index: 2;
+            background: rgba(18, 16, 26, 0.68);
+            border: 1px solid rgba(255, 235, 195, 0.35);
+            border-radius: 14px;
+            padding: 11px 12px;
+            text-align: left;
+            backdrop-filter: blur(6px);
+            box-shadow: 0 6px 16px rgba(0, 0, 0, 0.35);
+            animation: noteFloat 3.6s ease-in-out infinite;
+        }
+
+        @keyframes noteFloat {
+            0%, 100% { transform: translateY(0px); }
+            50% { transform: translateY(-4px); }
+        }
+
+        .jar-folded-note .note-tag {
+            font-size: 0.64rem;
+            color: #ffd166;
+            letter-spacing: 0.06em;
+            display: block;
+            margin-bottom: 3px;
+            font-weight: 600;
+        }
+
+        .jar-folded-note p {
+            font-size: 0.78rem;
+            color: #ffffff;
+            line-height: 1.48;
+            font-weight: 500;
+        }
+
+        .jar-bottom-hint {
+            position: relative;
+            z-index: 2;
+            text-align: center;
+            font-size: 0.62rem;
+            color: rgba(255, 255, 255, 0.7);
+            letter-spacing: 0.03em;
+        }
+
+        /* 還原 App 底部導航欄 (Jars | Studio | Settings) */
+        .phone-bottom-nav {
+            background: rgba(18, 16, 24, 0.92);
+            border-top: 1px solid rgba(255, 255, 255, 0.08);
+            border-radius: 20px;
+            padding: 6px 16px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            font-size: 0.65rem;
+            color: rgba(255, 255, 255, 0.6);
+        }
+
+        .nav-tab {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 2px;
+        }
+
+        .nav-tab.active-jar {
+            background: rgba(255, 255, 255, 0.07);
+            border: 1px solid rgba(255, 255, 255, 0.15);
+            padding: 4px 14px;
+            border-radius: 16px;
+            color: #ffffff;
+            font-weight: 600;
+        }
+
+        .nav-shutter-btn {
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            background: radial-gradient(circle, #ffffff 0%, #c8c8d0 100%);
+            border: 3px solid rgba(255, 255, 255, 0.3);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #18151e;
+            font-size: 0.75rem;
+            margin-bottom: 1px;
+        }
+
+        /* ================= 右側：3 個縮小版故事罐獨立展示 + 換款式互動 + 2 句主題文案 ================= */
+        .right-jars-showcase {
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            gap: 20px;
+        }
+
+        /* 核心句子 3 (引言橫幅) */
+        .quote-banner-director {
             background: rgba(255, 255, 255, 0.05);
-            border-left: 3px solid #ffd1dc;
+            border-left: 3.5px solid #e6be8a;
             border-radius: 0 16px 16px 0;
             padding: 14px 18px;
         }
 
-        .director-vision-box p {
-            font-size: 0.95rem;
+        .quote-banner-director p {
+            font-size: 0.96rem;
             font-weight: 600;
             color: #ffffff;
-            line-height: 1.6;
+            line-height: 1.55;
+            letter-spacing: 0.01em;
         }
 
-        /* 中央：3 個縮小版故事罐與款式切換器 */
-        .mini-jars-stage {
-            background: rgba(12, 10, 18, 0.55);
-            border: 1px solid rgba(255, 255, 255, 0.09);
-            border-radius: 22px;
-            padding: 20px 18px 16px;
-        }
-
-        .stage-top-row {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 16px;
-            flex-wrap: wrap;
-            gap: 8px;
-        }
-
-        .stage-label {
-            font-size: 0.78rem;
-            color: rgba(255, 255, 255, 0.7);
-            font-weight: 600;
-            letter-spacing: 0.05em;
-        }
-
-        /* 款式切換按鈕列 */
-        .theme-pills {
-            display: flex;
-            gap: 6px;
-        }
-
-        .theme-pill-btn {
-            background: rgba(255, 255, 255, 0.07);
-            border: 1px solid rgba(255, 255, 255, 0.14);
-            color: rgba(255, 255, 255, 0.68);
-            font-size: 0.7rem;
-            padding: 4px 10px;
-            border-radius: 12px;
-            cursor: pointer;
-            transition: all 0.25s ease;
-        }
-
-        .theme-pill-btn.active {
-            background: rgba(255, 255, 255, 0.2);
-            color: #ffffff;
-            border-color: rgba(255, 255, 255, 0.45);
-            box-shadow: 0 2px 10px rgba(255, 255, 255, 0.12);
-        }
-
-        /* 3 顆縮小版故事罐並排網格 */
-        .three-jars-grid {
+        /* 3 個縮小版故事罐獨立陳列架 */
+        .mini-jars-shelf {
             display: grid;
             grid-template-columns: repeat(3, 1fr);
-            gap: 12px;
-            text-align: center;
+            gap: 14px;
+            padding: 6px 0;
         }
 
-        .mini-jar-card {
-            background: rgba(255, 255, 255, 0.04);
-            border: 1px solid rgba(255, 255, 255, 0.08);
-            border-radius: 16px;
-            padding: 14px 8px 12px;
-            transition: transform 0.35s cubic-bezier(0.16, 1, 0.3, 1),
-                        border-color 0.35s ease,
-                        background-color 0.35s ease;
-            cursor: pointer;
-        }
-
-        .mini-jar-card:hover {
-            transform: translateY(-4px);
-            background: rgba(255, 255, 255, 0.08);
-            border-color: rgba(255, 255, 255, 0.22);
-        }
-
-        .mini-jar-svg-wrap {
-            width: 54px;
-            height: 54px;
-            margin: 0 auto 8px;
+        .mini-jar-item {
+            background: rgba(255, 255, 255, 0.035);
+            border: 1px solid rgba(255, 255, 255, 0.09);
+            border-radius: 20px;
+            padding: 16px 10px 14px;
             display: flex;
+            flex-direction: column;
+            align-items: center;
+            text-align: center;
+            transition: transform 0.3s ease, border-color 0.3s ease;
+            position: relative;
+        }
+
+        .mini-jar-item:hover {
+            transform: translateY(-4px);
+            border-color: rgba(230, 190, 138, 0.4);
+        }
+
+        /* 縮小版 3D 故事罐 */
+        .mini-jar-figure {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            margin-bottom: 10px;
+        }
+
+        .mini-lid {
+            width: 58px;
+            height: 12px;
+            border-radius: 3px;
+            border: 1px solid rgba(255, 255, 255, 0.45);
+            transition: all 0.45s ease;
+        }
+
+        .mini-neck {
+            width: 50px;
+            height: 3px;
+            background: rgba(255, 255, 255, 0.2);
+        }
+
+        .mini-body {
+            width: 82px;
+            height: 96px;
+            border-radius: 15px;
+            border: 1.5px solid rgba(255, 255, 255, 0.38);
+            position: relative;
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
             align-items: center;
             justify-content: center;
-            border-radius: 14px;
-            padding: 7px;
-            transition: background 0.5s ease, box-shadow 0.5s ease, transform 0.4s ease;
+            padding: 8px;
+            transition: all 0.45s ease;
         }
 
-        .mini-jar-svg-wrap svg {
-            width: 100%;
-            height: 100%;
-            overflow: visible;
-            transition: filter 0.5s ease, stroke 0.5s ease;
+        .mini-body::before {
+            content: "";
+            position: absolute;
+            top: 5px;
+            left: 7px;
+            width: 13px;
+            height: 82%;
+            background: linear-gradient(180deg, rgba(255, 255, 255, 0.38) 0%, rgba(255, 255, 255, 0.04) 100%);
+            transform: skewX(-7deg);
+            border-radius: 4px;
+            pointer-events: none;
         }
 
-        .mini-jar-title {
-            font-size: 0.78rem;
-            font-weight: 600;
+        /* 三個縮小罐的不同故事背景意境 */
+        .mini-body.scene-selfie {
+            background: linear-gradient(160deg, rgba(110, 155, 195, 0.45) 0%, rgba(185, 145, 115, 0.55) 100%);
+        }
+
+        .mini-body.scene-pet {
+            background: linear-gradient(160deg, rgba(75, 125, 95, 0.45) 0%, rgba(45, 75, 85, 0.6) 100%);
+        }
+
+        .mini-body.scene-dream {
+            background: linear-gradient(160deg, rgba(135, 90, 185, 0.45) 0%, rgba(65, 45, 115, 0.65) 100%);
+        }
+
+        .mini-jar-inner-title {
+            position: relative;
+            z-index: 2;
+            font-size: 0.72rem;
+            font-weight: 700;
             color: #ffffff;
+            text-shadow: 0 2px 6px rgba(0, 0, 0, 0.6);
+            line-height: 1.25;
+        }
+
+        .mini-jar-tag {
+            font-size: 0.76rem;
+            font-weight: 600;
+            color: #f3d5b5;
             margin-bottom: 2px;
         }
 
         .mini-jar-sub {
-            font-size: 0.66rem;
-            color: rgba(255, 255, 255, 0.52);
+            font-size: 0.68rem;
+            color: rgba(255, 255, 255, 0.58);
         }
 
-        /* ===== 4 種故事罐主題款式 (Theme Styles) ===== */
-        /* 款式 0：極光流光 (Aurora) */
-        .jars-theme-aurora .mini-jar-svg-wrap {
-            background: radial-gradient(circle at 28% 24%, #4e3a4d 0%, #221c2b 65%, #14111a 100%);
-            box-shadow: 0 6px 16px rgba(0,0,0,0.35), inset 0 1px 1px rgba(255,255,255,0.22);
+        /* ===== 4 種 Jar Studio 換款式材質主題 (同時連動縮小罐與左側主罐) ===== */
+        /* 款式 1: Brushed Metal · Titanium (鈦銀直紋) */
+        .jar-theme-titanium .mini-lid,
+        .jar-theme-titanium .jar-3d-lid {
+            background: 
+                repeating-linear-gradient(90deg, rgba(255,255,255,0.22) 0px, rgba(255,255,255,0.22) 2px, rgba(0,0,0,0.35) 2px, rgba(0,0,0,0.35) 5px),
+                linear-gradient(90deg, #52565e 0%, #c8d0db 35%, #6c727d 60%, #e2e8f0 82%, #494d54 100%);
+            border-color: rgba(226, 232, 240, 0.65);
         }
-        .jars-theme-aurora .mini-jar-stroke {
-            stroke: url(#holo-grad-mini);
-            filter: drop-shadow(0 0 3px rgba(255, 255, 255, 0.6));
-        }
-
-        /* 款式 1：琥珀拾光 (Amber Vintage) */
-        .jars-theme-amber .mini-jar-svg-wrap {
-            background: radial-gradient(circle at 30% 25%, #5c3d28 0%, #2c1d14 68%, #1a110b 100%);
-            box-shadow: 0 6px 16px rgba(0,0,0,0.35), inset 0 1px 1px rgba(255, 215, 150, 0.28);
-        }
-        .jars-theme-amber .mini-jar-stroke {
-            stroke: url(#amber-grad-mini);
-            filter: drop-shadow(0 0 4px rgba(255, 190, 90, 0.65));
+        .jar-theme-titanium .mini-body {
+            box-shadow: 0 8px 20px rgba(180, 210, 245, 0.22), inset 0 0 12px rgba(255, 255, 255, 0.2);
+            border-color: rgba(210, 230, 255, 0.5);
         }
 
-        /* 款式 2：星夜霓虹 (Starlight Neon) */
-        .jars-theme-neon .mini-jar-svg-wrap {
-            background: radial-gradient(circle at 25% 25%, #1e3c58 0%, #131c31 65%, #0b0f1c 100%);
-            box-shadow: 0 6px 16px rgba(0,0,0,0.4), inset 0 1px 1px rgba(130, 230, 255, 0.3);
+        /* 款式 2: Gilded Inlay · Champagne (黑金鑲嵌格紋 - 還原截圖 2) */
+        .jar-theme-champagne .mini-lid,
+        .jar-theme-champagne .jar-3d-lid {
+            background: 
+                linear-gradient(180deg, transparent 44%, #e6be8a 45%, #e6be8a 55%, transparent 56%),
+                repeating-linear-gradient(90deg, #e6be8a 0px, #e6be8a 1.5px, #16141a 1.5px, #16141a 6px);
+            border-color: #e6be8a;
+            box-shadow: 0 4px 12px rgba(230, 190, 138, 0.3);
         }
-        .jars-theme-neon .mini-jar-stroke {
-            stroke: url(#neon-grad-mini);
-            filter: drop-shadow(0 0 4px rgba(110, 240, 255, 0.7));
-        }
-
-        /* 款式 3：純白霧璃 (Frosted Minimal) */
-        .jars-theme-frosted .mini-jar-svg-wrap {
-            background: linear-gradient(145deg, rgba(255,255,255,0.22) 0%, rgba(255,255,255,0.07) 100%);
-            box-shadow: 0 6px 16px rgba(0,0,0,0.25), inset 0 1px 1.5px rgba(255,255,255,0.45);
-        }
-        .jars-theme-frosted .mini-jar-stroke {
-            stroke: #ffffff;
-            filter: drop-shadow(0 0 2px rgba(255, 255, 255, 0.8));
+        .jar-theme-champagne .mini-body,
+        .jar-theme-champagne .jar-3d-body {
+            box-shadow: 0 10px 24px rgba(230, 180, 100, 0.3), inset 0 0 14px rgba(255, 215, 140, 0.25);
+            border-color: rgba(245, 208, 145, 0.65);
         }
 
-        /* 句子 2：時間累積與回顧卡片 */
-        .time-capsule-quote-box {
-            background: rgba(255, 255, 255, 0.05);
+        /* 款式 3: Rose Gold · Smooth (玫瑰金拉絲) */
+        .jar-theme-rosegold .mini-lid,
+        .jar-theme-rosegold .jar-3d-lid {
+            background: linear-gradient(90deg, #8a5a55 0%, #f4c2ba 32%, #b57c75 58%, #ffe0db 82%, #7d4e49 100%);
+            border-color: #ffd0c8;
+        }
+        .jar-theme-rosegold .mini-body,
+        .jar-theme-rosegold .jar-3d-body {
+            box-shadow: 0 10px 24px rgba(244, 165, 155, 0.3), inset 0 0 14px rgba(255, 195, 188, 0.25);
+            border-color: rgba(255, 195, 188, 0.65);
+        }
+
+        /* 款式 4: Obsidian · Custom Holo (曜石黑直紋 + 流光溢彩) */
+        .jar-theme-holo .mini-lid,
+        .jar-theme-holo .jar-3d-lid {
+            background: 
+                repeating-linear-gradient(90deg, rgba(255,255,255,0.12) 0px, rgba(255,255,255,0.12) 1.5px, #141218 1.5px, #141218 5px),
+                linear-gradient(90deg, #1a1822 0%, #3a3548 50%, #14121a 100%);
+            border-color: #b5ffe9;
+        }
+        .jar-theme-holo .mini-body,
+        .jar-theme-holo .jar-3d-body {
+            box-shadow: 0 10px 25px rgba(181, 255, 233, 0.28), 0 -4px 18px rgba(255, 200, 216, 0.25), inset 0 0 15px rgba(228, 208, 255, 0.3);
+            border-color: #b5ffe9;
+        }
+
+        /* 還原截圖底部的 Jar Studio 材質切換面板 */
+        .studio-style-switcher {
+            background: rgba(18, 15, 24, 0.78);
+            border: 1px solid rgba(212, 163, 115, 0.3);
+            border-radius: 20px;
+            padding: 14px 16px;
+        }
+
+        .switcher-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 12px;
+            font-size: 0.75rem;
+            color: rgba(255, 255, 255, 0.75);
+        }
+
+        .switcher-style-tag {
+            color: #e6be8a;
+            font-weight: 600;
+            background: rgba(212, 163, 115, 0.14);
+            border: 1px solid rgba(212, 163, 115, 0.4);
+            padding: 2px 10px;
+            border-radius: 12px;
+            font-size: 0.72rem;
+        }
+
+        .swatches-row {
+            display: flex;
+            align-items: center;
+            justify-content: space-around;
+            gap: 8px;
+        }
+
+        .swatch-btn {
+            background: none;
+            border: none;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 5px;
+            cursor: pointer;
+            color: rgba(255, 255, 255, 0.6);
+            font-size: 0.68rem;
+            transition: color 0.2s ease, transform 0.2s ease;
+        }
+
+        .swatch-btn:hover {
+            transform: translateY(-2px);
+            color: #ffffff;
+        }
+
+        .swatch-circle {
+            width: 34px;
+            height: 34px;
+            border-radius: 50%;
+            border: 2px solid rgba(255, 255, 255, 0.2);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #ffffff;
+            font-size: 0.75rem;
+            font-weight: bold;
+            transition: all 0.25s ease;
+        }
+
+        .swatch-btn.active {
+            color: #e6be8a;
+            font-weight: 600;
+        }
+
+        .swatch-btn.active .swatch-circle {
+            border-color: #e6be8a;
+            box-shadow: 0 0 12px rgba(230, 190, 138, 0.5);
+            transform: scale(1.08);
+        }
+
+        .sw-titanium { background: conic-gradient(from 45deg, #6c727d, #d5dce6, #52565e, #c8d0db, #6c727d); }
+        .sw-champagne { background: conic-gradient(from 45deg, #8a6d3b, #f3d59b, #6e5226, #e6be8a, #8a6d3b); }
+        .sw-rosegold { background: conic-gradient(from 45deg, #8a5a55, #f4c2ba, #7d4e49, #ffd0c8, #8a5a55); }
+        .sw-holo { background: conic-gradient(#ff758c, #ffdd00, #58ffb8, #70a1ff, #e0c8ff, #ff758c); }
+
+        /* 核心句子 2 (底部時光回顧卡片) */
+        .quote-card-time {
+            background: rgba(255, 255, 255, 0.045);
             border: 1px solid rgba(255, 255, 255, 0.1);
-            border-radius: 16px;
+            border-radius: 18px;
             padding: 14px 18px;
             display: flex;
             align-items: center;
             gap: 14px;
         }
 
-        .quote-icon-badge {
+        .quote-card-time .time-icon {
             width: 36px;
             height: 36px;
-            border-radius: 10px;
-            background: rgba(255, 246, 176, 0.12);
-            border: 1px solid rgba(255, 246, 176, 0.28);
+            border-radius: 11px;
+            background: rgba(230, 190, 138, 0.14);
+            border: 1px solid rgba(230, 190, 138, 0.4);
             display: flex;
             align-items: center;
             justify-content: center;
-            flex-shrink: 0;
             font-size: 1rem;
+            flex-shrink: 0;
         }
 
-        .time-capsule-quote-box p {
+        .quote-card-time p {
             font-size: 0.88rem;
             color: rgba(255, 255, 255, 0.86);
             line-height: 1.55;
         }
 
-        /* ================= 下方介紹卡片、創作理念與支持開發 ================= */
+        /* 1) 應用程式介紹卡片 */
         .features-grid {
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
@@ -863,6 +1170,7 @@
             color: var(--text-sub);
         }
 
+        /* 2) 創作理念區塊 */
         .philosophy-section {
             margin: 64px 0;
             padding: 42px 34px;
@@ -899,6 +1207,7 @@
             margin-bottom: 0;
         }
 
+        /* 3) 支持開發區塊 */
         .support-section {
             text-align: center;
             padding: 52px 30px;
@@ -985,39 +1294,10 @@
 
                     <!-- 4. 左迴圈化為 YourStory 的橫向書寫流線軌跡 -->
                     <path id="ref-text-wave" d="M -85 4 C -55 -18, -25 18, 0 -12 C 28 16, 58 -16, 85 2" />
-
-                    <!-- 共用縮小版罐子幾何圖形 + 漸層定義 -->
-                    <g id="mini-jar-graphic" fill="none" stroke-linecap="round" stroke-linejoin="round">
-                        <path d="M -39.5 -65 L 39.5 -65 C 47.5 -65, 49.5 -61, 49.5 -54.5 C 49.5 -48, 47.5 -44, 39.5 -44 L -39.5 -44 C -47.5 -44, -49.5 -48, -49.5 -54.5 C -49.5 -61, -47.5 -65, -39.5 -65 Z" stroke-width="12" />
-                        <path d="M -40.5 -43 C -41.5 -30, -64.5 -22, -64.5 2 C -64.5 21, -64.5 42, -59 56.5 C -53 69, -36 74, 0 74 C 36 74, 53 69, 59 56.5 C 64.5 42, 64.5 21, 64.5 2 C 64.5 -22, 41.5 -30, 40.5 -43" stroke-width="12" />
-                        <circle cx="0" cy="14" r="32.5" stroke-width="12" />
-                        <path d="M -18 15 C -17.2 3.2, -8.8 -4.0, 1.6 -4.0" stroke-width="8.5" />
-                    </g>
-
-                    <linearGradient id="holo-grad-mini" gradientUnits="userSpaceOnUse" x1="-65" y1="-65" x2="65" y2="75">
-                        <stop offset="0%" stop-color="#ffc8d8" />
-                        <stop offset="28%" stop-color="#fff6b0" />
-                        <stop offset="55%" stop-color="#b5ffe9" />
-                        <stop offset="80%" stop-color="#e4d0ff" />
-                        <stop offset="100%" stop-color="#ffffff" />
-                    </linearGradient>
-
-                    <linearGradient id="amber-grad-mini" gradientUnits="userSpaceOnUse" x1="-65" y1="-65" x2="65" y2="75">
-                        <stop offset="0%" stop-color="#ffe7a0" />
-                        <stop offset="45%" stop-color="#ffae52" />
-                        <stop offset="85%" stop-color="#ff7b3b" />
-                        <stop offset="100%" stop-color="#fff2cc" />
-                    </linearGradient>
-
-                    <linearGradient id="neon-grad-mini" gradientUnits="userSpaceOnUse" x1="-65" y1="-65" x2="65" y2="75">
-                        <stop offset="0%" stop-color="#7ef9ff" />
-                        <stop offset="50%" stop-color="#7b88ff" />
-                        <stop offset="100%" stop-color="#ff85e4" />
-                    </linearGradient>
                 </defs>
 
                 <g id="morph-strokes-group">
-                    <!-- 開場圖一：純淨實線黑色故事罐 -->
+                    <!-- 開場圖一：純淨實線黑色故事罐 (0.928 原圖長寬比) -->
                     <g id="intact-jar-group" stroke="#1e1c24" fill="none" stroke-linecap="round" stroke-linejoin="round">
                         <path d="M -39.5 -65 L 39.5 -65 C 47.5 -65, 49.5 -61, 49.5 -54.5 C 49.5 -48, 47.5 -44, 39.5 -44 L -39.5 -44 C -47.5 -44, -49.5 -48, -49.5 -54.5 C -49.5 -61, -47.5 -65, -39.5 -65 Z" stroke-width="11.5" />
                         <path d="M -40.5 -43 C -41.5 -30, -64.5 -22, -64.5 2 C -64.5 21, -64.5 42, -59 56.5 C -53 69, -36 74, 0 74 C 36 74, 53 69, 59 56.5 C 64.5 42, 64.5 21, 64.5 2 C 64.5 -22, 41.5 -30, 40.5 -43" stroke-width="11.5" />
@@ -1029,7 +1309,7 @@
                     <path id="m-left" fill="none" stroke="#1e1c24" stroke-width="6.6" stroke-linecap="round" stroke-linejoin="round" opacity="0" />
                     <path id="m-right" fill="none" stroke="#1e1c24" stroke-width="6.6" stroke-linecap="round" stroke-linejoin="round" opacity="0" />
 
-                    <!-- 左側文字 YourStory 描邊生成層 -->
+                    <!-- 左側文字 YourStory 一筆一劃描邊生成層 -->
                     <text id="svg-writing-text" text-anchor="middle" dominant-baseline="central"
                           font-family="-apple-system, BlinkMacSystemFont, 'SF Pro Display', 'Segoe UI', Roboto, sans-serif"
                           font-size="42" font-weight="800" letter-spacing="-1.2"
@@ -1094,174 +1374,246 @@
                     <div class="squircle-bg"></div>
                     <img class="custom-icon2-img" alt="YourStoryJar App Icon" />
                     <svg viewBox="-130 -126 260 260">
-                        <use href="#mini-jar-graphic" stroke="url(#holo-grad-mini)" />
+                        <defs>
+                            <linearGradient id="holo-grad-header" gradientUnits="userSpaceOnUse" x1="-65" y1="-65" x2="65" y2="75">
+                                <stop offset="0%" stop-color="#ffc8d8" />
+                                <stop offset="25%" stop-color="#fff6b0" />
+                                <stop offset="50%" stop-color="#b5ffe9" />
+                                <stop offset="75%" stop-color="#e4d0ff" />
+                                <stop offset="100%" stop-color="#ffffff" />
+                            </linearGradient>
+                        </defs>
+                        <g class="jar-layer-holo" stroke="url(#holo-grad-header)" fill="none" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M -39.5 -65 L 39.5 -65 C 47.5 -65, 49.5 -61, 49.5 -54.5 C 49.5 -48, 47.5 -44, 39.5 -44 L -39.5 -44 C -47.5 -44, -49.5 -48, -49.5 -54.5 C -49.5 -61, -47.5 -65, -39.5 -65 Z" stroke-width="11.5" />
+                            <path d="M -40.5 -43 C -41.5 -30, -64.5 -22, -64.5 2 C -64.5 21, -64.5 42, -59 56.5 C -53 69, -36 74, 0 74 C 36 74, 53 69, 59 56.5 C 64.5 42, 64.5 21, 64.5 2 C 64.5 -22, 41.5 -30, 40.5 -43" stroke-width="11.5" />
+                            <g class="jar-inner-details">
+                                <circle cx="0" cy="14" r="32.5" stroke-width="11.5" />
+                                <path d="M -18 15 C -17.2 3.2, -8.8 -4.0, 1.6 -4.0" stroke-width="7.8" />
+                            </g>
+                        </g>
                     </svg>
                 </div>
             </div>
 
-            <!-- 小介紹文字：在 Jar 滑出後延遲 0.3 秒淡入 -->
-            <p class="hero-desc">為你的生活碎片留下歸屬，一個專注於安靜記錄與珍藏回憶的故事罐。</p>
+            <!-- 小介紹文字：延遲 "Jar" 滑出後 0.3 秒淡入 -->
+            <p id="hero-subtitle">為你的生活碎片留下歸屬，一個專注於安靜記錄與珍藏回憶的故事罐。</p>
 
-            <!-- 展示主介面：在小介紹文字出現後，才向上淡入 (showcase-fade-up) -->
-            <div class="director-showcase showcase-fade-up">
+            <!-- 小介紹文字出現後，整個展示介面再隨之向上淡入 -->
+            <div class="showcase-fade-up">
                 
-                <!-- 頂部欄偵測錨點與佔位槽 -->
-                <div id="topbar-slot">
-                    <!-- 可脫離式 App 主頁頂部欄：滑到畫面頂端時會脫離介面跟隨移動，並將文字切換為 YourStoryJar + Icon -->
-                    <div id="detaching-app-topbar">
-                        <div class="topbar-side-dots">
-                            <span class="status-pill glow"></span>
-                            <span class="status-pill"></span>
-                            <span class="status-pill"></span>
+                <!-- 1:1 還原 App 主頁頂部欄 (往下滑動觸頂時，會脫離介面固定在畫面最上方，文字同步變成 YourStoryJar + App Icon) -->
+                <div id="sticky-bar-sentinel">
+                    <div id="app-top-bar">
+                        <!-- 左側 2x2 小圖示 (還原截圖左上角) -->
+                        <div class="bar-left-icons" title="Gallery & Theme">
+                            <span>⊞</span><span>🎨</span>
+                            <span>+</span><span>🫙</span>
                         </div>
 
-                        <div class="topbar-center-stage">
-                            <!-- 狀態 A：預設在 App 主頁頂部欄內顯示 -->
-                            <div class="topbar-state-quote">
-                                <span class="topbar-en-quote">Your Story, Directed by You.</span>
-                                <span class="topbar-zh-quote">你的故事，由你執導</span>
+                        <!-- 中央標題舞台：預設顯示 Your Story, Directed by You. / 吸頂時切換為 YourStoryJar + App Icon -->
+                        <div class="bar-center-stage">
+                            <div class="bar-title-director">
+                                <span class="en-main">Your Story, Directed by You.</span>
+                                <span class="zh-sub">你的故事，由你執導</span>
                             </div>
 
-                            <!-- 狀態 B：當滑落畫面脫離成為全頁置頂欄時，絲滑變成最上方 App 名與 Icon -->
-                            <div class="topbar-state-brand" onclick="window.scrollTo({top: 0, behavior: 'smooth'})" style="cursor: pointer;">
-                                <span class="topbar-brand-name">YourStoryJar</span>
-                                <div class="topbar-mini-icon app-icon-container logo-complete">
-                                    <img class="custom-icon2-img" alt="App Icon" />
+                            <div class="bar-title-brand">
+                                <span class="sticky-brand-name">YourStoryJar</span>
+                                <div class="sticky-mini-icon">
+                                    <img class="custom-icon2-img" alt="App Icon" style="opacity:1; transform:translate(-51.2%, -52.0%) scale(1);" />
                                     <svg viewBox="-130 -126 260 260">
-                                        <use href="#mini-jar-graphic" stroke="url(#holo-grad-mini)" />
+                                        <g stroke="url(#holo-grad-header)" fill="none" stroke-linecap="round" stroke-linejoin="round">
+                                            <path d="M -39.5 -65 L 39.5 -65 C 47.5 -65, 49.5 -61, 49.5 -54.5 C 49.5 -48, 47.5 -44, 39.5 -44 L -39.5 -44 C -47.5 -44, -49.5 -48, -49.5 -54.5 C -49.5 -61, -47.5 -65, -39.5 -65 Z" stroke-width="14" />
+                                            <path d="M -40.5 -43 C -41.5 -30, -64.5 -22, -64.5 2 C -64.5 21, -64.5 42, -59 56.5 C -53 69, -36 74, 0 74 C 36 74, 53 69, 59 56.5 C 64.5 42, 64.5 21, 64.5 2 C 64.5 -22, 41.5 -30, 40.5 -43" stroke-width="14" />
+                                            <circle cx="0" cy="14" r="32.5" stroke-width="14" />
+                                        </g>
                                     </svg>
                                 </div>
                             </div>
                         </div>
 
-                        <div class="topbar-right-tag">STUDIO</div>
+                        <!-- 右側 2x2 格狀圖示 (還原截圖右上角) -->
+                        <div class="bar-right-grid" title="Layout View">
+                            <span></span><span></span>
+                            <span></span><span></span>
+                        </div>
                     </div>
                 </div>
 
-                <!-- 頂部欄下方的雙欄內容：左手機介面 + 右縮小版故事罐獨立展示與換款式 -->
-                <div class="showcase-body">
-                    
-                    <!-- 左側：數位時光罐 App 介面 -->
-                    <div class="phone-mockup">
-                        <div>
-                            <div class="phone-notch"></div>
-                            <div class="phone-app-header">
-                                <span>🫙 我的時光架</span>
-                                <span>2026 Chapter</span>
-                            </div>
+                <!-- 展示區機身 (預設套用 Titanium 款式，會隨右側換款式功能同步變換材質) -->
+                <div id="showcase-theme-wrapper" class="app-showcase-body jar-theme-titanium">
+                    <!-- 背景星塵十字點綴 -->
+                    <span class="star-sparkle" style="top: 14%; left: 6%;">✦</span>
+                    <span class="star-sparkle" style="top: 68%; left: 4%;">+</span>
+                    <span class="star-sparkle" style="top: 22%; right: 5%;">+</span>
+                    <span class="star-sparkle" style="bottom: 18%; right: 8%;">✦</span>
 
-                            <!-- 手機中央：發光數位時光罐與記憶微光粒子 -->
-                            <div class="phone-jar-stage">
-                                <svg class="phone-jar-svg" viewBox="-100 -95 200 200">
-                                    <use href="#mini-jar-graphic" stroke="url(#holo-grad-mini)" />
-                                    <!-- 罐子內部漂浮的記憶微光 -->
-                                    <circle class="memory-orb" cx="-16" cy="26" r="5" fill="#ffd1dc" />
-                                    <circle class="memory-orb orb-2" cx="18" cy="18" r="6.5" fill="#fff6b0" />
-                                    <circle class="memory-orb orb-3" cx="2" cy="-2" r="4.5" fill="#b5ffe9" />
-                                </svg>
-                                <div class="phone-jar-counter">✨ 已封存 128 段人生與奇想片段</div>
-                            </div>
-                        </div>
-
-                        <!-- 保留句子 1：摺好放進罐子收藏的心情小卡 -->
-                        <div class="folded-memory-card">
-                            <div class="folded-memory-tag">
-                                <span>Scene 128 · 剛剛封存</span>
-                                <span>🔒 私密</span>
-                            </div>
-                            <p class="folded-memory-quote">「今天完成了一個重要決定，把這份心情摺好放進罐子裡收藏...」</p>
-                        </div>
-                    </div>
-
-                    <!-- 右側：3 顆縮小版故事罐款式切換展示 + 句子 2 & 3 -->
-                    <div class="jars-showcase-column">
+                    <div class="showcase-grid">
                         
-                        <!-- 加入句子 3：將故事具象化與可視化，每個人都是導演 -->
-                        <div class="director-vision-box">
-                            <p>將屬於你的故事具象化與可視化，每個人都是自己真實或想像故事的導演。</p>
-                        </div>
+                        <!-- 左側：還原你的 App 手機介面 + 核心句子 1 -->
+                        <div class="app-phone-frame">
+                            <div class="phone-studio-pills">
+                                <span class="pill-studio">✨ Jar Studio</span>
+                                <span class="pill-pro">🎖️ PRO</span>
+                            </div>
 
-                        <!-- 3 顆縮小版故事罐獨立展示 + 自動/手動換款式功能 -->
-                        <div id="mini-jars-container" class="mini-jars-stage jars-theme-aurora">
-                            <div class="stage-top-row">
-                                <span class="stage-label">🎨 為不同故事換上專屬罐子款式</span>
-                                <div class="theme-pills">
-                                    <button class="theme-pill-btn active" onclick="setJarTheme(0)">極光流光</button>
-                                    <button class="theme-pill-btn" onclick="setJarTheme(1)">琥珀拾光</button>
-                                    <button class="theme-pill-btn" onclick="setJarTheme(2)">星夜霓虹</button>
-                                    <button class="theme-pill-btn" onclick="setJarTheme(3)">純白霧璃</button>
+                            <div class="realistic-jar-stage">
+                                <!-- 左右兩側功能懸浮鈕 (還原截圖中的 Letter 與 Lid) -->
+                                <div class="floating-side-btn left-letter">
+                                    <span style="font-size:0.85rem;">✉️</span>
+                                    <span>Letter</span>
+                                </div>
+                                <div class="floating-side-btn right-lid">
+                                    <span style="font-size:0.75rem; color:#e6be8a;">|||||</span>
+                                    <span style="color:#e6be8a; font-weight:600;">Lid</span>
+                                </div>
+
+                                <!-- 3D 玻璃故事罐 -->
+                                <div class="jar-3d-lid"></div>
+                                <div class="jar-3d-neck"></div>
+                                <div class="jar-3d-body">
+                                    <div class="jar-glass-sheen"></div>
+                                    <div class="jar-right-rim"></div>
+
+                                    <div class="jar-top-meta">
+                                        <span class="jar-badge-pics">3 pics</span>
+                                        <span class="jar-badge-date">Today</span>
+                                    </div>
+
+                                    <!-- 核心句子 1：把這份心情摺好放進罐子裡收藏 -->
+                                    <div class="jar-folded-note">
+                                        <span class="note-tag">✉️ 存入時光罐的信箋</span>
+                                        <p>「今天完成了一個重要決定，把這份心情摺好放進罐子裡收藏...」</p>
+                                    </div>
+
+                                    <div class="jar-bottom-hint">Tap lid / body to open</div>
                                 </div>
                             </div>
 
-                            <div class="three-jars-grid">
-                                <!-- 縮小版罐子 1 -->
-                                <div class="mini-jar-card" onclick="nextJarTheme()">
-                                    <div class="mini-jar-svg-wrap">
-                                        <svg viewBox="-100 -95 200 200">
-                                            <use href="#mini-jar-graphic" class="mini-jar-stroke" />
-                                            <circle cx="0" cy="14" r="8" fill="#ffd1dc" opacity="0.85" />
-                                        </svg>
-                                    </div>
-                                    <div class="mini-jar-title">人生日常罐</div>
-                                    <div class="mini-jar-sub">真實生活點滴</div>
+                            <!-- 底部導航欄 (Jars | Studio | Settings) -->
+                            <div class="phone-bottom-nav">
+                                <div class="nav-tab active-jar">
+                                    <span>🫙</span>
+                                    <span>Jars</span>
                                 </div>
-
-                                <!-- 縮小版罐子 2 -->
-                                <div class="mini-jar-card" onclick="nextJarTheme()">
-                                    <div class="mini-jar-svg-wrap">
-                                        <svg viewBox="-100 -95 200 200">
-                                            <use href="#mini-jar-graphic" class="mini-jar-stroke" />
-                                            <circle cx="-10" cy="18" r="6" fill="#fff6b0" opacity="0.9" />
-                                            <circle cx="12" cy="10" r="6" fill="#b5ffe9" opacity="0.9" />
-                                        </svg>
-                                    </div>
-                                    <div class="mini-jar-title">珍視之物罐</div>
-                                    <div class="mini-jar-sub">重要決定與感動</div>
+                                <div class="nav-tab">
+                                    <div class="nav-shutter-btn">📷</div>
+                                    <span>Studio</span>
                                 </div>
-
-                                <!-- 縮小版罐子 3 -->
-                                <div class="mini-jar-card" onclick="nextJarTheme()">
-                                    <div class="mini-jar-svg-wrap">
-                                        <svg viewBox="-100 -95 200 200">
-                                            <use href="#mini-jar-graphic" class="mini-jar-stroke" />
-                                            <path d="M 0 2 L 3 11 L 12 14 L 3 17 L 0 26 L -3 17 L -12 14 L -3 11 Z" fill="#e4d0ff" />
-                                        </svg>
-                                    </div>
-                                    <div class="mini-jar-title">奇想世界罐</div>
-                                    <div class="mini-jar-sub">靈感與想像劇本</div>
+                                <div class="nav-tab">
+                                    <span>⚙️</span>
+                                    <span>Settings</span>
                                 </div>
                             </div>
                         </div>
 
-                        <!-- 保留句子 2：隨著時間累積，重新遇見當時章節的自己 -->
-                        <div class="time-capsule-quote-box">
-                            <div class="quote-icon-badge">⏳</div>
-                            <p>「隨著時間累積，隨時打開故事罐抽取過往片段，重新遇見當時章節的自己。」</p>
+                        <!-- 右側：3 個縮小版故事罐獨立展示 + 自動/互動換款式 + 核心句子 2 & 3 -->
+                        <div class="right-jars-showcase">
+                            
+                            <!-- 核心句子 3 -->
+                            <div class="quote-banner-director">
+                                <p>將屬於你的故事具象化／可視化，每人也是自己真實／想像故事的導演。</p>
+                            </div>
+
+                            <!-- 3 個縮小版不同類型故事罐獨立展示 -->
+                            <div class="mini-jars-shelf">
+                                <!-- 罐子 1：真實日常章節 -->
+                                <div class="mini-jar-item">
+                                    <div class="mini-jar-figure">
+                                        <div class="mini-lid"></div>
+                                        <div class="mini-neck"></div>
+                                        <div class="mini-body scene-selfie">
+                                            <span class="mini-jar-inner-title">Daily<br>Selfies</span>
+                                        </div>
+                                    </div>
+                                    <div class="mini-jar-tag">真實日常章節</div>
+                                    <div class="mini-jar-sub">每日快門與成長軌跡</div>
+                                </div>
+
+                                <!-- 罐子 2：珍視之物 -->
+                                <div class="mini-jar-item">
+                                    <div class="mini-jar-figure">
+                                        <div class="mini-lid"></div>
+                                        <div class="mini-neck"></div>
+                                        <div class="mini-body scene-pet">
+                                            <span class="mini-jar-inner-title">Pet<br>Memories</span>
+                                        </div>
+                                    </div>
+                                    <div class="mini-jar-tag">珍視之物</div>
+                                    <div class="mini-jar-sub">摯愛瞬間與溫暖陪伴</div>
+                                </div>
+
+                                <!-- 罐子 3：想像故事 -->
+                                <div class="mini-jar-item">
+                                    <div class="mini-jar-figure">
+                                        <div class="mini-lid"></div>
+                                        <div class="mini-neck"></div>
+                                        <div class="mini-body scene-dream">
+                                            <span class="mini-jar-inner-title">Midnight<br>Scripts</span>
+                                        </div>
+                                    </div>
+                                    <div class="mini-jar-tag">想像與靈感故事</div>
+                                    <div class="mini-jar-sub">夢境分鏡與創作宇宙</div>
+                                </div>
+                            </div>
+
+                            <!-- 還原 App 的 Jar Studio 換款式互動面板 (自動輪播 + 可點擊切換) -->
+                            <div class="studio-style-switcher">
+                                <div class="switcher-header">
+                                    <span>🎨 為不同故事換上專屬罐子款式</span>
+                                    <span id="current-style-label" class="switcher-style-tag">Brushed Metal · Titanium</span>
+                                </div>
+                                <div class="swatches-row">
+                                    <button class="swatch-btn active" onclick="selectJarStyle(0)">
+                                        <span class="swatch-circle sw-titanium">✓</span>
+                                        <span>Titanium</span>
+                                    </button>
+                                    <button class="swatch-btn" onclick="selectJarStyle(1)">
+                                        <span class="swatch-circle sw-champagne"></span>
+                                        <span>Gilded Inlay</span>
+                                    </button>
+                                    <button class="swatch-btn" onclick="selectJarStyle(2)">
+                                        <span class="swatch-circle sw-rosegold"></span>
+                                        <span>Rose Gold</span>
+                                    </button>
+                                    <button class="swatch-btn" onclick="selectJarStyle(3)">
+                                        <span class="swatch-circle sw-holo"></span>
+                                        <span>Custom Holo</span>
+                                    </button>
+                                </div>
+                            </div>
+
+                            <!-- 核心句子 2 -->
+                            <div class="quote-card-time">
+                                <div class="time-icon">⏳</div>
+                                <p>「隨著時間累積，隨時打開故事罐抽取過往片段，重新遇見當時章節的自己。」</p>
+                            </div>
+
                         </div>
 
                     </div>
                 </div>
-            </div>
 
-            <!-- 特色小卡 -->
-            <div class="features-grid showcase-fade-up delay-block-1">
-                <div class="feature-card">
-                    <h3>極簡無干擾</h3>
-                    <p>去除所有多餘介面與喧囂，打開罐子，專注於記錄此刻的真實想法。</p>
-                </div>
-                <div class="feature-card">
-                    <h3>私密與安全</h3>
-                    <p>你的故事完全屬於你自己，沒有社交壓力，數據安心留在身邊。</p>
-                </div>
-                <div class="feature-card">
-                    <h3>溫暖的回顧</h3>
-                    <p>隨時搖一搖或打開時光瓶，重新遇見過去某些特別的日子與心情。</p>
+                <!-- 特色小卡 -->
+                <div class="features-grid">
+                    <div class="feature-card">
+                        <h3>極簡無干擾</h3>
+                        <p>去除所有多餘介面與喧囂，打開罐子，專注於記錄此刻的真實想法。</p>
+                    </div>
+                    <div class="feature-card">
+                        <h3>私密與安全</h3>
+                        <p>你的故事完全屬於你自己，沒有社交壓力，數據安心留在身邊。</p>
+                    </div>
+                    <div class="feature-card">
+                        <h3>溫暖的回顧</h3>
+                        <p>隨時搖一搖或打開時光瓶，重新遇見過去某些特別的日子與心情。</p>
+                    </div>
                 </div>
             </div>
         </header>
 
         <!-- 2) 創作理念 -->
-        <section class="philosophy-section showcase-fade-up delay-block-2">
+        <section class="philosophy-section showcase-fade-up delay-after-1">
             <span class="section-tag">Creation Philosophy</span>
             <h2>創作理念：為什麼打造 YourStoryJar？</h2>
             <p>在快節奏、充滿無數通知推播的日常裡，我們每天接收大量資訊，卻很容易忘記自己生活中那些微小卻珍貴的瞬間。</p>
@@ -1270,7 +1622,7 @@
         </section>
 
         <!-- 3) 支持開發 (Buy me a coffee) -->
-        <section class="support-section showcase-fade-up delay-block-3">
+        <section class="support-section showcase-fade-up delay-after-2">
             <h2>支持獨立開發</h2>
             <p>YourStoryJar 由個人獨立維護，堅持純粹的使用體驗。如果這個小罐子曾為你帶來一點平靜或溫暖，歡迎請我喝杯咖啡，支持我持續為它注入新功能。</p>
             
@@ -1280,14 +1632,14 @@
             </a>
         </section>
 
-        <footer class="showcase-fade-up delay-block-3">
+        <footer class="showcase-fade-up delay-after-2">
             <p>© 2026 YourStoryJar. All rights reserved.</p>
             <button class="replay-btn" onclick="playIntroAnimation()">↻ 重播開場動畫</button>
         </footer>
 
     </div>
 
-    <!-- ================= 動畫時間軸、頂部欄脫離偵測與換款式引擎 ================= -->
+    <!-- ================= 動畫時間軸、吸頂變身與自動換款式引擎 ================= -->
     <script>
         // 1. 自動偵測 GitHub 倉庫中的 icon2.png
         (function detectCustomIcon2() {
@@ -1301,58 +1653,71 @@
             img2.src = 'icon2.png';
         })();
 
-        // 2. 故事罐款式自動與手動切換器 (4 種主題)
-        const JAR_THEMES = ['jars-theme-aurora', 'jars-theme-amber', 'jars-theme-neon', 'jars-theme-frosted'];
-        let currentThemeIdx = 0;
-        let themeInterval = null;
+        // 2. 頂部欄滑動觸頂脫離並變身 (Sticky Morphing Top Bar)
+        const stickySentinel = document.getElementById('sticky-bar-sentinel');
+        const appTopBar = document.getElementById('app-top-bar');
 
-        function applyJarTheme(idx) {
-            currentThemeIdx = idx;
-            const container = document.getElementById('mini-jars-container');
-            if (!container) return;
-            JAR_THEMES.forEach(cls => container.classList.remove(cls));
-            container.classList.add(JAR_THEMES[idx]);
+        function handleScrollStickyBar() {
+            if (!stickySentinel || !appTopBar) return;
+            const rect = stickySentinel.getBoundingClientRect();
+            // 當裝著 Your Story, Directed by You. 的頂部欄滑到畫面最上方 (top <= 0) 時，脫離介面並固定在頂部
+            if (rect.top <= 0 && !document.body.classList.contains('animating')) {
+                appTopBar.classList.add('is-sticky');
+            } else {
+                appTopBar.classList.remove('is-sticky');
+            }
+        }
+        window.addEventListener('scroll', handleScrollStickyBar, { passive: true });
 
-            const btns = container.querySelectorAll('.theme-pill-btn');
-            btns.forEach((b, i) => {
-                b.classList.toggle('active', i === idx);
+        // 3. 右側與左側故事罐自動/手動換款式功能 (Jar Studio Style Switcher)
+        const JAR_STYLES = [
+            { className: 'jar-theme-titanium', label: 'Brushed Metal · Titanium' },
+            { className: 'jar-theme-champagne', label: 'Gilded Inlay · Champagne' },
+            { className: 'jar-theme-rosegold', label: 'Classic · Rose Gold' },
+            { className: 'jar-theme-holo', label: 'Obsidian · Custom Holo' }
+        ];
+        let currentStyleIdx = 0;
+        let styleIntervalId = null;
+
+        function applyJarStyle(index) {
+            currentStyleIdx = index;
+            const wrapper = document.getElementById('showcase-theme-wrapper');
+            const labelEl = document.getElementById('current-style-label');
+            const buttons = document.querySelectorAll('.swatch-btn');
+
+            if (!wrapper) return;
+            JAR_STYLES.forEach(s => wrapper.classList.remove(s.className));
+            wrapper.classList.add(JAR_STYLES[index].className);
+
+            if (labelEl) labelEl.textContent = JAR_STYLES[index].label;
+
+            buttons.forEach((btn, i) => {
+                const circle = btn.querySelector('.swatch-circle');
+                if (i === index) {
+                    btn.classList.add('active');
+                    if (circle) circle.textContent = '✓';
+                } else {
+                    btn.classList.remove('active');
+                    if (circle) circle.textContent = '';
+                }
             });
         }
 
-        function setJarTheme(idx) {
-            applyJarTheme(idx);
-            resetThemeAutoCycle();
+        function selectJarStyle(index) {
+            applyJarStyle(index);
+            // 點擊後重新計時自動輪播
+            if (styleIntervalId) clearInterval(styleIntervalId);
+            styleIntervalId = setInterval(() => {
+                applyJarStyle((currentStyleIdx + 1) % JAR_STYLES.length);
+            }, 2800);
         }
 
-        function nextJarTheme() {
-            applyJarTheme((currentThemeIdx + 1) % JAR_THEMES.length);
-            resetThemeAutoCycle();
-        }
+        // 啟動每 2.8 秒自動幫罐子換款式展示
+        styleIntervalId = setInterval(() => {
+            applyJarStyle((currentStyleIdx + 1) % JAR_STYLES.length);
+        }, 2800);
 
-        function resetThemeAutoCycle() {
-            if (themeInterval) clearInterval(themeInterval);
-            themeInterval = setInterval(() => {
-                applyJarTheme((currentThemeIdx + 1) % JAR_THEMES.length);
-            }, 3200);
-        }
-        resetThemeAutoCycle();
-
-        // 3. 監聽頁面滑動：當 App 頂部欄碰到畫面頂端時，脫離介面並變身為全頁置頂欄 (YourStoryJar + Icon)
-        const topbarSlot = document.getElementById('topbar-slot');
-        const detachingTopbar = document.getElementById('detaching-app-topbar');
-
-        function handleTopbarScroll() {
-            if (!topbarSlot || !detachingTopbar || document.body.classList.contains('animating')) return;
-            const rect = topbarSlot.getBoundingClientRect();
-            if (rect.top <= 0) {
-                detachingTopbar.classList.add('is-detached');
-            } else {
-                detachingTopbar.classList.remove('is-detached');
-            }
-        }
-        window.addEventListener('scroll', handleTopbarScroll, { passive: true });
-
-        // 4. 開場 60fps 線條變形與階梯式淡入引擎
+        // 4. 開場動畫與階梯式淡入引擎
         const NUM_PTS = 120;
         let animFrameId = null;
         let timeouts = [];
@@ -1424,13 +1789,15 @@
             const splashJarText = document.getElementById('splash-jar-text');
             const splashIcon2 = document.getElementById('splash-icon2');
             const targetLockup = document.getElementById('target-brand-lockup');
+            const heroSubtitle = document.getElementById('hero-subtitle');
 
             // 重置所有狀態
             window.scrollTo(0, 0);
-            detachingTopbar.classList.remove('is-detached');
+            appTopBar.classList.remove('is-sticky');
             document.body.classList.add('animating');
-            document.body.classList.remove('tagline-visible', 'showcase-visible');
+            document.body.classList.remove('show-main-interface');
             targetLockup.classList.remove('docked');
+            heroSubtitle.classList.remove('show-subtitle');
 
             overlay.classList.remove('hidden', 'transparent-bg');
             animStage.style.transition = 'none';
@@ -1474,7 +1841,7 @@
             splashJarText.style.transition = 'transform 0.68s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.35s ease';
             splashIcon2.style.transition = 'transform 0.68s cubic-bezier(0.16, 1, 0.3, 1)';
 
-            // 量測分裂座標
+            // 量測分裂後座標
             const stageRect = animStage.getBoundingClientRect();
             const textRect = splashText.getBoundingClientRect();
             const iconRect = splashIcon2.getBoundingClientRect();
@@ -1488,6 +1855,7 @@
             svgText.setAttribute('y', 0);
             svgText.setAttribute('font-size', computedFontSize);
 
+            // 取樣各階段幾何頂點
             const S_INIT = 0.58;
             const jarOuterInitPts = samplePath('ref-jar-silhouette', 0, 0, S_INIT);
             const jarInnerInitPts = samplePath('ref-jar-inner-ring', 0, 0, S_INIT);
@@ -1630,7 +1998,7 @@
                 overlay.classList.add('transparent-bg');
             }, 2460));
 
-            // 階段 5 (3.26s)：升到頂部定位！深色背景出現，同時背後往左滑出「Jar」結合成「YourStoryJar」
+            // 階段 5 (3.26s)：升到頂部定位！App Icon 出現，同時背後往左滑出「Jar」結合成「YourStoryJar」
             timeouts.push(setTimeout(() => {
                 splashIcon2.classList.add('logo-complete');
                 splashText.style.transform = 'translateX(0px)';
@@ -1639,18 +2007,18 @@
                 splashJarText.style.transform = 'translateX(0px) scale(1)';
             }, 3260));
 
-            // 階段 6 (3.56s)：【延遲 Jar 0.3 秒後】那行小介紹文字淡入出現！
+            // 階段 6 (3.56s -> 延遲 "Jar" 0.3 秒後)：小介紹文字淡入
             timeouts.push(setTimeout(() => {
-                document.body.classList.add('tagline-visible');
+                heroSubtitle.classList.add('show-subtitle');
             }, 3560));
 
-            // 階段 7 (3.96s)：【在小介紹文字出現後】下方的 App 主頁展示介面與內容再隨之向上淡入！
+            // 階段 7 (3.95s -> 小介紹文字出現後)：主展示介面隨之向上淡入，並解除捲動鎖定
             timeouts.push(setTimeout(() => {
                 targetLockup.classList.add('docked');
                 overlay.classList.add('hidden');
-                document.body.classList.add('showcase-visible');
+                document.body.classList.add('show-main-interface');
                 document.body.classList.remove('animating');
-            }, 3960));
+            }, 3950));
         }
 
         window.addEventListener('DOMContentLoaded', playIntroAnimation);
