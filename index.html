@@ -68,7 +68,7 @@
             display: flex;
             align-items: center;
             justify-content: center;
-            padding: 9px;
+            padding: 0;
             position: relative;
             flex-shrink: 0;
             z-index: 3;
@@ -246,11 +246,9 @@
             letter-spacing: 0.16em;
             color: var(--text-main);
             font-weight: 600;
-            /* 讓 infinite. 本體保持置中，後面兩個點浮現時不會把文字往左推 */
             padding-left: 0.32em;
         }
 
-        /* 後續延伸出的兩個點 (..)，象徵故事的延續 */
         .extra-dot {
             display: inline-block;
             opacity: 0;
@@ -637,11 +635,11 @@
             <!-- 60fps 連續線條變形畫布 -->
             <svg id="morph-svg-layer" viewBox="-370 -140 740 280">
                 <defs>
-                    <!-- 1. 【比例修正】依照原圖加寬罐身與飽滿瓶肩的單一連續罐子外輪廓 (寬 136 x 高 134，圓潤方胖比例) -->
-                    <path id="ref-jar-silhouette" d="M -42 -63 L 42 -63 C 51 -63, 53 -59, 53 -52.5 C 53 -46, 51 -42, 43 -42 C 44 -29, 68 -21, 68 0 C 68 20, 68 41, 62 55 C 55.5 67.5, 38 71, 0 71 C -38 71, -55.5 67.5, -62 55 C -68 41, -68 20, -68 0 C -68 -21, -44 -29, -43 -42 C -51 -42, -53 -46, -53 -52.5 C -53 -59, -51 -63, -42 -63 Z" />
+                    <!-- 1. 【精準原圖比例 0.928】單一連續罐子外輪廓 (寬 129 [-64.5 ~ +64.5] x 高 139 [-65 ~ +74]) -->
+                    <path id="ref-jar-silhouette" d="M -39.5 -65 L 39.5 -65 C 47.5 -65, 49.5 -61, 49.5 -54.5 C 49.5 -48, 47.5 -44, 40.5 -44 C 41.5 -30, 64.5 -22, 64.5 2 C 64.5 21, 64.5 42, 59 56.5 C 53 69, 36 74, 0 74 C -36 74, -53 69, -59 56.5 C -64.5 42, -64.5 21, -64.5 2 C -64.5 -22, -41.5 -30, -40.5 -44 C -47.5 -44, -49.5 -48, -49.5 -54.5 C -49.5 -61, -47.5 -65, -39.5 -65 Z" />
 
-                    <!-- 2. 故事罐中央內圓環 (同步配合寬罐身比例微調) -->
-                    <path id="ref-jar-inner-ring" d="M 0 -20 C 18.8 -20, 34 -4.8, 34 14 C 34 32.8, 18.8 48, 0 48 C -18.8 48, -34 32.8, -34 14 C -34 -4.8, -18.8 -20, 0 -20 Z" />
+                    <!-- 2. 故事罐中央內圓環 (r = 32.5) -->
+                    <path id="ref-jar-inner-ring" d="M 0 -18.5 C 18 -18.5, 32.5 -4, 32.5 14 C 32.5 32, 18 46.5, 0 46.5 C -18 46.5, -32.5 32, -32.5 14 C -32.5 -4, -18 -18.5, 0 -18.5 Z" />
 
                     <!-- 3. 無限符號 ♾️ 左右迴圈路徑 -->
                     <path id="ref-inf-left" d="M 0 0 C -16 -32, -68 -32, -68 0 C -68 32, -16 32, 0 0 Z" />
@@ -652,15 +650,15 @@
                 </defs>
 
                 <g id="morph-strokes-group">
-                    <!-- 開場圖一：純淨實線黑色故事罐 (已依原圖加寬罐身與瓶蓋比例) -->
+                    <!-- 開場圖一：純淨實線黑色故事罐 (1:1 對齊原圖 0.928 長寬比) -->
                     <g id="intact-jar-group" stroke="#1e1c24" fill="none" stroke-linecap="round" stroke-linejoin="round">
                         <!-- 瓶蓋 -->
-                        <path d="M -42 -63 L 42 -63 C 51 -63, 53 -59, 53 -52.5 C 53 -46, 51 -42, 42 -42 L -42 -42 C -51 -42, -53 -46, -53 -52.5 C -53 -59, -51 -63, -42 -63 Z" stroke-width="11.5" />
-                        <!-- 加寬版圓潤瓶身 -->
-                        <path d="M -43 -41 C -44 -29, -68 -21, -68 0 C -68 20, -68 41, -62 55 C -55.5 67.5, -38 71, 0 71 C 38 71, 55.5 67.5, 62 55 C 68 41, 68 20, 68 0 C 68 -21, 44 -29, 43 -41" stroke-width="11.5" />
+                        <path d="M -39.5 -65 L 39.5 -65 C 47.5 -65, 49.5 -61, 49.5 -54.5 C 49.5 -48, 47.5 -44, 39.5 -44 L -39.5 -44 C -47.5 -44, -49.5 -48, -49.5 -54.5 C -49.5 -61, -47.5 -65, -39.5 -65 Z" stroke-width="11.5" />
+                        <!-- 瓶身 -->
+                        <path d="M -40.5 -43 C -41.5 -30, -64.5 -22, -64.5 2 C -64.5 21, -64.5 42, -59 56.5 C -53 69, -36 74, 0 74 C 36 74, 53 69, 59 56.5 C 64.5 42, 64.5 21, 64.5 2 C 64.5 -22, 41.5 -30, 40.5 -43" stroke-width="11.5" />
                         <!-- 內圓與反光弧 -->
-                        <circle cx="0" cy="14" r="34" stroke-width="11.5" />
-                        <path d="M -18.5 15 C -17.8 3.0, -9.0 -4.5, 1.8 -4.5" stroke-width="7.8" />
+                        <circle cx="0" cy="14" r="32.5" stroke-width="11.5" />
+                        <path d="M -18 15 C -17.2 3.2, -8.8 -4.0, 1.6 -4.0" stroke-width="7.8" />
                     </g>
 
                     <!-- 參與連續變形的兩條主畫筆 (左迴圈線 & 右迴圈線) -->
@@ -691,9 +689,10 @@
                     <div class="squircle-bg"></div>
                     <!-- 自動裁切貼合後的你的 icon2.png -->
                     <img class="custom-icon2-img" alt="YourStoryJar App Icon" />
-                    <svg viewBox="-92 -88 184 180">
+                    <!-- viewBox="-130 -126 260 260" 讓內部罐子尺寸與 icon2.png 內的罐子完全 1:1 等大 (比例 0.2846) -->
+                    <svg viewBox="-130 -126 260 260">
                         <defs>
-                            <linearGradient id="holo-grad-splash" gradientUnits="userSpaceOnUse" x1="-68" y1="-63" x2="68" y2="75">
+                            <linearGradient id="holo-grad-splash" gradientUnits="userSpaceOnUse" x1="-65" y1="-65" x2="65" y2="75">
                                 <stop offset="0%" stop-color="#ffc8d8" />
                                 <stop offset="25%" stop-color="#fff6b0" />
                                 <stop offset="50%" stop-color="#b5ffe9" />
@@ -701,17 +700,17 @@
                                 <stop offset="100%" stop-color="#ffffff" />
                             </linearGradient>
                         </defs>
-                        <!-- 1. 分裂完成時的黑線外框層 (原圖寬身比例的空心外框) -->
+                        <!-- 1. 分裂完成時的黑線外框層 (0.928 精準原圖比例) -->
                         <g class="jar-layer-black" stroke="#1e1c24" fill="none" stroke-linecap="round" stroke-linejoin="round">
-                            <path d="M -42 -63 L 42 -63 C 51 -63, 53 -59, 53 -52.5 C 53 -46, 51 -42, 43 -42 C 44 -29, 68 -21, 68 0 C 68 20, 68 41, 62 55 C 55.5 67.5, 38 71, 0 71 C -38 71, -55.5 67.5, -62 55 C -68 41, -68 20, -68 0 C -68 -21, -44 -29, -43 -42 C -51 -42, -53 -46, -53 -52.5 C -53 -59, -51 -63, -42 -63 Z" stroke-width="11.5" />
+                            <path d="M -39.5 -65 L 39.5 -65 C 47.5 -65, 49.5 -61, 49.5 -54.5 C 49.5 -48, 47.5 -44, 40.5 -44 C 41.5 -30, 64.5 -22, 64.5 2 C 64.5 21, 64.5 42, 59 56.5 C 53 69, 36 74, 0 74 C -36 74, -53 69, -59 56.5 C -64.5 42, -64.5 21, -64.5 2 C -64.5 -22, -41.5 -30, -40.5 -44 C -47.5 -44, -49.5 -48, -49.5 -54.5 C -49.5 -61, -47.5 -65, -39.5 -65 Z" stroke-width="11.5" />
                         </g>
-                        <!-- 2. 上升途中同步上色的流光層 (原圖寬身比例) -->
+                        <!-- 2. 上升途中同步上色的流光層 -->
                         <g class="jar-layer-holo" stroke="url(#holo-grad-splash)" fill="none" stroke-linecap="round" stroke-linejoin="round">
-                            <path d="M -42 -63 L 42 -63 C 51 -63, 53 -59, 53 -52.5 C 53 -46, 51 -42, 42 -42 L -42 -42 C -51 -42, -53 -46, -53 -52.5 C -53 -59, -51 -63, -42 -63 Z" stroke-width="11.5" />
-                            <path d="M -43 -41 C -44 -29, -68 -21, -68 0 C -68 20, -68 41, -62 55 C -55.5 67.5, -38 71, 0 71 C 38 71, 55.5 67.5, 62 55 C 68 41, 68 20, 68 0 C 68 -21, 44 -29, 43 -41" stroke-width="11.5" />
+                            <path d="M -39.5 -65 L 39.5 -65 C 47.5 -65, 49.5 -61, 49.5 -54.5 C 49.5 -48, 47.5 -44, 39.5 -44 L -39.5 -44 C -47.5 -44, -49.5 -48, -49.5 -54.5 C -49.5 -61, -47.5 -65, -39.5 -65 Z" stroke-width="11.5" />
+                            <path d="M -40.5 -43 C -41.5 -30, -64.5 -22, -64.5 2 C -64.5 21, -64.5 42, -59 56.5 C -53 69, -36 74, 0 74 C 36 74, 53 69, 59 56.5 C 64.5 42, 64.5 21, 64.5 2 C 64.5 -22, 41.5 -30, 40.5 -43" stroke-width="11.5" />
                             <g class="jar-inner-details">
-                                <circle cx="0" cy="14" r="34" stroke-width="11.5" />
-                                <path d="M -18.5 15 C -17.8 3.0, -9.0 -4.5, 1.8 -4.5" stroke-width="7.8" />
+                                <circle cx="0" cy="14" r="32.5" stroke-width="11.5" />
+                                <path d="M -18 15 C -17.2 3.2, -8.8 -4.0, 1.6 -4.0" stroke-width="7.8" />
                             </g>
                         </g>
                     </svg>
@@ -734,9 +733,9 @@
                 <div class="app-icon-container coloring logo-complete">
                     <div class="squircle-bg"></div>
                     <img class="custom-icon2-img" alt="YourStoryJar App Icon" />
-                    <svg viewBox="-92 -88 184 180">
+                    <svg viewBox="-130 -126 260 260">
                         <defs>
-                            <linearGradient id="holo-grad-header" gradientUnits="userSpaceOnUse" x1="-68" y1="-63" x2="68" y2="75">
+                            <linearGradient id="holo-grad-header" gradientUnits="userSpaceOnUse" x1="-65" y1="-65" x2="65" y2="75">
                                 <stop offset="0%" stop-color="#ffc8d8" />
                                 <stop offset="25%" stop-color="#fff6b0" />
                                 <stop offset="50%" stop-color="#b5ffe9" />
@@ -745,11 +744,11 @@
                             </linearGradient>
                         </defs>
                         <g class="jar-layer-holo" stroke="url(#holo-grad-header)" fill="none" stroke-linecap="round" stroke-linejoin="round">
-                            <path d="M -42 -63 L 42 -63 C 51 -63, 53 -59, 53 -52.5 C 53 -46, 51 -42, 42 -42 L -42 -42 C -51 -42, -53 -46, -53 -52.5 C -53 -59, -51 -63, -42 -63 Z" stroke-width="11.5" />
-                            <path d="M -43 -41 C -44 -29, -68 -21, -68 0 C -68 20, -68 41, -62 55 C -55.5 67.5, -38 71, 0 71 C 38 71, 55.5 67.5, 62 55 C 68 41, 68 20, 68 0 C 68 -21, 44 -29, 43 -41" stroke-width="11.5" />
+                            <path d="M -39.5 -65 L 39.5 -65 C 47.5 -65, 49.5 -61, 49.5 -54.5 C 49.5 -48, 47.5 -44, 39.5 -44 L -39.5 -44 C -47.5 -44, -49.5 -48, -49.5 -54.5 C -49.5 -61, -47.5 -65, -39.5 -65 Z" stroke-width="11.5" />
+                            <path d="M -40.5 -43 C -41.5 -30, -64.5 -22, -64.5 2 C -64.5 21, -64.5 42, -59 56.5 C -53 69, -36 74, 0 74 C 36 74, 53 69, 59 56.5 C 64.5 42, 64.5 21, 64.5 2 C 64.5 -22, 41.5 -30, 40.5 -43" stroke-width="11.5" />
                             <g class="jar-inner-details">
-                                <circle cx="0" cy="14" r="34" stroke-width="11.5" />
-                                <path d="M -18.5 15 C -17.8 3.0, -9.0 -4.5, 1.8 -4.5" stroke-width="7.8" />
+                                <circle cx="0" cy="14" r="32.5" stroke-width="11.5" />
+                                <path d="M -18 15 C -17.2 3.2, -8.8 -4.0, 1.6 -4.0" stroke-width="7.8" />
                             </g>
                         </g>
                     </svg>
@@ -1003,7 +1002,7 @@
             svgText.setAttribute('y', 0);
             svgText.setAttribute('font-size', computedFontSize);
 
-            // 3. 取樣各階段幾何頂點 (套用加寬後的原圖比例)
+            // 3. 取樣各階段幾何頂點 (套用校正後的 0.928 原圖長寬比)
             const S_INIT = 0.58;
             const jarOuterInitPts = samplePath('ref-jar-silhouette', 0, 0, S_INIT);
             const jarInnerInitPts = samplePath('ref-jar-inner-ring', 0, 0, S_INIT);
@@ -1015,18 +1014,19 @@
             const infLeftLocalPts  = samplePath('ref-inf-left', LOOP_CENTER_OFFSET, 0, 0.95);
             const infRightLocalPts = samplePath('ref-inf-right', -LOOP_CENTER_OFFSET, 0, 0.95);
 
-            const S_FINAL = 0.305;
+            // S_FINAL = 74 / 260 = 0.2846，與 #splash-icon2 內部 SVG 還有 icon2.png 內的罐子大小 100% 吻合
+            const S_FINAL = 0.2846;
             const textWaveLocalPts      = samplePath('ref-text-wave', 0, 0, 1.0);
             const finalEmptyJarLocalPts = samplePath('ref-jar-silhouette', 0, 0, S_FINAL);
 
             const startTime = performance.now();
 
             // ================= 動畫時間軸定義 (毫秒) =================
-            const T_FADE_IN     = 280;  // 0.00s - 0.28s: 黑色寬身故事罐浮現 + 顯示 "Make your story"
+            const T_FADE_IN     = 280;  // 0.00s - 0.28s: 黑色故事罐浮現 + 顯示 "Make your story"
             const T_SPIN_HALF   = 820;  // 0.28s - 0.82s: 前 50% 旋轉 (0° -> 180°) 保持原貌不變形
             const T_SPIN_DONE   = 1160; // 0.82s - 1.16s: 後 50% 旋轉 (180° -> 360°) 加速 50% 變形為無限符號 ♾️ + 浮現 "infinite."
-            const T_HOLD_INF    = 1600; // 1.16s - 1.60s: 無限符號 ♾️ 定格，依序點亮第 2 點 (1.20s) 與第 3 點 (1.36s) 成為 "infinite..."
-            const T_MORPH_BRAND = 2420; // 1.60s - 2.42s: 旋轉與分裂完全同步啟動，右圈化為加寬版空心罐子外框
+            const T_HOLD_INF    = 1600; // 1.16s - 1.60s: 無限符號 ♾️ 定格，依序點亮第 2 點與第 3 點成為 "infinite..."
+            const T_MORPH_BRAND = 2420; // 1.60s - 2.42s: 旋轉與分裂完全同步啟動，右圈化為 0.928 比例空心罐子外框
 
             function step(now) {
                 const elapsed = now - startTime;
@@ -1054,7 +1054,6 @@
                     if (rawP > 0.25) {
                         captionStory.classList.remove('show');
                     }
-                    // 在 1.00s 左右先出現帶有單一句點的 "infinite."
                     if (rawP > 0.52) {
                         captionInfinity.classList.add('show');
                     }
@@ -1076,7 +1075,6 @@
                     captionStory.classList.remove('show');
                     captionInfinity.classList.add('show');
 
-                    // 【關鍵敘事動效】原本以為結束的句點 (.)，依序長出第 2 點與第 3 點 (...) 象徵故事無限延續
                     const holdElapsed = elapsed - T_SPIN_DONE;
                     if (holdElapsed >= 45) {
                         infDot2.classList.add('dot-visible');
@@ -1097,7 +1095,6 @@
                     const rawP = (elapsed - T_HOLD_INF) / (T_MORPH_BRAND - T_HOLD_INF);
                     const syncT = easeInOutCubic(rawP);
 
-                    // 讓 infinite... 在分裂啟動初期多停留一下 (至 rawP > 0.28) 再平滑淡出，確保觀眾清楚讀完三點
                     if (rawP > 0.28) {
                         captionInfinity.classList.remove('show');
                     }
@@ -1120,7 +1117,7 @@
                         svgText.setAttribute('fill', `rgba(29, 29, 31, ${fillAlpha})`);
                     }
 
-                    // 2. 右圓：順時針旋轉的同時，同步往右分開並化為「加寬版空心罐子外框」
+                    // 2. 右圓：順時針旋轉的同時，同步往右分開並化為「0.928 原圖比例空心罐子外框」
                     const currentRightX = LOOP_CENTER_OFFSET + (iconOffsetX - LOOP_CENTER_OFFSET) * syncT;
                     mRight.setAttribute('d', morphAndTranslatePath(infRightLocalPts, finalEmptyJarLocalPts, syncT, rightAngle, currentRightX));
                     
