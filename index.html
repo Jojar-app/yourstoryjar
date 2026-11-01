@@ -667,21 +667,33 @@
         }
 
         /* 多頁面獨立視圖切換系統 */
-        .page-view {
-            display: none;
-            opacity: 0;
-            transform: translateY(18px);
-            transition: opacity 0.55s cubic-bezier(0.16, 1, 0.3, 1),
-                        transform 0.55s cubic-bezier(0.16, 1, 0.3, 1);
+        html.animating,
+        body.animating {
+            overflow: hidden !important;
+            height: 100% !important;
+            touch-action: none !important;
+            overscroll-behavior: none !important;
         }
 
-        .page-view.active-view {
-            display: block;
+        /* 前層 40% 粒子與煙霧畫布（位於文字與框框 z-index: 7 面前，後層 60% 畫布則在 z-index: 4 後面） */
+        #memory-front-canvas {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 8;
+            transition: opacity 0.4s ease;
+        }
+
+        body.non-download-view #memory-front-canvas {
+            opacity: 0;
         }
 
         .page-view.view-visible {
             opacity: 1;
-            transform: translateY(0);
+            transform: none;
         }
 
         header {
@@ -690,7 +702,7 @@
             position: relative;
         }
 
-        /* ===== 罐子上方英文句子 ===== */
+        /* ===== 罐子上方英文句子（修復背景斷層，恢復柔和羽化光暈） ===== */
         .fan-subtitle-stage {
             position: relative;
             min-height: 76px;
@@ -706,20 +718,22 @@
 
         .jar-mouth-mist {
             position: absolute;
-            bottom: -28px;
+            bottom: -32px;
             left: 50%;
             transform: translateX(-50%) scale(0.4);
-            width: min(260px, 80vw);
-            height: 90px;
-            background: radial-gradient(ellipse at 50% 100%, rgba(255, 210, 175, 0.55) 0%, rgba(190, 215, 255, 0.25) 45%, transparent 75%);
+            width: min(320px, 88vw);
+            height: 110px;
+            background: radial-gradient(ellipse 50% 50% at 50% 65%, rgba(255, 210, 175, 0.52) 0%, rgba(190, 215, 255, 0.22) 52%, rgba(190, 215, 255, 0) 100%);
             opacity: 0;
             pointer-events: none;
+            filter: blur(10px);
+            -webkit-filter: blur(10px);
             transition: opacity 0.9s ease, transform 1.1s cubic-bezier(0.16, 1, 0.3, 1);
         }
 
         .fan-subtitle-stage.release-fan .jar-mouth-mist {
             opacity: 1;
-            transform: translateX(-50%) translateY(-18px) scale(1.15);
+            transform: translateX(-50%) translateY(-14px) scale(1.15);
         }
 
         #hero-subtitle {
@@ -801,7 +815,6 @@
             align-items: center;
         }
 
-        /* 故事罐瓶蓋基礎結構與 4 款材質主題 */
         .hero-jar-lid {
             width: 216px;
             height: 36px;
@@ -813,7 +826,6 @@
             will-change: transform;
         }
 
-        /* 款式 0 (左下原款)：經典黑直紋瓶蓋 */
         .hero-jar-lid.lid-style-0 {
             background: 
                 repeating-linear-gradient(90deg, 
@@ -824,7 +836,6 @@
             box-shadow: 0 6px 16px rgba(0, 0, 0, 0.18);
         }
 
-        /* 款式 1 (左上新款)：曜石槍黑斜交叉菱格網紋瓶蓋 */
         .hero-jar-lid.lid-style-1 {
             background:
                 repeating-linear-gradient(45deg, rgba(0, 0, 0, 0.58) 0px, rgba(0, 0, 0, 0.58) 1.6px, transparent 1.6px, transparent 6px),
@@ -834,7 +845,6 @@
             box-shadow: 0 6px 18px rgba(0, 0, 0, 0.24);
         }
 
-        /* 款式 2 (右上新款)：深古銅黑平滑瓶蓋 + 中央水平微光鑲嵌亮線 */
         .hero-jar-lid.lid-style-2 {
             background:
                 linear-gradient(180deg, 
@@ -851,7 +861,6 @@
             box-shadow: 0 6px 18px rgba(40, 22, 10, 0.28);
         }
 
-        /* 款式 3 (右下新款)：暖香檳琥珀金直紋金屬瓶蓋 */
         .hero-jar-lid.lid-style-3 {
             background:
                 repeating-linear-gradient(90deg, 
@@ -872,7 +881,6 @@
             box-shadow: 0 4px 12px rgba(166, 116, 73, 0.28);
         }
 
-        /* 切換蓋子瞬間的輕巧回彈動效 */
         .jar-lid-swapping .hero-jar-lid {
             transform: translateY(-13px) scale(1.03) !important;
         }
@@ -1064,7 +1072,7 @@
             letter-spacing: -0.01em;
         }
 
-        /* ================= 5. 「Your Story, Directed by You.」 (已移除動態 blur(calc) 防止手機記憶體溢位重整) ================= */
+        /* ================= 5. 「Your Story, Directed by You.」（恢復上一版柔霧光暈與雙層立體陰影） ================= */
         .director-philosophy-bridge {
             position: relative;
             z-index: 7;
@@ -1080,14 +1088,16 @@
             position: absolute;
             top: 50%;
             left: 50%;
-            width: min(360px, 88vw);
-            height: 92px;
+            width: min(380px, 90vw);
+            height: 110px;
             transform: translate(-50%, -50%) scale(calc(0.65 + var(--director-materialize, 0) * 0.45));
-            background: radial-gradient(ellipse at 50% 50%, 
-                rgba(225, 185, 215, 0.26) 0%, 
-                rgba(185, 215, 245, 0.20) 48%, 
-                transparent 76%);
-            opacity: var(--director-materialize, 0);
+            background: radial-gradient(ellipse 50% 50% at 50% 50%, 
+                rgba(225, 185, 215, 0.30) 0%, 
+                rgba(185, 215, 245, 0.22) 52%, 
+                rgba(185, 215, 245, 0) 100%);
+            filter: blur(14px);
+            -webkit-filter: blur(14px);
+            opacity: calc(var(--director-materialize, 0) * 1.1);
             pointer-events: none;
             z-index: 1;
         }
@@ -1102,11 +1112,12 @@
             font-weight: 800;
             font-style: italic;
             line-height: 1.28;
-            letter-spacing: -0.01em;
+            letter-spacing: calc(-0.02em + (1 - var(--director-materialize, 0)) * 0.08em);
             opacity: var(--director-materialize, 0);
             transform: translateY(calc((1 - var(--director-materialize, 0)) * 14px))
-                       scale(calc(0.95 + var(--director-materialize, 0) * 0.05));
-            filter: drop-shadow(0 2px 8px rgba(65, 55, 92, 0.35));
+                       scale(calc(0.94 + var(--director-materialize, 0) * 0.06));
+            filter: drop-shadow(0 2px 10px rgba(70, 60, 98, 0.34))
+                    drop-shadow(0 1px 2px rgba(45, 38, 68, 0.24));
             background: linear-gradient(
                 115deg,
                 #ffffff 0%,
@@ -1124,11 +1135,12 @@
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
             animation: whiteSubtlePinkBlueSlowFlow 32s ease-in-out infinite;
-            will-change: opacity, transform;
+            will-change: opacity, transform, background-position;
         }
 
         body.cosmic-text-mode .director-single-line-title {
-            filter: drop-shadow(0 4px 14px rgba(10, 8, 22, 0.72));
+            filter: drop-shadow(0 4px 16px rgba(10, 8, 22, 0.72))
+                    drop-shadow(0 1px 3px rgba(10, 8, 22, 0.5));
             background: linear-gradient(
                 115deg,
                 #ffffff 0%,
@@ -1153,7 +1165,7 @@
             100% { background-position: 100% center; }
         }
 
-        /* ================= 6. 三個框框 (已移除動態 blur(calc) 防止手機記憶體溢位重整) ================= */
+        /* ================= 6. 三個框框 ================= */
         .features-grid {
             display: grid;
             grid-template-columns: repeat(3, 1fr);
@@ -1254,7 +1266,6 @@
             overflow: visible;
         }
 
-        /* 第一框動畫時序 (6.0秒循環，每階段精準停留 0.2秒) */
         .c1-back-imagined {
             transform-box: fill-box;
             transform-origin: center;
@@ -1354,7 +1365,6 @@
             89%, 100%   { opacity: 0; transform: translateY(-8px) scale(0.75); }
         }
 
-        /* 第二框動畫時序 */
         .c2-jar-lid-open {
             transform-box: fill-box;
             transform-origin: left center;
@@ -1404,7 +1414,6 @@
             50%      { transform: translate(-8px, 7px) rotate(-4deg); }
         }
 
-        /* 第三框動畫時序 (6.0秒循環，每階段精準停留 0.2秒) */
         .c3-other-three-jars {
             transform-box: fill-box;
             transform-origin: center;
@@ -1491,11 +1500,12 @@
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
             animation: whiteSubtlePinkBlueSlowFlow 32s ease-in-out infinite;
-            filter: drop-shadow(0 1px 4px rgba(68, 56, 96, 0.42));
+            filter: drop-shadow(0 1.5px 6px rgba(68, 56, 96, 0.42))
+                    drop-shadow(0 0.5px 1.5px rgba(42, 34, 65, 0.34));
         }
 
         body.cosmic-text-mode .prose-accent {
-            filter: drop-shadow(0 2px 8px rgba(10, 8, 22, 0.75));
+            filter: drop-shadow(0 2px 10px rgba(10, 8, 22, 0.75));
             background: linear-gradient(
                 115deg,
                 #ffffff 0%,
@@ -2271,7 +2281,7 @@
                             </svg>
                         </div>
                         <p class="vignette-prose">
-                            <span class="prose-accent">Shake or open your time jar whenever you wish—to reconnect with your past states of mind, evolving thoughts, inner beliefs, and the quiet moods of days gone by.</span>
+                            <span class="prose-accent">Shake or open your time jar whenever you wish—to reconnect with your past states of mind, evolving thoughts, inner beliefs, and the moods of days gone by.</span>
                         </p>
                     </div>
 
@@ -2557,12 +2567,21 @@
             window.scrollTo({ top: 0, behavior: 'smooth' });
         }
 
-        // ================= 5. 雙速記憶系統 (已針對手機版進行記憶體防溢位最佳化) =================
+        // ================= 5. 雙層粒子畫布系統（60% 在文字與框框後面、40% 在面前） =================
         const cosmicCanvas = document.getElementById('cosmic-bg-canvas');
         const cosmicCtx = cosmicCanvas.getContext('2d');
 
         const streamCanvas = document.getElementById('memory-stream-canvas');
         const streamCtx = streamCanvas.getContext('2d');
+
+        // 自動建立前層 40% 粒子畫布 (#memory-front-canvas)，免除手動修改頂部 HTML
+        let frontCanvas = document.getElementById('memory-front-canvas');
+        if (!frontCanvas) {
+            frontCanvas = document.createElement('canvas');
+            frontCanvas.id = 'memory-front-canvas';
+            streamCanvas.insertAdjacentElement('afterend', frontCanvas);
+        }
+        const frontCtx = frontCanvas.getContext('2d');
 
         const jarInnerCanvas = document.getElementById('jar-inner-canvas');
         const jarInnerCtx = jarInnerCanvas.getContext('2d');
@@ -2572,7 +2591,6 @@
         let lastSyncedBg = '';
         let lastCosmicCleared = false;
 
-        // 快取 CSS 變數上次寫入的值，僅在差值 >= 0.01 時才更新 DOM，避免手機每幀重排崩潰
         let cachedDyeVal = -1;
         let cachedDirectorVal = -1;
         let cachedCardVal = -1;
@@ -2700,7 +2718,6 @@
             if (!force && Math.abs(w - canvasW) < 4) return;
 
             const isMobile = w <= 768;
-            // 手機版鎖定全螢幕畫布 dpr 為 1.0，徹底防止手機滑動時 GPU 記憶體超載重整
             const dpr = isMobile ? 1.0 : Math.min(window.devicePixelRatio || 1, 1.5);
             const h = Math.max(window.innerHeight || 0, document.documentElement.clientHeight || 0);
 
@@ -2718,6 +2735,12 @@
             streamCanvas.width = Math.round(w * dpr);
             streamCanvas.height = Math.round(h * dpr);
             streamCtx.setTransform(dpr, 0, 0, dpr, 0, 0);
+
+            frontCanvas.style.width = w + 'px';
+            frontCanvas.style.height = h + 'px';
+            frontCanvas.width = Math.round(w * dpr);
+            frontCanvas.height = Math.round(h * dpr);
+            frontCtx.setTransform(dpr, 0, 0, dpr, 0, 0);
 
             const innerDpr = Math.min(window.devicePixelRatio || 1, 1.5);
             jarInnerCanvas.width = Math.round(286 * innerDpr);
@@ -2977,7 +3000,6 @@
             });
         }
 
-        // 移除 ctx.shadowBlur，改用純幾何高光繪製，徹底消除手機 Canvas 記憶體暴增
         function drawSmokeDispersingParticle(ctx, px, py, progressT, baseR, smokeMaxR, rgb, weightAlpha) {
             if (weightAlpha <= 0.01) return;
             ctx.save();
@@ -3283,6 +3305,7 @@
             updateMenuLoopIcon(now);
 
             streamCtx.clearRect(0, 0, canvasW, canvasH);
+            frontCtx.clearRect(0, 0, canvasW, canvasH);
             jarInnerCtx.clearRect(0, 0, 286, 332);
 
             if (!document.body.classList.contains('animating')) {
@@ -3305,7 +3328,6 @@
                 const scrollDyeProgress = Math.min(1, fastScrollP * 1.25);
                 const effectiveDyeProgress = Math.max(scrollDyeProgress, clickDyeProgress);
 
-                // 僅在數值變化超過 0.01 時才寫入 CSS 變數，避免每幀觸發全頁 Style 計算
                 if (Math.abs(effectiveDyeProgress - cachedDyeVal) >= 0.01) {
                     cachedDyeVal = effectiveDyeProgress;
                     document.documentElement.style.setProperty('--cosmic-dye', effectiveDyeProgress.toFixed(2));
@@ -3442,7 +3464,7 @@
 
                         const cardRects = Array.from(cardEls).map(el => el.getBoundingClientRect());
 
-                        // (二) 滑動模式
+                        // (二) 滑動模式：60% 粒子在文字與框框後面 (streamCtx)，40% 粒子在面前 (frontCtx)
                         if ((fastScrollP > 0.002 || slowScrollP > 0.002) && isCollectiveInView && continuousBlend < 1) {
                             const scrollAlphaWeight = 1 - continuousBlend;
 
@@ -3480,7 +3502,7 @@
                             });
 
                             if (titleRect) {
-                                scrollBoundTitleSmoke.forEach(pt => {
+                                scrollBoundTitleSmoke.forEach((pt, idx) => {
                                     const localT = (slowScrollP - pt.startP) / pt.durationP;
                                     if (localT > 0 && localT < 1) {
                                         const startX = collectiveScreenX + pt.offsetXNorm * 115;
@@ -3494,13 +3516,14 @@
                                         const px = inv * inv * startX + 2 * inv * localT * ctrlX + localT * localT * endX;
                                         const py = inv * inv * startY + 2 * inv * localT * ctrlY + localT * localT * endY;
 
-                                        drawSmokeDispersingParticle(streamCtx, px, py, localT, pt.baseRadius, pt.smokeMaxRadius, pt.rgb, scrollAlphaWeight);
+                                        const targetCtx = (idx % 5 < 2) ? frontCtx : streamCtx;
+                                        drawSmokeDispersingParticle(targetCtx, px, py, localT, pt.baseRadius, pt.smokeMaxRadius, pt.rgb, scrollAlphaWeight);
                                     }
                                 });
                             }
 
                             if (cardRects.length > 0) {
-                                scrollBoundMistParticles.forEach(pt => {
+                                scrollBoundMistParticles.forEach((pt, idx) => {
                                     const localT = (slowScrollP - pt.startP) / pt.durationP;
                                     if (localT > 0 && localT < 1) {
                                         const targetCard = cardRects[pt.cardIdx % cardRects.length];
@@ -3515,7 +3538,8 @@
                                         const px = inv * inv * startX + 2 * inv * localT * ctrlX + localT * localT * endX;
                                         const py = inv * inv * startY + 2 * inv * localT * ctrlY + localT * localT * endY;
 
-                                        drawSmokeDispersingParticle(streamCtx, px, py, localT, pt.baseRadius, pt.smokeMaxRadius, pt.rgb, scrollAlphaWeight);
+                                        const targetCtx = (idx % 5 < 2) ? frontCtx : streamCtx;
+                                        drawSmokeDispersingParticle(targetCtx, px, py, localT, pt.baseRadius, pt.smokeMaxRadius, pt.rgb, scrollAlphaWeight);
                                     }
                                 });
                             }
@@ -3583,7 +3607,8 @@
                             const inv = 1 - u;
                             const px = inv * inv * pt.startX + 2 * inv * u * pt.ctrlX + u * u * pt.endX;
                             const py = inv * inv * pt.startY + 2 * inv * u * pt.ctrlY + u * u * pt.endY;
-                            drawSmokeDispersingParticle(streamCtx, px, py, u, pt.baseRadius, pt.smokeMaxRadius, pt.rgb, continuousBlend);
+                            const targetCtx = (i % 5 < 2) ? frontCtx : streamCtx;
+                            drawSmokeDispersingParticle(targetCtx, px, py, u, pt.baseRadius, pt.smokeMaxRadius, pt.rgb, continuousBlend);
                         }
 
                         for (let i = continuousMistParticles.length - 1; i >= 0; i--) {
@@ -3599,7 +3624,8 @@
                             const px = inv * inv * pt.startX + 2 * inv * u * pt.ctrlX + u * u * pt.endX;
                             const py = inv * inv * pt.startY + 2 * inv * u * pt.ctrlY + u * u * pt.endY;
 
-                            drawSmokeDispersingParticle(streamCtx, px, py, u, pt.baseRadius, pt.smokeMaxRadius, pt.rgb, continuousBlend);
+                            const targetCtx = (i % 5 < 2) ? frontCtx : streamCtx;
+                            drawSmokeDispersingParticle(targetCtx, px, py, u, pt.baseRadius, pt.smokeMaxRadius, pt.rgb, continuousBlend);
                         }
                     }
                 }
@@ -3609,7 +3635,7 @@
         }
         requestAnimationFrame(mainRenderLoop);
 
-        // ================= 6. 開場動畫與新進場時序引擎 =================
+        // ================= 6. 開場動畫、鎖定期間滑動與單擊畫面跳過開場引擎 =================
         const NUM_PTS = 120;
         let animFrameId = null;
         let timeouts = [];
@@ -3651,6 +3677,54 @@
             if (animFrameId) cancelAnimationFrame(animFrameId);
             timeouts.forEach(t => clearTimeout(t));
             timeouts = [];
+        }
+
+        // 開場動畫播放期間，攔截觸控滑動與滑鼠滾輪，確保開場時不可滑動頁面
+        function preventScrollDuringIntro(e) {
+            if (document.body.classList.contains('animating')) {
+                e.preventDefault();
+            }
+        }
+        window.addEventListener('touchmove', preventScrollDuringIntro, { passive: false });
+        window.addEventListener('wheel', preventScrollDuringIntro, { passive: false });
+
+        // 單擊畫面立即跳過開場動畫，並確保停留在頁面最頂部
+        function skipIntroAnimation(e) {
+            if (e) e.stopPropagation();
+            if (!document.body.classList.contains('animating')) return;
+
+            clearTimers();
+
+            const overlay = document.getElementById('splash-overlay');
+            const targetLockup = document.getElementById('target-brand-lockup');
+            const glassTopPlate = document.getElementById('glass-top-plate');
+            const heroJarBackdrop = document.getElementById('hero-jar-backdrop');
+            const downloadButtonsBox = document.getElementById('download-buttons-box');
+            const fanSubtitleContainer = document.getElementById('fan-subtitle-container');
+
+            glassTopPlate.classList.add('slide-down');
+            targetLockup.classList.add('docked');
+            overlay.classList.add('transparent-bg', 'hidden');
+
+            downloadButtonsBox.classList.add('buttons-ready');
+            heroJarBackdrop.classList.add('jar-fade-up', 'jar-lid-open');
+            fanSubtitleContainer.classList.add('release-fan');
+
+            document.body.classList.add('show-rest-sections');
+            document.documentElement.classList.remove('animating');
+            document.body.classList.remove('animating');
+
+            window.scrollTo({ top: 0, left: 0, behavior: 'instant' });
+            document.documentElement.scrollTop = 0;
+            document.body.scrollTop = 0;
+        }
+
+        // 自動為開場遮罩綁定單擊跳過事件
+        const splashOverlayEl = document.getElementById('splash-overlay');
+        if (splashOverlayEl) {
+            splashOverlayEl.style.cursor = 'pointer';
+            splashOverlayEl.title = 'Click or tap anywhere to skip';
+            splashOverlayEl.addEventListener('click', skipIntroAnimation);
         }
 
         function playIntroAnimation() {
@@ -3720,6 +3794,7 @@
             document.documentElement.scrollTop = 0;
             document.body.scrollTop = 0;
 
+            document.documentElement.classList.add('animating');
             document.body.classList.add('animating');
             document.body.classList.remove('show-rest-sections');
             targetLockup.classList.remove('docked');
@@ -3912,8 +3987,8 @@
 
             animFrameId = requestAnimationFrame(step);
 
-            // 階段 4 (2.46s)：往上升至頂部欄位置，同時空心罐子同步絲滑上色 (.coloring)
             timeouts.push(setTimeout(() => {
+                window.scrollTo({ top: 0, left: 0, behavior: 'instant' });
                 const splitLockup = document.getElementById('split-lockup');
                 const currentRect = splitLockup.getBoundingClientRect();
                 const targetRect = targetLockup.getBoundingClientRect();
@@ -3926,7 +4001,6 @@
                 overlay.classList.add('transparent-bg');
             }, 2460));
 
-            // 階段 5 (3.26s)：升到頂部定位！App Icon 出現，背後滑出「Jar」，同時【玻璃切面頂部欄從畫面外上方絲滑降下】
             timeouts.push(setTimeout(() => {
                 splashIcon2.classList.add('logo-complete');
                 splashText.style.transform = 'translateX(0px)';
@@ -3937,7 +4011,6 @@
                 glassTopPlate.classList.add('slide-down');
             }, 3260));
 
-            // 階段 6 (3.70s)：切換為固定頂部標題，同時【下載按鈕與背面的故事罐往上淡入】
             timeouts.push(setTimeout(() => {
                 targetLockup.classList.add('docked');
                 overlay.classList.add('hidden');
@@ -3945,11 +4018,15 @@
                 heroJarBackdrop.classList.add('jar-fade-up');
             }, 3700));
 
-            // 階段 7 (4.30s)：瓶蓋微啟，【英文介紹句從罐口上方中間位置「扇形展開淡入」】！
             timeouts.push(setTimeout(() => {
+                window.scrollTo({ top: 0, left: 0, behavior: 'instant' });
+                document.documentElement.scrollTop = 0;
+                document.body.scrollTop = 0;
+
                 heroJarBackdrop.classList.add('jar-lid-open');
                 fanSubtitleContainer.classList.add('release-fan');
                 document.body.classList.add('show-rest-sections');
+                document.documentElement.classList.remove('animating');
                 document.body.classList.remove('animating');
             }, 4300));
         }
