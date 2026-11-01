@@ -15,6 +15,7 @@
             --bronze-light: #c89666;
             --coffee-bg: #FFDD00;
             --border-light: rgba(0, 0, 0, 0.08);
+            --cosmic-dye: 0; /* 0 = 白晝背景, 1 = 圖二深邃宇宙星空背景 */
         }
 
         html {
@@ -39,15 +40,14 @@
             overflow: hidden;
         }
 
-        /* ================= 1. 頂部透明玻璃切面導航欄 (從畫面外上方絲滑降下，成為標題與 Icon 的底層板面) ================= */
+        /* ================= 1. 頂部透明玻璃切面導航欄 (還原圖一雙層玻璃切面線條層次，無下方多餘直線) ================= */
         #glass-top-plate {
             position: fixed;
             top: 0;
             left: 0;
             width: 100vw;
-            height: 112px;
+            height: 108px;
             z-index: 900;
-            /* 初始在畫面外上方，等開場動畫完成後絲滑降下 */
             transform: translateY(-115%);
             transition: transform 0.85s cubic-bezier(0.16, 1, 0.3, 1);
             pointer-events: none;
@@ -58,70 +58,67 @@
             pointer-events: auto;
         }
 
-        /* 還原 App 截圖的透明直紋毛玻璃質感 + 微弧形玻璃切面下邊緣 */
+        /* 外層主玻璃板與底部第一道弧線 */
         .glass-plate-surface {
             position: absolute;
             inset: 0;
             background: 
-                /* 垂直細玻璃條紋 (Fluted Glass) */
                 repeating-linear-gradient(90deg, 
-                    rgba(255, 255, 255, 0.32) 0px, 
-                    rgba(255, 255, 255, 0.32) 1px, 
+                    rgba(255, 255, 255, calc(0.32 - var(--cosmic-dye) * 0.27)) 0px, 
+                    rgba(255, 255, 255, calc(0.32 - var(--cosmic-dye) * 0.27)) 1px, 
                     rgba(0, 0, 0, 0.018) 1px, 
                     rgba(0, 0, 0, 0.018) 2.5px, 
                     transparent 2.5px, 
                     transparent 22px),
-                linear-gradient(180deg, rgba(255, 255, 255, 0.78) 0%, rgba(248, 248, 252, 0.62) 100%);
+                linear-gradient(180deg, 
+                    rgba(255, 255, 255, calc(0.82 - var(--cosmic-dye) * 0.72)) 0%, 
+                    rgba(248, 248, 252, calc(0.68 - var(--cosmic-dye) * 0.56)) 100%);
+            background-color: rgba(14, 11, 22, calc(var(--cosmic-dye) * 0.76));
             backdrop-filter: blur(20px) saturate(180%);
             -webkit-backdrop-filter: blur(20px) saturate(180%);
-            /* 微弧形下緣與多重玻璃切面折射陰影 */
             border-radius: 0 0 50% 50% / 0 0 18px 18px;
-            border-bottom: 1.5px solid rgba(255, 255, 255, 0.95);
+            border-bottom: 1.5px solid rgba(255, 255, 255, calc(0.95 - var(--cosmic-dye) * 0.65));
             box-shadow: 
-                0 2px 0 rgba(166, 116, 73, 0.22),
-                0 8px 28px rgba(20, 20, 30, 0.06),
-                inset 0 -3px 6px rgba(255, 255, 255, 0.85),
-                inset 0 1px 0 rgba(255, 255, 255, 0.9);
+                0 2px 0 rgba(166, 116, 73, calc(0.26 + var(--cosmic-dye) * 0.22)),
+                0 8px 28px rgba(20, 20, 30, calc(0.06 + var(--cosmic-dye) * 0.32)),
+                inset 0 -3px 5px rgba(255, 255, 255, calc(0.88 - var(--cosmic-dye) * 0.72));
+            overflow: hidden;
+            transition: background-color 0.2s ease;
         }
 
-        /* 玻璃切面邊緣的彩虹微折射光暈線 */
-        .glass-plate-surface::after {
-            content: "";
+        /* 【關鍵還原】距離底部弧線上方 4.5px 的內層隱約切面線，與外緣同弧度，絕不超出下方產生多餘直線 */
+        .glass-plate-inner-bevel {
             position: absolute;
-            bottom: 0px;
-            left: 8%;
-            right: 8%;
-            height: 2.5px;
-            background: linear-gradient(90deg, 
-                transparent 0%, 
-                rgba(255, 255, 255, 0.9) 20%, 
-                rgba(210, 180, 150, 0.45) 50%, 
-                rgba(255, 255, 255, 0.9) 80%, 
-                transparent 100%);
-            border-radius: 50%;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 4.5px;
+            border-radius: 0 0 50% 50% / 0 0 18px 18px;
+            border-bottom: 1px solid rgba(166, 116, 73, calc(0.22 + var(--cosmic-dye) * 0.12));
+            box-shadow: 0 1px 0 rgba(255, 255, 255, calc(0.75 - var(--cosmic-dye) * 0.6));
             pointer-events: none;
         }
 
-        /* 頂部欄左右兩側按鈕容器 */
         .glass-plate-controls {
             position: relative;
             z-index: 2;
             max-width: 960px;
             height: 100%;
             margin: 0 auto;
-            padding: 0 28px;
+            padding: 0 24px 6px;
             display: flex;
             align-items: center;
             justify-content: space-between;
         }
 
-        /* 左側 2x2 小圖示組 (還原白晝版 App 截圖左上角圖示) */
+        /* 左側 2x2 小圖示組 */
         .app-left-badge {
             display: grid;
             grid-template-columns: repeat(2, 13px);
             grid-template-rows: repeat(2, 13px);
             gap: 3.5px;
-            opacity: 0.85;
+            opacity: 0.9;
+            flex-shrink: 0;
         }
 
         .app-left-badge span {
@@ -130,32 +127,40 @@
             justify-content: center;
             font-size: 9px;
             border-radius: 3px;
-            border: 1.3px solid #4a3525;
-            color: #4a3525;
+            border: 1.3px solid rgba(110, 80, 55, 0.85);
+            color: #5c4028;
             font-weight: 700;
-            background: rgba(255, 255, 255, 0.5);
+            background: rgba(255, 255, 255, 0.65);
+            transition: all 0.3s ease;
+        }
+
+        body.cosmic-text-mode .app-left-badge span {
+            border-color: #d4a373;
+            color: #f3d5b5;
+            background: rgba(255, 255, 255, 0.08);
         }
 
         .app-left-badge span.plus-box {
-            background: #a67449;
-            border-color: #a67449;
-            color: #ffffff;
+            background: #a67449 !important;
+            border-color: #a67449 !important;
+            color: #ffffff !important;
         }
 
         /* 右側三橫線漢堡選單按鈕 (☰) */
         .menu-wrapper {
             position: relative;
+            flex-shrink: 0;
         }
 
         .hamburger-btn {
-            width: 44px;
-            height: 44px;
+            width: 42px;
+            height: 42px;
             border-radius: 13px;
-            background: rgba(255, 255, 255, 0.55);
-            border: 1px solid rgba(166, 116, 73, 0.28);
+            background: rgba(255, 255, 255, calc(0.65 - var(--cosmic-dye) * 0.55));
+            border: 1px solid rgba(166, 116, 73, 0.32);
             box-shadow: 
                 0 4px 12px rgba(0, 0, 0, 0.04),
-                inset 0 1px 1px rgba(255, 255, 255, 0.9);
+                inset 0 1px 1px rgba(255, 255, 255, calc(0.9 - var(--cosmic-dye) * 0.7));
             display: flex;
             flex-direction: column;
             align-items: center;
@@ -166,45 +171,47 @@
         }
 
         .hamburger-btn:hover {
-            background: rgba(255, 255, 255, 0.85);
             transform: translateY(-1px);
-            box-shadow: 0 6px 16px rgba(166, 116, 73, 0.12);
+            box-shadow: 0 6px 16px rgba(166, 116, 73, 0.18);
         }
 
         .hamburger-line {
-            width: 20px;
-            height: 2.4px;
+            width: 19px;
+            height: 2.3px;
             background-color: var(--bronze-gold);
             border-radius: 2px;
             transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
         }
 
-        /* 點擊展開時的 X 動畫 */
+        body.cosmic-text-mode .hamburger-line {
+            background-color: #e6be8a;
+        }
+
         .hamburger-btn.open .hamburger-line:nth-child(1) {
-            transform: translateY(7.4px) rotate(45deg);
+            transform: translateY(7.3px) rotate(45deg);
         }
         .hamburger-btn.open .hamburger-line:nth-child(2) {
             opacity: 0;
             transform: scaleX(0);
         }
         .hamburger-btn.open .hamburger-line:nth-child(3) {
-            transform: translateY(-7.4px) rotate(-45deg);
+            transform: translateY(-7.3px) rotate(-45deg);
         }
 
-        /* 玻璃切面下拉選單 (3 個選項) */
+        /* 玻璃切面下拉選單 */
         .glass-dropdown-menu {
             position: absolute;
             top: calc(100% + 12px);
             right: 0;
             width: 250px;
-            background: rgba(255, 255, 255, 0.86);
+            background: rgba(255, 255, 255, 0.9);
             backdrop-filter: blur(24px) saturate(180%);
             -webkit-backdrop-filter: blur(24px) saturate(180%);
             border-radius: 20px;
             border: 1.5px solid rgba(255, 255, 255, 0.95);
             box-shadow: 
-                0 18px 40px rgba(20, 20, 35, 0.12),
-                0 0 0 1px rgba(166, 116, 73, 0.16),
+                0 18px 40px rgba(20, 20, 35, 0.16),
+                0 0 0 1px rgba(166, 116, 73, 0.18),
                 inset 0 1px 2px rgba(255, 255, 255, 0.95);
             padding: 8px;
             opacity: 0;
@@ -253,22 +260,21 @@
             font-weight: 600;
         }
 
-        /* ================= 2. 品牌標題與圖二 App Logo 容器 (固定在玻璃頂部欄正中央) ================= */
+        /* ================= 2. 品牌標題與圖二 App Logo 容器 ================= */
         .brand-lockup {
             display: inline-flex;
             align-items: center;
             justify-content: center;
-            gap: 14px;
+            gap: 12px;
             position: relative;
         }
 
-        /* 讓完成貼合後的頂部標題組直接固定在玻璃頂部欄中央 */
         #fixed-header-brand-holder {
             position: fixed;
             top: 0;
             left: 0;
             width: 100vw;
-            height: 112px;
+            height: 102px;
             display: flex;
             align-items: center;
             justify-content: center;
@@ -293,20 +299,25 @@
         }
 
         .brand-title-text {
-            font-size: clamp(1.85rem, 5vw, 2.35rem);
+            font-size: clamp(1.55rem, 4.6vw, 2.25rem);
             font-weight: 800;
             letter-spacing: -0.03em;
             color: var(--text-main);
             white-space: nowrap;
             display: inline-block;
             will-change: transform, opacity;
+            transition: color 0.35s ease;
         }
 
-        /* 圖二 App Icon 容器 */
+        body.cosmic-text-mode #target-brand-lockup .brand-title-text {
+            color: #ffffff;
+            text-shadow: 0 2px 12px rgba(0, 0, 0, 0.35);
+        }
+
         .app-icon-container {
-            width: 64px;
-            height: 64px;
-            border-radius: 16px;
+            width: 56px;
+            height: 56px;
+            border-radius: 14px;
             display: flex;
             align-items: center;
             justify-content: center;
@@ -319,14 +330,22 @@
             transition: box-shadow 0.6s ease;
         }
 
+        @media (max-width: 480px) {
+            #glass-top-plate { height: 96px; }
+            #fixed-header-brand-holder { height: 90px; }
+            .glass-plate-controls { padding: 0 16px 6px; }
+            .app-icon-container { width: 48px; height: 48px; border-radius: 12px; }
+            .brand-lockup { gap: 9px; }
+        }
+
         .app-icon-container.logo-complete {
-            box-shadow: 0 10px 24px rgba(22, 19, 28, 0.22);
+            box-shadow: 0 8px 20px rgba(22, 19, 28, 0.25);
         }
 
         .squircle-bg {
             position: absolute;
             inset: 0;
-            border-radius: 16px;
+            border-radius: inherit;
             background: radial-gradient(circle at 26% 24%, #4e3a4d 0%, #251f2d 56%, #16131c 100%);
             box-shadow: inset 0 1px 1.5px rgba(255, 255, 255, 0.22);
             opacity: 0;
@@ -523,12 +542,31 @@
             opacity: 1;
         }
 
-        /* ================= 4. 主頁面容器與「罐口扇形釋放文字 + 故事罐裝載下載按鈕」 ================= */
+        /* ================= 4. 全螢幕雙層動畫畫布 (底層：圖二宇宙星空染色 / 上層：相片信件飛入與粒子滲出) ================= */
+        #cosmic-bg-canvas {
+            position: fixed;
+            inset: 0;
+            width: 100vw;
+            height: 100vh;
+            pointer-events: none;
+            z-index: 0;
+        }
+
+        #memory-stream-canvas {
+            position: fixed;
+            inset: 0;
+            width: 100vw;
+            height: 100vh;
+            pointer-events: none;
+            z-index: 4;
+        }
+
         .main-wrapper {
             max-width: 820px;
             margin: 0 auto;
-            /* 預留頂部 136px 空間給固定降下的玻璃頂部欄 */
-            padding: 136px 24px 100px;
+            padding: 124px 24px 100px;
+            position: relative;
+            z-index: 5;
         }
 
         header {
@@ -537,22 +575,21 @@
             position: relative;
         }
 
-        /* ===== 小介紹文字：在罐子往上淡入後，從罐口上方中間位置「扇形展開淡入」 ===== */
+        /* 小介紹文字：從罐口上方中間位置「扇形展開淡入」 */
         .fan-subtitle-stage {
             position: relative;
-            min-height: 64px;
+            min-height: 68px;
             display: flex;
             align-items: center;
             justify-content: center;
-            margin: 12px auto 18px;
+            margin: 12px auto 0;
             z-index: 10;
             perspective: 600px;
         }
 
-        /* 罐口釋放文字時的溫暖微光薄霧 */
         .jar-mouth-mist {
             position: absolute;
-            bottom: -28px;
+            bottom: -36px;
             left: 50%;
             transform: translateX(-50%) scale(0.4);
             width: 260px;
@@ -570,23 +607,28 @@
         }
 
         #hero-subtitle {
-            font-size: 1.12rem;
+            font-size: 1.08rem;
             color: var(--text-sub);
-            max-width: 540px;
+            max-width: 520px;
             line-height: 1.75;
             display: flex;
             flex-wrap: wrap;
             justify-content: center;
             position: relative;
             z-index: 2;
+            transition: color 0.4s ease, text-shadow 0.4s ease;
         }
 
-        /* 每個字元初始收攏在下方「罐口正中央」，並帶有扇形放射角度 (--fan-angle) 與模糊 */
+        body.cosmic-text-mode #hero-subtitle {
+            color: rgba(255, 255, 255, 0.88);
+            text-shadow: 0 2px 12px rgba(0, 0, 0, 0.5);
+        }
+
         .fan-char {
             display: inline-block;
             opacity: 0;
             filter: blur(8px);
-            transform: translate(var(--start-x, 0px), var(--start-y, 58px)) rotate(var(--fan-angle, 0deg)) scale(0.25);
+            transform: translate(var(--start-x, 0px), var(--start-y, 75px)) rotate(var(--fan-angle, 0deg)) scale(0.25);
             transform-origin: 50% 140%;
             transition: 
                 opacity 0.85s cubic-bezier(0.16, 1, 0.3, 1),
@@ -596,25 +638,23 @@
             will-change: transform, opacity, filter;
         }
 
-        /* 觸發扇形展開：字元從罐口向上如扇面般優雅展開歸位 */
         .fan-subtitle-stage.release-fan .fan-char {
             opacity: 1;
             filter: blur(0px);
             transform: translate(0px, 0px) rotate(0deg) scale(1);
         }
 
-        /* ===== 下載按鈕與背面隨滑動而動的 3D 玻璃故事罐舞台 ===== */
+        /* ===== 【位置調下】將罐子位置調低，留出上方充足空間與滑動時間展示飛入與星雲釋放動畫 ===== */
         .jar-download-stage {
             position: relative;
             max-width: 420px;
-            height: 410px;
-            margin: 0 auto 56px;
+            height: 440px;
+            margin: 62px auto 86px;
             display: flex;
             align-items: center;
             justify-content: center;
         }
 
-        /* 背面故事罐：往上淡入 (讓人聯想到往上裝進兩個下載按鈕) */
         #hero-jar-backdrop {
             position: absolute;
             inset: 0;
@@ -626,8 +666,10 @@
             transform: translateY(56px) scale(0.95);
             transition: opacity 0.95s cubic-bezier(0.16, 1, 0.3, 1),
                         transform 0.95s cubic-bezier(0.16, 1, 0.3, 1);
-            pointer-events: none;
-            z-index: 1;
+            z-index: 2;
+            cursor: pointer;
+            user-select: none;
+            -webkit-tap-highlight-color: transparent;
         }
 
         #hero-jar-backdrop.jar-fade-up {
@@ -635,7 +677,6 @@
             transform: translateY(0px) scale(1);
         }
 
-        /* 隨滑動而動的內部容器 */
         #scroll-reactive-jar {
             display: flex;
             flex-direction: column;
@@ -643,123 +684,145 @@
             will-change: transform;
         }
 
-        /* 1:1 還原你白晝版截圖中的黑色直紋瓶蓋 (會隨罐口釋放文字與滑動微微開啟) */
+        /* 黑色直紋瓶蓋 (支援點擊開啟與滑動微啟) */
         .hero-jar-lid {
             width: 216px;
             height: 36px;
             border-radius: 5px;
             background: 
                 repeating-linear-gradient(90deg, 
-                    #2c2c30 0px, #2c2c30 2.5px, 
-                    #0d0d10 2.5px, #0d0d10 8px),
-                linear-gradient(180deg, #252529 0%, #101014 100%);
-            border: 1px solid rgba(255, 255, 255, 0.25);
-            box-shadow: 0 6px 16px rgba(0, 0, 0, 0.18);
+                    #34343a 0px, #34343a 2.5px, 
+                    #0e0e12 2.5px, #0e0e12 8px),
+                linear-gradient(180deg, #2a2a30 0%, #101014 100%);
+            border: 1px solid rgba(255, 255, 255, 0.28);
+            box-shadow: 0 6px 18px rgba(0, 0, 0, 0.25);
             position: relative;
-            z-index: 4;
-            transition: transform 0.75s cubic-bezier(0.16, 1, 0.3, 1);
+            z-index: 5;
+            transform-origin: 15% 50%;
+            transition: transform 0.85s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.4s ease;
             will-change: transform;
         }
 
-        /* 當釋放扇形文字時，瓶蓋輕輕向上微啟 */
+        #hero-jar-backdrop:hover .hero-jar-lid {
+            box-shadow: 0 8px 22px rgba(212, 163, 115, 0.32);
+        }
+
+        /* 預設釋放小介紹文字時的微啟 */
         .jar-lid-open .hero-jar-lid {
-            transform: translateY(-7px) rotate(-1.2deg);
+            transform: translateY(-8px) rotate(-1.5deg);
+        }
+
+        /* 【點擊蓋子/罐身打開罐子後】：瓶蓋大幅度優雅掀開，釋放宇宙星雲與記憶流 */
+        .jar-clicked-open .hero-jar-lid {
+            transform: translateY(-46px) translateX(-16px) rotate(-15deg) !important;
+            box-shadow: 0 16px 32px rgba(0, 0, 0, 0.45), 0 0 20px rgba(180, 140, 255, 0.35);
         }
 
         .hero-jar-neck {
             width: 190px;
-            height: 11px;
-            background: linear-gradient(90deg, rgba(220, 225, 235, 0.65) 0%, rgba(255, 255, 255, 0.9) 50%, rgba(210, 215, 225, 0.65) 100%);
+            height: 12px;
+            background: linear-gradient(90deg, rgba(220, 225, 235, 0.65) 0%, rgba(255, 255, 255, 0.92) 50%, rgba(210, 215, 225, 0.65) 100%);
             border-left: 1.5px solid rgba(180, 185, 195, 0.6);
             border-right: 1.5px solid rgba(180, 185, 195, 0.6);
             z-index: 3;
             position: relative;
+            box-shadow: 0 0 18px rgba(255, 220, 185, 0.4);
         }
 
-        /* 1:1 還原你截圖中的圓角透明玻璃罐身 + 夢幻莓果雲霧色澤 + 底部暖橘粉環境光暈 */
-        .hero-jar-body {
+        /* 圓角透明玻璃罐身 (隨宇宙背景染色同步強化底部暖橘環境光暈，如圖二) */
+        #hero-jar-body-el {
             width: 286px;
-            height: 332px;
+            height: 342px;
             border-radius: 38px;
             background: 
-                radial-gradient(circle at 30% 78%, rgba(195, 120, 155, 0.38) 0%, transparent 55%),
-                radial-gradient(circle at 75% 70%, rgba(185, 45, 75, 0.32) 0%, transparent 50%),
+                radial-gradient(circle at 50% 68%, rgba(255, 215, 175, 0.28) 0%, transparent 58%),
+                radial-gradient(circle at 30% 78%, rgba(195, 120, 155, 0.36) 0%, transparent 55%),
+                radial-gradient(circle at 75% 70%, rgba(185, 45, 75, 0.28) 0%, transparent 50%),
                 linear-gradient(168deg, 
-                    rgba(185, 200, 225, 0.55) 0%, 
-                    rgba(145, 150, 185, 0.48) 46%, 
-                    rgba(95, 75, 115, 0.62) 100%);
-            border: 3.5px solid rgba(255, 255, 255, 0.88);
+                    rgba(185, 200, 225, calc(0.48 - var(--cosmic-dye) * 0.16)) 0%, 
+                    rgba(145, 150, 185, calc(0.42 - var(--cosmic-dye) * 0.14)) 46%, 
+                    rgba(125, 95, 115, calc(0.56 - var(--cosmic-dye) * 0.1)) 100%);
+            border: 3.5px solid rgba(255, 255, 255, calc(0.88 - var(--cosmic-dye) * 0.32));
             box-shadow: 
-                0 24px 45px rgba(235, 135, 110, 0.28),
-                0 8px 25px rgba(30, 25, 45, 0.1),
-                inset 0 0 28px rgba(255, 255, 255, 0.55);
+                0 26px 50px rgba(225, 115, 65, calc(0.24 + var(--cosmic-dye) * 0.28)),
+                0 8px 25px rgba(30, 25, 45, 0.15),
+                inset 0 0 28px rgba(255, 255, 255, calc(0.55 - var(--cosmic-dye) * 0.25));
             position: relative;
             overflow: hidden;
-            backdrop-filter: blur(8px);
-            -webkit-backdrop-filter: blur(8px);
+            backdrop-filter: blur(6px);
+            -webkit-backdrop-filter: blur(6px);
+            transition: border-color 0.4s ease, box-shadow 0.4s ease;
         }
 
-        /* 罐身左側標誌性斜長白色玻璃高光 (還原截圖) */
         .hero-jar-sheen {
             position: absolute;
             top: 16px;
             left: 20px;
             width: 44px;
             height: 84%;
-            background: linear-gradient(180deg, rgba(255, 255, 255, 0.68) 0%, rgba(255, 255, 255, 0.08) 100%);
+            background: linear-gradient(180deg, rgba(255, 255, 255, calc(0.65 - var(--cosmic-dye) * 0.22)) 0%, rgba(255, 255, 255, 0.05) 100%);
             transform: skewX(-6deg);
             border-radius: 10px;
             pointer-events: none;
-            will-change: transform;
+            z-index: 4;
         }
 
-        /* 罐身右側細白反光邊緣 (還原截圖) */
         .hero-jar-rim-light {
             position: absolute;
             top: 26px;
             right: 11px;
             width: 3.5px;
             height: 78%;
-            background: rgba(255, 255, 255, 0.85);
+            background: rgba(255, 255, 255, 0.82);
             border-radius: 3px;
             pointer-events: none;
+            z-index: 4;
         }
 
-        /* 罐內隨滑動飄浮的故事微光粒子 */
-        .jar-floating-orb {
+        .jar-bottom-seep-glow {
             position: absolute;
-            border-radius: 50%;
-            background: radial-gradient(circle, rgba(255, 255, 255, 0.85) 0%, rgba(255, 225, 190, 0.3) 60%, transparent 100%);
+            bottom: -4px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 160px;
+            height: 18px;
+            background: radial-gradient(ellipse at 50% 50%, rgba(255, 215, 150, 0.85) 0%, rgba(181, 255, 233, 0.45) 50%, transparent 80%);
+            opacity: var(--seep-glow-opacity, 0);
+            filter: blur(4px);
+            transition: opacity 0.3s ease;
             pointer-events: none;
-            will-change: transform;
+            z-index: 5;
         }
-
-        .orb-1 { width: 36px; height: 36px; bottom: 22%; left: 22%; }
-        .orb-2 { width: 24px; height: 24px; bottom: 38%; right: 20%; }
-        .orb-3 { width: 18px; height: 18px; top: 28%; left: 48%; }
 
         .hero-jar-caption {
             position: absolute;
-            bottom: 18px;
+            bottom: 16px;
             left: 0;
             right: 0;
             text-align: center;
-            font-size: 0.72rem;
-            color: rgba(255, 255, 255, 0.85);
+            font-size: 0.74rem;
+            color: rgba(255, 255, 255, 0.92);
             letter-spacing: 0.04em;
             font-weight: 500;
-            text-shadow: 0 1px 4px rgba(0, 0, 0, 0.3);
+            text-shadow: 0 1px 6px rgba(0, 0, 0, 0.45);
+            z-index: 5;
+            transition: color 0.3s ease, transform 0.3s ease;
         }
 
-        /* ===== 裝在罐子正中央的兩個下載按鈕 (App Store & Google Play) ===== */
+        #hero-jar-backdrop:hover .hero-jar-caption {
+            color: #fff6b0;
+            transform: scale(1.04);
+        }
+
+        /* 正面兩個下載按鈕：App Store & Google Play */
         .store-buttons-group {
             position: relative;
-            z-index: 5;
+            z-index: 8;
             display: flex;
             flex-direction: column;
             gap: 14px;
             width: 224px;
-            margin-top: 34px;
+            margin-top: 26px;
             opacity: 0;
             transform: translateY(20px);
             transition: opacity 0.8s cubic-bezier(0.16, 1, 0.3, 1),
@@ -822,7 +885,78 @@
             letter-spacing: -0.01em;
         }
 
-        /* ================= 其餘內容區塊淡入與排版 ================= */
+        /* ================= 5. 由罐底滲出粒子所組成的文字介紹框 (.particle-formed-card) ================= */
+        .features-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+            gap: 22px;
+            text-align: left;
+            position: relative;
+            z-index: 6;
+            padding-top: 12px;
+        }
+
+        .feature-card.particle-formed-card {
+            background: rgba(255, 255, 255, calc(0.18 + var(--card-materialize, 0) * 0.78));
+            padding: 28px 24px;
+            border-radius: 20px;
+            border: 1.5px solid rgba(200, 150, 102, calc(0.18 + (1 - var(--card-materialize, 0)) * 0.42));
+            box-shadow: 
+                0 10px 28px rgba(0, 0, 0, calc(var(--card-materialize, 0) * 0.12)),
+                0 0 calc((1 - var(--card-materialize, 0)) * 18px) rgba(255, 215, 150, calc((1 - var(--card-materialize, 0)) * 0.45));
+            opacity: calc(0.12 + var(--card-materialize, 0) * 0.88);
+            transform: translateY(calc((1 - var(--card-materialize, 0)) * 22px)) scale(calc(0.95 + var(--card-materialize, 0) * 0.05));
+            filter: blur(calc((1 - var(--card-materialize, 0)) * 3.5px));
+            transition: transform 0.25s ease, box-shadow 0.25s ease, background 0.35s ease, color 0.35s ease;
+            position: relative;
+            overflow: hidden;
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+        }
+
+        body.cosmic-text-mode .feature-card.particle-formed-card {
+            background: rgba(26, 20, 42, calc(0.25 + var(--card-materialize, 0) * 0.65));
+            border-color: rgba(230, 190, 138, calc(0.25 + var(--card-materialize, 0) * 0.25));
+        }
+
+        body.cosmic-text-mode .feature-card.particle-formed-card h3 {
+            color: #ffffff;
+        }
+
+        body.cosmic-text-mode .feature-card.particle-formed-card p {
+            color: rgba(255, 255, 255, 0.76);
+        }
+
+        .feature-card.particle-formed-card::before {
+            content: "";
+            position: absolute;
+            top: 0;
+            left: 10%;
+            right: 10%;
+            height: 2.5px;
+            background: linear-gradient(90deg, transparent, rgba(230, 180, 120, 0.9), rgba(181, 255, 233, 0.8), transparent);
+            opacity: var(--card-glow-top, 0);
+            transition: opacity 0.3s ease;
+        }
+
+        .feature-card:hover {
+            transform: translateY(-3px);
+        }
+
+        .feature-card h3 {
+            font-size: 1.1rem;
+            margin-bottom: 8px;
+            color: var(--text-main);
+            transition: color 0.35s ease;
+        }
+
+        .feature-card p {
+            font-size: 0.93rem;
+            color: var(--text-sub);
+            transition: color 0.35s ease;
+        }
+
+        /* 其餘內容區塊 */
         .content-fade-up {
             opacity: 0;
             transform: translateY(28px);
@@ -835,47 +969,18 @@
             transform: translateY(0);
         }
 
-        .features-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
-            gap: 20px;
-            text-align: left;
-        }
-
-        .feature-card {
-            background: var(--card-bg);
-            padding: 28px 24px;
-            border-radius: 20px;
-            border: 1px solid var(--border-light);
-            box-shadow: 0 4px 18px rgba(0, 0, 0, 0.025);
-            transition: transform 0.25s ease;
-        }
-
-        .feature-card:hover {
-            transform: translateY(-3px);
-        }
-
-        .feature-card h3 {
-            font-size: 1.1rem;
-            margin-bottom: 8px;
-            color: var(--text-main);
-        }
-
-        .feature-card p {
-            font-size: 0.93rem;
-            color: var(--text-sub);
-        }
-
-        /* Q&A / Help 區塊 (對應選單第 2 項) */
         .qa-section,
         .philosophy-section {
             margin: 56px 0;
             padding: 42px 34px;
-            background: var(--card-bg);
+            background: rgba(255, 255, 255, 0.94);
             border-radius: 24px;
             border: 1px solid var(--border-light);
-            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.025);
+            box-shadow: 0 8px 28px rgba(0, 0, 0, 0.06);
             scroll-margin-top: 130px;
+            position: relative;
+            z-index: 6;
+            backdrop-filter: blur(12px);
         }
 
         .section-tag {
@@ -894,6 +999,7 @@
             font-weight: 700;
             margin-bottom: 18px;
             letter-spacing: -0.01em;
+            color: var(--text-main);
         }
 
         .qa-item {
@@ -924,19 +1030,21 @@
             margin-bottom: 0;
         }
 
-        /* 支持開發與聯絡作者區塊 (對應選單第 3 項) */
         .support-section {
             text-align: center;
             padding: 52px 30px;
-            background: linear-gradient(180deg, #ffffff 0%, #f3f2f7 100%);
+            background: linear-gradient(180deg, rgba(255, 255, 255, 0.96) 0%, rgba(243, 242, 247, 0.94) 100%);
             border-radius: 24px;
             border: 1px solid var(--border-light);
             scroll-margin-top: 130px;
+            position: relative;
+            z-index: 6;
         }
 
         .support-section h2 {
             font-size: 1.5rem;
             margin-bottom: 12px;
+            color: var(--text-main);
         }
 
         .support-section p {
@@ -971,13 +1079,20 @@
             margin-top: 60px;
             font-size: 0.85rem;
             color: var(--text-sub);
+            position: relative;
+            z-index: 6;
+            transition: color 0.35s ease;
+        }
+
+        body.cosmic-text-mode footer {
+            color: rgba(255, 255, 255, 0.65);
         }
 
         .replay-btn {
             margin-top: 14px;
             background: none;
             border: 1px solid var(--border-light);
-            color: var(--text-sub);
+            color: inherit;
             padding: 6px 14px;
             border-radius: 20px;
             font-size: 0.8rem;
@@ -985,25 +1100,36 @@
             transition: all 0.2s;
         }
 
+        body.cosmic-text-mode .replay-btn {
+            border-color: rgba(255, 255, 255, 0.25);
+        }
+
         .replay-btn:hover {
-            color: var(--text-main);
-            border-color: var(--text-sub);
+            opacity: 0.85;
+            transform: translateY(-1px);
         }
     </style>
 </head>
 <body class="animating">
 
-    <!-- ================= 1. 透明玻璃切面頂部欄 (開場動畫完成後，從畫面外上方絲滑降下成為標題與 Icon 的底層板面) ================= -->
+    <!-- 底層畫布：圖二深色宇宙星雲與星星從罐口釋放並染滿背景 -->
+    <canvas id="cosmic-bg-canvas"></canvas>
+
+    <!-- 上層畫布：80% 相片 + 20% 信件飛入罐口、數位記憶集合體、底部粒子滲出組成下方介紹框 -->
+    <canvas id="memory-stream-canvas"></canvas>
+
+    <!-- ================= 1. 透明玻璃切面頂部欄 (含雙層弧形切面線條層次，無下方多餘直線) ================= -->
     <div id="glass-top-plate">
-        <div class="glass-plate-surface"></div>
+        <div class="glass-plate-surface">
+            <!-- 距離下緣上方 4.5px 的內層隱約切面線 (還原圖一上方隱約見到的線條層次) -->
+            <div class="glass-plate-inner-bevel"></div>
+        </div>
         <div class="glass-plate-controls">
-            <!-- 左側 App 2x2 圖示 -->
             <div class="app-left-badge" title="YourStoryJar">
                 <span>⊞</span><span>🎨</span>
                 <span class="plus-box">+</span><span>🫙</span>
             </div>
 
-            <!-- 右側三橫線選單按鈕 (☰) + 3 個選項下拉選單 -->
             <div class="menu-wrapper">
                 <button id="menu-toggle-btn" class="hamburger-btn" aria-label="Menu" onclick="toggleTopMenu(event)">
                     <span class="hamburger-line"></span>
@@ -1063,7 +1189,6 @@
     <div id="splash-overlay">
         <div id="anim-stage">
             
-            <!-- 60fps 連續線條變形畫布 -->
             <svg id="morph-svg-layer" viewBox="-370 -140 740 280">
                 <defs>
                     <path id="ref-jar-silhouette" d="M -39.5 -65 L 39.5 -65 C 47.5 -65, 49.5 -61, 49.5 -54.5 C 49.5 -48, 47.5 -44, 40.5 -44 C 41.5 -30, 64.5 -22, 64.5 2 C 64.5 21, 64.5 42, 59 56.5 C 53 69, 36 74, 0 74 C -36 74, -53 69, -59 56.5 C -64.5 42, -64.5 21, -64.5 2 C -64.5 -22, -41.5 -30, -40.5 -44 C -47.5 -44, -49.5 -48, -49.5 -54.5 C -49.5 -61, -47.5 -65, -39.5 -65 Z" />
@@ -1142,29 +1267,25 @@
                 <p id="hero-subtitle" aria-label="為你的生活碎片留下歸屬，一個專注於安靜記錄與珍藏回憶的故事罐。"></p>
             </div>
 
-            <!-- 兩個下載按鈕 + 背面隨滑動而動的 3D 玻璃故事罐 -->
+            <!-- 兩個下載按鈕 + 背面可點擊開啟/隨滑動而動的 3D 玻璃故事罐 (已調低位置，預留充足空間) -->
             <div class="jar-download-stage">
                 
-                <!-- 背面故事罐 (先往上淡入，就像往上把兩個下載按鈕裝進罐子裡) -->
-                <div id="hero-jar-backdrop">
+                <!-- 背面故事罐：點擊瓶蓋或罐身可打開罐子釋放圖二宇宙星空，並在染達 78% 時啟動無限飛入動畫 -->
+                <div id="hero-jar-backdrop" onclick="handleJarOpenClick(event)" title="Tap lid / body to open">
                     <div id="scroll-reactive-jar">
                         <div id="interactive-jar-lid" class="hero-jar-lid"></div>
-                        <div class="hero-jar-neck"></div>
-                        <div class="hero-jar-body">
+                        <div id="jar-mouth-anchor" class="hero-jar-neck"></div>
+                        <div id="hero-jar-body-el">
                             <div id="interactive-jar-sheen" class="hero-jar-sheen"></div>
                             <div class="hero-jar-rim-light"></div>
-                            <!-- 隨滑動浮動的記憶光點 -->
-                            <div class="jar-floating-orb orb-1"></div>
-                            <div class="jar-floating-orb orb-2"></div>
-                            <div class="jar-floating-orb orb-3"></div>
-                            <div class="hero-jar-caption">Tap lid / body to open</div>
+                            <div id="jar-seep-glow" class="jar-bottom-seep-glow"></div>
+                            <div id="jar-open-caption" class="hero-jar-caption">Tap lid / body to open</div>
                         </div>
                     </div>
                 </div>
 
                 <!-- 正面兩個下載按鈕：App Store & Google Play -->
                 <div id="download-buttons-box" class="store-buttons-group">
-                    <!-- App Store 下載按鈕 (請將 href 替換為你的 App Store 連結) -->
                     <a href="#appstore-link" class="store-btn">
                         <svg viewBox="0 0 384 512">
                             <path d="M318.7 268.7c-.2-36.7 16.4-64.4 50-84.8-18.8-26.9-47.2-41.7-84.7-44.6-35.5-2.8-74.3 20.7-88.5 20.7-15 0-49.4-19.7-76.4-19.7C63.3 141.2 4 184.8 4 273.5q0 39.3 14.4 81.2c12.8 36.7 59 126.7 107.2 125.2 25.2-.6 43-17.9 75.8-17.9 31.8 0 48.3 17.9 76.4 17.9 48.6-.7 90.4-82.5 102.6-119.3-65.2-30.7-61.7-90-61.7-91.9zm-56.6-164.2c27.3-32.4 24.8-61.9 24-72.5-24.1 1.4-52 16.4-67.9 34.9-17.5 19.8-27.8 44.3-25.6 71.9 26.1 2 49.9-11.4 69.5-34.3z"/>
@@ -1175,7 +1296,6 @@
                         </div>
                     </a>
 
-                    <!-- Google Play 下載按鈕 (請將 href 替換為你的 Google Play 連結) -->
                     <a href="#googleplay-link" class="store-btn">
                         <svg viewBox="0 0 512 512">
                             <path d="M325.3 234.3L104.6 13l280.8 161.2-60.1 60.1zM47 0C34 6.8 25.3 19.2 25.3 35.3v441.3c0 16.1 8.7 28.5 21.7 35.3l256.6-256L47 0zm425.2 225.6l-58.9-34.1-65.7 64.5 65.7 64.5 60.1-34.1c18-14.3 18-46.5-1.2-60.8zM104.6 499l280.8-161.2-60.1-60.1L104.6 499z"/>
@@ -1189,24 +1309,24 @@
 
             </div>
 
-            <!-- 特色小卡 -->
-            <div class="features-grid content-fade-up">
-                <div class="feature-card">
+            <!-- 下方文字介紹框：由記憶集合體底部分解滲出的粒子所組成 -->
+            <div id="particle-target-cards" class="features-grid">
+                <div class="feature-card particle-formed-card">
                     <h3>極簡無干擾</h3>
                     <p>去除所有多餘介面與喧囂，打開罐子，專注於記錄此刻的真實想法。</p>
                 </div>
-                <div class="feature-card">
+                <div class="feature-card particle-formed-card">
                     <h3>私密與安全</h3>
                     <p>你的故事完全屬於你自己，沒有社交壓力，數據安心留在身邊。</p>
                 </div>
-                <div class="feature-card">
+                <div class="feature-card particle-formed-card">
                     <h3>溫暖的回顧</h3>
                     <p>隨時搖一搖或打開時光瓶，重新遇見過去某些特別的日子與心情。</p>
                 </div>
             </div>
         </header>
 
-        <!-- Q&A / Help 區塊 (對應選單第 2 項) -->
+        <!-- Q&A / Help 區塊 -->
         <section id="qa-help-section" class="qa-section content-fade-up">
             <span class="section-tag">Q&amp;A / Help</span>
             <h2>常見問題與幫助</h2>
@@ -1220,7 +1340,7 @@
             </div>
         </section>
 
-        <!-- 創作理念與關於作者 (對應選單第 3 項 Contact & About Developer) -->
+        <!-- 創作理念與關於作者 -->
         <section id="about-developer-section" class="philosophy-section content-fade-up">
             <span class="section-tag">Contact &amp; About Developer</span>
             <h2>創作理念：為什麼打造 YourStoryJar？</h2>
@@ -1234,7 +1354,6 @@
             <h2>支持獨立開發</h2>
             <p>YourStoryJar 由個人獨立維護，堅持純粹的使用體驗。如果這個小罐子曾為你帶來一點平靜或溫暖，歡迎請我喝杯咖啡，支持我持續為它注入新功能。</p>
             
-            <!-- 請記得將下方網址替換為你的 Buy Me a Coffee 連結 -->
             <a href="https://www.buymeacoffee.com/你的帳號" target="_blank" class="coffee-button">
                 ☕ Buy me a coffee
             </a>
@@ -1247,7 +1366,7 @@
 
     </div>
 
-    <!-- ================= 4. 動畫時間軸、扇形文字生成與滑動互動引擎 ================= -->
+    <!-- ================= 4. 雙模式引擎：隨滑動同步控制 (相片飛入+背景染色) vs 點擊開蓋釋放宇宙星空 (78% 絲滑接入無限飛入) ================= -->
     <script>
         // 1. 自動偵測 GitHub 倉庫中的 icon2.png
         (function detectCustomIcon2() {
@@ -1277,13 +1396,10 @@
                 span.className = 'fan-char';
                 span.textContent = ch;
 
-                // 計算每個字元相對於中間罐口的正規化偏移 (-1 到 +1)
                 const norm = (i - mid) / mid;
-                // 初始收攏在罐口正中央，展開時呈現優雅的扇形角度與弧度
                 const fanAngle = (norm * 42).toFixed(1) + 'deg';
                 const startX = (-norm * 145).toFixed(1) + 'px';
-                const startY = (54 + Math.abs(norm) * 26).toFixed(1) + 'px';
-                // 從中間往兩側如扇面般依序綻放
+                const startY = (72 + Math.abs(norm) * 28).toFixed(1) + 'px';
                 const delay = (Math.abs(norm) * 0.28).toFixed(2) + 's';
 
                 span.style.setProperty('--fan-angle', fanAngle);
@@ -1312,38 +1428,716 @@
 
         window.addEventListener('click', closeTopMenu);
 
-        // 4. 隨用戶滑動畫面而動的背面故事罐動畫 (Scroll-Reactive Jar)
+        // ================= 4. 核心雙畫布系統：圖二宇宙星空釋放染色 + 相片(80%)信件(20%)雙模式引擎 =================
+        const cosmicCanvas = document.getElementById('cosmic-bg-canvas');
+        const cosmicCtx = cosmicCanvas.getContext('2d');
+
+        const streamCanvas = document.getElementById('memory-stream-canvas');
+        const streamCtx = streamCanvas.getContext('2d');
+
+        const PHOTO_PALETTES = [
+            ['#ff9a9e', '#fecfef', '#fff6b0'],
+            ['#a1c4fd', '#c2e9fb', '#ffffff'],
+            ['#84fab0', '#8fd3f4', '#e0ffe8'],
+            ['#fccb90', '#d57eeb', '#ffd1dc'],
+            ['#e0c3fc', '#8ec5fc', '#ffffff']
+        ];
+
+        // 狀態變數
+        let smoothScrollP = 0;         // 平滑後的滑動進度 (0 ~ 1)，隨用戶滑動而動，停下即停下
+        let targetScrollP = 0;         // 目標滑動進度
+        let isJarClickedOpen = false;  // 是否已點擊瓶蓋/罐身打開罐子
+        let clickDyeProgress = 0;      // 點擊開蓋後的宇宙背景染色進度 (0 ~ 1)
+        let continuousBlend = 0;       // 背景染達 78% 後絲滑接入無限飛入動畫的混合權重 (0 ~ 1)
+
+        // (A) 宇宙星空星星與星塵庫 (還原圖二的深色宇宙與十字星芒)
+        let cosmicStars = [];
+        // (B) 隨滑動而動的決定性相片(80%)/信件(20%)與滲出粒子庫 (Scroll-Scrubbed Pool)
+        let scrollBoundMemories = [];
+        let scrollBoundParticles = [];
+        // (C) 點擊開蓋染達 78% 後持續飛入的相片(80%)/信件(20%)與滲出粒子庫 (Continuous Pool)
+        let continuousMemories = [];
+        let continuousParticles = [];
+        // (D) 罐內凝聚的「數位記憶集合體」成員
+        let collectiveNodes = [];
+
+        function resizeCanvases() {
+            const dpr = window.devicePixelRatio || 1;
+            const w = window.innerWidth;
+            const h = window.innerHeight;
+
+            cosmicCanvas.width = w * dpr;
+            cosmicCanvas.height = h * dpr;
+            cosmicCtx.setTransform(dpr, 0, 0, dpr, 0, 0);
+
+            streamCanvas.width = w * dpr;
+            streamCanvas.height = h * dpr;
+            streamCtx.setTransform(dpr, 0, 0, dpr, 0, 0);
+        }
+        window.addEventListener('resize', resizeCanvases);
+        resizeCanvases();
+
+        // 初始化圖二宇宙背景中的星星與十字星芒 (+ / ✦)
+        function initCosmicStars() {
+            cosmicStars = [];
+            for (let i = 0; i < 95; i++) {
+                const isCrossStar = i < 16; // 圖二中標誌性的十字星芒 (+)
+                cosmicStars.push({
+                    normX: Math.random(),
+                    normY: Math.random(),
+                    size: isCrossStar ? (4.5 + Math.random() * 3.5) : (0.9 + Math.random() * 1.8),
+                    isCross: isCrossStar,
+                    twinkleSpeed: 0.0015 + Math.random() * 0.003,
+                    phase: Math.random() * Math.PI * 2,
+                    color: i % 5 === 0 ? '#ffe5b4' : (i % 7 === 0 ? '#d8c8ff' : '#ffffff')
+                });
+            }
+        }
+        initCosmicStars();
+
+        // 初始化「隨用戶滑動而動」的決定性相片(80%)、信件(20%)與底部滲出粒子 (不滑動時靜止，滑動時隨進度飛入)
+        function initScrollScrubbedPool() {
+            scrollBoundMemories = [];
+            const totalItems = 48;
+            for (let i = 0; i < totalItems; i++) {
+                const isPhoto = (i % 5 !== 0); // 嚴格 80% 相片、20% 信件
+                const side = i % 4;
+                let normStartX, normStartY;
+                if (side === 0) { // 左側
+                    normStartX = -0.06 - (i % 3) * 0.03;
+                    normStartY = 0.08 + ((i * 17) % 75) / 100;
+                } else if (side === 1) { // 右側
+                    normStartX = 1.06 + (i % 3) * 0.03;
+                    normStartY = 0.08 + ((i * 23) % 75) / 100;
+                } else if (side === 2) { // 左上與右上
+                    normStartX = (i % 2 === 0) ? (0.05 + ((i * 13) % 30) / 100) : (0.65 + ((i * 13) % 30) / 100);
+                    normStartY = -0.06 - (i % 2) * 0.04;
+                } else { // 左下與右下
+                    normStartX = (i % 2 === 0) ? (0.04 + ((i * 19) % 24) / 100) : (0.72 + ((i * 19) % 24) / 100);
+                    normStartY = 0.55 + ((i * 11) % 38) / 100;
+                }
+
+                // 分布在滑動進度 0.01 ~ 0.96 之間
+                const startP = 0.01 + (i / totalItems) * 0.68;
+                const durationP = 0.28;
+
+                scrollBoundMemories.push({
+                    isPhoto,
+                    normStartX,
+                    normStartY,
+                    ctrlOffsetX: ((i * 37) % 140) - 70,
+                    ctrlLiftY: 85 + ((i * 29) % 95),
+                    startP,
+                    durationP,
+                    baseRot: ((i * 43) % 120 - 60) * (Math.PI / 180),
+                    rotSpan: (i % 2 === 0 ? 1 : -1) * 1.4,
+                    scale: 0.85 + (i % 4) * 0.09,
+                    palette: PHOTO_PALETTES[i % PHOTO_PALETTES.length]
+                });
+            }
+
+            // 隨滑動從罐底滲出飛往下方三個文字介紹框的決定性粒子
+            scrollBoundParticles = [];
+            const colors = ['#ffe5a3', '#ffc8d8', '#b5ffe9', '#e4d0ff', '#d4a373'];
+            for (let j = 0; j < 75; j++) {
+                scrollBoundParticles.push({
+                    cardIdx: j % 3,
+                    offsetXNorm: ((j * 19) % 100) / 100 - 0.5, // -0.5 ~ +0.5
+                    targetXNorm: 0.1 + ((j * 31) % 80) / 100,  // 0.1 ~ 0.9
+                    targetYNorm: ((j * 13) % 35) / 100,
+                    ctrlShiftX: ((j * 23) % 60) - 30,
+                    startP: 0.08 + (j / 75) * 0.65,
+                    durationP: 0.24,
+                    radius: 2.2 + (j % 3) * 0.9,
+                    color: colors[j % colors.length]
+                });
+            }
+        }
+        initScrollScrubbedPool();
+
+        // 初始化罐內「數位記憶集合體」的 42 個核心成員
+        function initCollectiveNodes() {
+            collectiveNodes = [];
+            for (let i = 0; i < 42; i++) {
+                const isPhoto = (i % 5 !== 0); // 80% 相片, 20% 信件
+                const angle = (i / 42) * Math.PI * 2 + (i % 3) * 0.2;
+                const radiusX = 14 + Math.pow((i * 17 % 100) / 100, 0.7) * 84;
+                const radiusY = 12 + Math.pow((i * 29 % 100) / 100, 0.7) * 50;
+                collectiveNodes.push({
+                    isPhoto,
+                    baseAngle: angle,
+                    orbitDir: i % 2 === 0 ? 1 : -1,
+                    rx: radiusX,
+                    ry: radiusY,
+                    rot: ((i * 19) % 60 - 30) * (Math.PI / 180),
+                    scale: 0.5 + (i % 4) * 0.08,
+                    palette: PHOTO_PALETTES[i % PHOTO_PALETTES.length],
+                    dissolvePhase: i * 0.4
+                });
+            }
+        }
+        initCollectiveNodes();
+
+        // 點擊瓶蓋或罐身：打開罐子 ➔ 釋放圖二宇宙與星星染滿背景 ➔ 染達 78% 絲滑接入無限飛入動畫
+        function handleJarOpenClick(e) {
+            if (document.body.classList.contains('animating')) return;
+            const jarBackdrop = document.getElementById('hero-jar-backdrop');
+            const captionEl = document.getElementById('jar-open-caption');
+
+            isJarClickedOpen = !isJarClickedOpen;
+            if (isJarClickedOpen) {
+                jarBackdrop.classList.add('jar-clicked-open');
+                if (captionEl) captionEl.textContent = '✨ Cosmic Memory Jar Opened';
+            } else {
+                jarBackdrop.classList.remove('jar-clicked-open');
+                if (captionEl) captionEl.textContent = 'Tap lid / body to open';
+                continuousMemories = [];
+                continuousParticles = [];
+            }
+        }
+
+        // 在「點擊開蓋且背景染達 78% 後」持續生成飛往罐口的相片(80%)與信件(20%)
+        function spawnContinuousMemory(mouthX, mouthY) {
+            if (continuousMemories.length > 52) return;
+            const isPhoto = Math.random() < 0.8;
+            const w = window.innerWidth;
+            const h = window.innerHeight;
+
+            const side = Math.floor(Math.random() * 4);
+            let startX, startY;
+            if (side === 0) {
+                startX = -40 - Math.random() * 60;
+                startY = Math.random() * h * 0.85;
+            } else if (side === 1) {
+                startX = w + 40 + Math.random() * 60;
+                startY = Math.random() * h * 0.85;
+            } else if (side === 2) {
+                startX = (Math.random() < 0.5 ? Math.random() * 0.35 : 0.65 + Math.random() * 0.35) * w;
+                startY = -40 - Math.random() * 50;
+            } else {
+                startX = (Math.random() < 0.5 ? Math.random() * 0.28 : 0.72 + Math.random() * 0.28) * w;
+                startY = h * (0.55 + Math.random() * 0.4);
+            }
+
+            const ctrlX = mouthX + (startX - mouthX) * 0.35 + (Math.random() - 0.5) * 90;
+            const ctrlY = Math.min(startY, mouthY) - 85 - Math.random() * 80;
+
+            continuousMemories.push({
+                isPhoto,
+                startX,
+                startY,
+                ctrlX,
+                ctrlY,
+                t: 0,
+                speed: 0.013 + Math.random() * 0.011,
+                rot: (Math.random() - 0.5) * 1.5,
+                rotSpeed: (Math.random() - 0.5) * 0.05,
+                scale: 0.85 + Math.random() * 0.35,
+                palette: PHOTO_PALETTES[Math.floor(Math.random() * PHOTO_PALETTES.length)]
+            });
+        }
+
+        function spawnContinuousParticle(jarBottomX, jarBottomY, cardRects) {
+            if (continuousParticles.length > 120 || cardRects.length === 0) return;
+            const targetCard = cardRects[Math.floor(Math.random() * cardRects.length)];
+            const startX = jarBottomX + (Math.random() - 0.5) * 130;
+            const startY = jarBottomY - 16 + (Math.random() - 0.5) * 14;
+            const endX = targetCard.left + 16 + Math.random() * Math.max(20, targetCard.width - 32);
+            const endY = targetCard.top + Math.random() * Math.min(45, targetCard.height * 0.35);
+
+            const colors = ['#ffe5a3', '#ffc8d8', '#b5ffe9', '#e4d0ff', '#d4a373'];
+            continuousParticles.push({
+                startX,
+                startY,
+                ctrlX: startX + (endX - startX) * 0.25 + (Math.random() - 0.5) * 40,
+                ctrlY: startY + (endY - startY) * 0.55,
+                endX,
+                endY,
+                t: 0,
+                speed: 0.017 + Math.random() * 0.015,
+                radius: 2.0 + Math.random() * 2.8,
+                color: colors[Math.floor(Math.random() * colors.length)]
+            });
+        }
+
+        // 繪製拍立得相片 (80%)
+        function drawMiniPhoto(ctx, x, y, scale, rot, palette, alpha) {
+            if (alpha <= 0.01) return;
+            ctx.save();
+            ctx.translate(x, y);
+            ctx.rotate(rot);
+            ctx.scale(scale, scale);
+            ctx.globalAlpha = Math.min(1, Math.max(0, alpha));
+
+            ctx.fillStyle = '#ffffff';
+            ctx.shadowColor = 'rgba(15, 12, 25, 0.28)';
+            ctx.shadowBlur = 8;
+            ctx.beginPath();
+            ctx.roundRect(-13, -15, 26, 30, 3.5);
+            ctx.fill();
+            ctx.shadowBlur = 0;
+
+            const grad = ctx.createLinearGradient(-10, -12, 10, 8);
+            grad.addColorStop(0, palette[0]);
+            grad.addColorStop(1, palette[1]);
+            ctx.fillStyle = grad;
+            ctx.beginPath();
+            ctx.roundRect(-10.5, -12.5, 21, 19, 2);
+            ctx.fill();
+
+            ctx.fillStyle = palette[2];
+            ctx.beginPath();
+            ctx.arc(4, -6, 3.2, 0, Math.PI * 2);
+            ctx.fill();
+
+            ctx.strokeStyle = 'rgba(30, 28, 36, 0.28)';
+            ctx.lineWidth = 1.4;
+            ctx.beginPath();
+            ctx.moveTo(-6, 10.5);
+            ctx.lineTo(6, 10.5);
+            ctx.stroke();
+
+            ctx.restore();
+        }
+
+        // 繪製火漆信件 (20%)
+        function drawMiniLetter(ctx, x, y, scale, rot, alpha) {
+            if (alpha <= 0.01) return;
+            ctx.save();
+            ctx.translate(x, y);
+            ctx.rotate(rot);
+            ctx.scale(scale, scale);
+            ctx.globalAlpha = Math.min(1, Math.max(0, alpha));
+
+            ctx.fillStyle = '#fff9f0';
+            ctx.shadowColor = 'rgba(15, 12, 25, 0.25)';
+            ctx.shadowBlur = 8;
+            ctx.beginPath();
+            ctx.roundRect(-15, -10, 30, 20, 3);
+            ctx.fill();
+            ctx.shadowBlur = 0;
+
+            ctx.strokeStyle = '#d8bfa3';
+            ctx.lineWidth = 1.2;
+            ctx.beginPath();
+            ctx.moveTo(-14, -9);
+            ctx.lineTo(0, 2);
+            ctx.lineTo(14, -9);
+            ctx.stroke();
+
+            ctx.fillStyle = '#e06355';
+            ctx.beginPath();
+            ctx.arc(0, 1.5, 3.2, 0, Math.PI * 2);
+            ctx.fill();
+
+            ctx.restore();
+        }
+
+        // 繪製從罐口釋放出的圖二「深邃宇宙星雲與十字星芒背景染色」
+        function renderCosmicDyeCanvas(now, dyeProgress, mouthX, mouthY) {
+            const w = window.innerWidth;
+            const h = window.innerHeight;
+            cosmicCtx.clearRect(0, 0, w, h);
+
+            if (dyeProgress <= 0.005) return;
+
+            cosmicCtx.save();
+
+            // 從罐口 (mouthX, mouthY) 優雅向外放射擴散的星雲圓形波前
+            const maxRadius = Math.hypot(Math.max(mouthX, w - mouthX), Math.max(mouthY, h - mouthY)) * 1.18;
+            const currentRadius = easeInOutCubic(dyeProgress) * maxRadius;
+
+            // 建立從罐口向外暈染的羽化遮罩區
+            const clipGrad = cosmicCtx.createRadialGradient(
+                mouthX, mouthY, Math.max(0, currentRadius * 0.55),
+                mouthX, mouthY, Math.max(10, currentRadius)
+            );
+
+            // 1. 繪製圖二的深色宇宙星空底色 (#07050f -> #160f2b -> #231442)
+            const spaceGrad = cosmicCtx.createLinearGradient(0, 0, 0, h);
+            spaceGrad.addColorStop(0, '#07050e');
+            spaceGrad.addColorStop(0.5, '#130c24');
+            spaceGrad.addColorStop(1, '#1d1136');
+            cosmicCtx.fillStyle = spaceGrad;
+            cosmicCtx.beginPath();
+            cosmicCtx.arc(mouthX, mouthY, currentRadius, 0, Math.PI * 2);
+            cosmicCtx.fill();
+
+            // 2. 罐子背後的深紫星雲與底部暖橘環境光暈 (100% 還原圖二氛圍)
+            const nebulaGrad = cosmicCtx.createRadialGradient(
+                mouthX, mouthY + 160, 15,
+                mouthX, mouthY + 160, Math.min(w * 0.85, 460)
+            );
+            nebulaGrad.addColorStop(0, `rgba(115, 70, 185, ${0.38 * dyeProgress})`);
+            nebulaGrad.addColorStop(0.5, `rgba(65, 38, 120, ${0.22 * dyeProgress})`);
+            nebulaGrad.addColorStop(1, 'rgba(20, 12, 38, 0)');
+            cosmicCtx.fillStyle = nebulaGrad;
+            cosmicCtx.beginPath();
+            cosmicCtx.arc(mouthX, mouthY, currentRadius, 0, Math.PI * 2);
+            cosmicCtx.fill();
+
+            // 3. 當星雲正在擴散時，描繪罐口釋放出的柔和星雲光環前緣
+            if (dyeProgress > 0.02 && dyeProgress < 0.98) {
+                const waveGrad = cosmicCtx.createRadialGradient(
+                    mouthX, mouthY, Math.max(0, currentRadius * 0.72),
+                    mouthX, mouthY, currentRadius
+                );
+                waveGrad.addColorStop(0, 'rgba(165, 125, 255, 0)');
+                waveGrad.addColorStop(0.7, `rgba(195, 160, 255, ${0.22 * (1 - dyeProgress)})`);
+                waveGrad.addColorStop(1, 'rgba(255, 220, 185, 0)');
+                cosmicCtx.fillStyle = waveGrad;
+                cosmicCtx.beginPath();
+                cosmicCtx.arc(mouthX, mouthY, currentRadius, 0, Math.PI * 2);
+                cosmicCtx.fill();
+            }
+
+            // 4. 繪製從罐口釋放並散布在宇宙中的星星與圖二標誌性十字星芒 (+)
+            cosmicStars.forEach((star, idx) => {
+                const finalX = star.normX * w;
+                const finalY = star.normY * h;
+                const distFromMouth = Math.hypot(finalX - mouthX, finalY - mouthY);
+
+                // 只有被罐口擴散波前覆蓋到的星星才會從罐口向外浮現
+                if (distFromMouth <= currentRadius) {
+                    const localAppear = Math.min(1, (currentRadius - distFromMouth) / 140);
+                    // 在擴散初期，星星帶有從罐口向外飄出的位移感
+                    const pullFactor = Math.max(0, 1 - dyeProgress * 1.15) * 0.35;
+                    const sx = finalX - (finalX - mouthX) * pullFactor;
+                    const sy = finalY - (finalY - mouthY) * pullFactor;
+
+                    const twinkle = 0.55 + 0.45 * Math.sin(now * star.twinkleSpeed + star.phase);
+                    const alpha = localAppear * twinkle * Math.min(1, dyeProgress * 1.3);
+
+                    cosmicCtx.save();
+                    cosmicCtx.globalAlpha = alpha;
+                    cosmicCtx.fillStyle = star.color;
+                    cosmicCtx.strokeStyle = star.color;
+
+                    if (star.isCross) {
+                        // 圖二中的十字星芒 (+)
+                        const arm = star.size;
+                        cosmicCtx.lineWidth = 1.15;
+                        cosmicCtx.beginPath();
+                        cosmicCtx.moveTo(sx - arm, sy);
+                        cosmicCtx.lineTo(sx + arm, sy);
+                        cosmicCtx.moveTo(sx, sy - arm);
+                        cosmicCtx.lineTo(sx, sy + arm);
+                        cosmicCtx.stroke();
+
+                        cosmicCtx.beginPath();
+                        cosmicCtx.arc(sx, sy, 1.3, 0, Math.PI * 2);
+                        cosmicCtx.fill();
+                    } else {
+                        cosmicCtx.beginPath();
+                        cosmicCtx.arc(sx, sy, star.size, 0, Math.PI * 2);
+                        cosmicCtx.fill();
+                    }
+                    cosmicCtx.restore();
+                }
+            });
+
+            cosmicCtx.restore();
+        }
+
+        // 監聽頁面滑動：更新 targetScrollP 以及罐子本身的微視差
         window.addEventListener('scroll', () => {
             if (document.body.classList.contains('animating')) return;
             const scrollY = window.scrollY;
-            const reactiveJar = document.getElementById('scroll-reactive-jar');
+            // 將 0 ~ 460px 的滑動距離映射為 0.0 ~ 1.0 的滑動進度
+            targetScrollP = Math.min(1, Math.max(0, scrollY / 460));
+
             const jarLid = document.getElementById('interactive-jar-lid');
             const jarSheen = document.getElementById('interactive-jar-sheen');
-            const orbs = document.querySelectorAll('.jar-floating-orb');
-
-            if (reactiveJar) {
-                // 罐子隨滑動產生柔和的視差與微傾角
-                const moveY = Math.min(40, scrollY * 0.12);
-                const tilt = Math.sin(scrollY * 0.012) * 2.2;
-                reactiveJar.style.transform = `translateY(${moveY}px) rotate(${tilt}deg)`;
-            }
-            if (jarLid) {
-                // 滑動時瓶蓋微微呼吸上浮
-                const lidLift = -7 - Math.min(14, scrollY * 0.06);
-                jarLid.style.transform = `translateY(${lidLift}px) rotate(${-1.2 - scrollY * 0.008}deg)`;
+            if (jarLid && !isJarClickedOpen) {
+                // 未點擊開蓋時，瓶蓋隨滑動距離同步打開
+                const lidLift = -8 - Math.min(26, scrollY * 0.08);
+                const lidRot = -1.5 - Math.min(8, scrollY * 0.022);
+                jarLid.style.transform = `translateY(${lidLift}px) rotate(${lidRot}deg)`;
             }
             if (jarSheen) {
-                // 玻璃切面高光隨滑動折射平移
                 const sheenShift = Math.sin(scrollY * 0.015) * 8;
                 jarSheen.style.transform = `skewX(-6deg) translateX(${sheenShift}px)`;
             }
-            orbs.forEach((orb, idx) => {
-                const orbY = -(scrollY * (0.15 + idx * 0.06)) % 120;
-                orb.style.transform = `translateY(${orbY}px)`;
-            });
         }, { passive: true });
 
-        // 5. 開場動畫與新進場時序引擎
+        // 60fps 主渲染迴圈
+        let lastFrameTime = performance.now();
+        function mainRenderLoop(now) {
+            const dt = Math.min(50, now - lastFrameTime);
+            lastFrameTime = now;
+
+            streamCtx.clearRect(0, 0, window.innerWidth, window.innerHeight);
+
+            if (!document.body.classList.contains('animating')) {
+                // 1. 平滑追蹤用戶滑動進度 (停下即平滑停住，不會無限自走)
+                smoothScrollP += (targetScrollP - smoothScrollP) * 0.14;
+                if (Math.abs(targetScrollP - smoothScrollP) < 0.0005) {
+                    smoothScrollP = targetScrollP;
+                }
+
+                // 2. 更新「點擊蓋子/罐身打開罐子」的宇宙釋放染色進度 (節奏優雅適中：約 1.85 秒完成全螢幕染色)
+                if (isJarClickedOpen) {
+                    clickDyeProgress = Math.min(1, clickDyeProgress + dt / 1850);
+                } else {
+                    clickDyeProgress = Math.max(0, clickDyeProgress - dt / 900);
+                }
+
+                // 3. 計算最終宇宙背景染色程度：
+                // 「隨用戶滑動畫面而動時，相片信件飛入與背景染色同時進行」 OR 「點擊開蓋後釋放宇宙染色」取最大值
+                const scrollDyeProgress = Math.min(1, smoothScrollP * 1.25);
+                const effectiveDyeProgress = Math.max(scrollDyeProgress, clickDyeProgress);
+
+                document.documentElement.style.setProperty('--cosmic-dye', effectiveDyeProgress.toFixed(3));
+                if (effectiveDyeProgress > 0.45) {
+                    document.body.classList.add('cosmic-text-mode');
+                } else {
+                    document.body.classList.remove('cosmic-text-mode');
+                }
+
+                const mouthEl = document.getElementById('jar-mouth-anchor');
+                const jarBodyEl = document.getElementById('hero-jar-body-el');
+                const cardEls = document.querySelectorAll('.particle-formed-card');
+
+                if (mouthEl && jarBodyEl) {
+                    const mouthRect = mouthEl.getBoundingClientRect();
+                    const jarRect = jarBodyEl.getBoundingClientRect();
+
+                    const mouthX = mouthRect.left + mouthRect.width / 2;
+                    const mouthY = mouthRect.top + mouthRect.height / 2;
+
+                    const collectiveCenterX = jarRect.left + jarRect.width / 2;
+                    const collectiveCenterY = jarRect.top + jarRect.height * 0.68;
+                    const jarBottomY = jarRect.bottom - 6;
+
+                    // 繪製底層：從罐口釋放的圖二宇宙星雲與星星背景染色
+                    renderCosmicDyeCanvas(now, effectiveDyeProgress, mouthX, mouthY);
+
+                    // 判斷記憶集合體是否仍在畫面內 (直到畫面往下滑落至集合體完全置於畫面外)
+                    const isCollectiveInView = (jarRect.bottom > 0 && jarRect.top < window.innerHeight);
+
+                    // 【關鍵時機】當點擊打開罐子、且宇宙背景染色達到 78% (clickDyeProgress >= 0.78) 後，絲滑接入「持續不斷播放」的飛入動畫！
+                    const isContinuousActive = isJarClickedOpen && (clickDyeProgress >= 0.78) && isCollectiveInView;
+                    if (isContinuousActive) {
+                        continuousBlend = Math.min(1, continuousBlend + dt / 500);
+                    } else {
+                        continuousBlend = Math.max(0, continuousBlend - dt / 400);
+                    }
+
+                    // 綜合集合體能量與下方三個文字介紹框的凝聚程度
+                    const activeEnergy = Math.max(smoothScrollP, continuousBlend * 0.92);
+                    const cardFormProgress = Math.min(1, Math.max(smoothScrollP * 1.15, continuousBlend));
+
+                    cardEls.forEach(card => {
+                        card.style.setProperty('--card-materialize', cardFormProgress.toFixed(3));
+                        card.style.setProperty('--card-glow-top', (0.65 + 0.35 * Math.sin(now * 0.004)) * cardFormProgress);
+                    });
+
+                    const seepGlow = document.getElementById('jar-seep-glow');
+                    if (seepGlow) {
+                        seepGlow.style.setProperty('--seep-glow-opacity', Math.min(1, activeEnergy * 1.2).toFixed(2));
+                    }
+
+                    // ================= (一) 繪製罐內的「數位記憶集合體」 =================
+                    if (activeEnergy > 0.01 && isCollectiveInView) {
+                        streamCtx.save();
+                        streamCtx.beginPath();
+                        streamCtx.roundRect(jarRect.left + 4, jarRect.top + 4, jarRect.width - 8, jarRect.height - 8, 34);
+                        streamCtx.clip();
+
+                        const coreRadius = (42 + activeEnergy * 70) + Math.sin(now * 0.004) * 4;
+                        const auraGrad = streamCtx.createRadialGradient(
+                            collectiveCenterX, collectiveCenterY, 6,
+                            collectiveCenterX, collectiveCenterY, coreRadius
+                        );
+                        auraGrad.addColorStop(0, `rgba(255, 240, 200, ${0.78 * activeEnergy})`);
+                        auraGrad.addColorStop(0.45, `rgba(255, 195, 215, ${0.5 * activeEnergy})`);
+                        auraGrad.addColorStop(0.8, `rgba(181, 255, 233, ${0.28 * activeEnergy})`);
+                        auraGrad.addColorStop(1, 'rgba(181, 255, 233, 0)');
+                        streamCtx.fillStyle = auraGrad;
+                        streamCtx.beginPath();
+                        streamCtx.arc(collectiveCenterX, collectiveCenterY, coreRadius, 0, Math.PI * 2);
+                        streamCtx.fill();
+
+                        const visibleNodes = Math.floor(collectiveNodes.length * Math.min(1, activeEnergy * 1.15));
+                        // 在純滑動模式下，集合體角度隨滑動距離轉動；在點擊開蓋持續模式下，則持續自轉
+                        const orbitPhase = smoothScrollP * Math.PI * 3 + (continuousBlend > 0 ? now * 0.0012 : 0);
+
+                        for (let i = 0; i < visibleNodes; i++) {
+                            const node = collectiveNodes[i];
+                            const curAngle = node.baseAngle + orbitPhase * node.orbitDir;
+                            const spread = 0.32 + activeEnergy * 0.68;
+                            const nx = collectiveCenterX + Math.cos(curAngle) * node.rx * spread;
+                            const ny = collectiveCenterY + Math.sin(curAngle) * node.ry * spread;
+
+                            const isAtBottom = Math.sin(curAngle) > 0.45;
+                            const itemAlpha = (isAtBottom ? 0.55 : 0.9) * activeEnergy;
+
+                            if (node.isPhoto) {
+                                drawMiniPhoto(streamCtx, nx, ny, node.scale, node.rot + curAngle * 0.15, node.palette, itemAlpha);
+                            } else {
+                                drawMiniLetter(streamCtx, nx, ny, node.scale, node.rot + curAngle * 0.15, itemAlpha);
+                            }
+
+                            if (isAtBottom) {
+                                streamCtx.fillStyle = '#ffe8a3';
+                                streamCtx.globalAlpha = 0.85 * activeEnergy;
+                                streamCtx.beginPath();
+                                streamCtx.arc(nx, ny + 8, 2.3, 0, Math.PI * 2);
+                                streamCtx.fill();
+                            }
+                        }
+                        streamCtx.restore();
+                    }
+
+                    const cardRects = Array.from(cardEls).map(el => el.getBoundingClientRect());
+
+                    // ================= (二) 隨用戶滑動畫面而動的相片(80%)、信件(20%)與滲出粒子 (Scroll-Driven Mode) =================
+                    if (smoothScrollP > 0.002 && isCollectiveInView && continuousBlend < 1) {
+                        const scrollAlphaWeight = 1 - continuousBlend;
+                        const w = window.innerWidth;
+                        const h = window.innerHeight;
+
+                        // 1. 根據 smoothScrollP 繪製每一張正在飛往罐口的相片与信件
+                        scrollBoundMemories.forEach(item => {
+                            const localT = (smoothScrollP - item.startP) / item.durationP;
+                            if (localT > 0 && localT < 1) {
+                                const sx = item.normStartX * w;
+                                const sy = item.normStartY * h;
+                                const ctrlX = mouthX + (sx - mouthX) * 0.35 + item.ctrlOffsetX;
+                                const ctrlY = Math.min(sy, mouthY) - item.ctrlLiftY;
+
+                                let curX, curY, curScale, curAlpha;
+                                if (localT < 0.72) {
+                                    const u = localT / 0.72;
+                                    const inv = 1 - u;
+                                    curX = inv * inv * sx + 2 * inv * u * ctrlX + u * u * mouthX;
+                                    curY = inv * inv * sy + 2 * inv * u * ctrlY + u * u * mouthY;
+                                    curScale = item.scale * (1 - u * 0.25);
+                                    curAlpha = Math.min(1, u * 3.5) * scrollAlphaWeight;
+                                } else {
+                                    const v = (localT - 0.72) / 0.28;
+                                    curX = mouthX + (collectiveCenterX - mouthX) * v;
+                                    curY = mouthY + (collectiveCenterY - mouthY) * (v * v);
+                                    curScale = item.scale * (0.75 - v * 0.22);
+                                    curAlpha = (1 - v * 0.4) * scrollAlphaWeight;
+                                }
+
+                                const curRot = item.baseRot + localT * item.rotSpan;
+                                if (item.isPhoto) {
+                                    drawMiniPhoto(streamCtx, curX, curY, curScale, curRot, item.palette, curAlpha);
+                                } else {
+                                    drawMiniLetter(streamCtx, curX, curY, curScale, curRot, curAlpha);
+                                }
+                            }
+                        });
+
+                        // 2. 根據 smoothScrollP 繪製從罐底滲出飛往下方三個文字介紹框的粒子
+                        if (cardRects.length > 0) {
+                            scrollBoundParticles.forEach(pt => {
+                                const localT = (smoothScrollP - pt.startP) / pt.durationP;
+                                if (localT > 0 && localT < 1) {
+                                    const targetCard = cardRects[pt.cardIdx % cardRects.length];
+                                    const startX = collectiveCenterX + pt.offsetXNorm * 130;
+                                    const startY = jarBottomY - 12;
+                                    const endX = targetCard.left + pt.targetXNorm * targetCard.width;
+                                    const endY = targetCard.top + pt.targetYNorm * Math.min(50, targetCard.height);
+                                    const ctrlX = startX + (endX - startX) * 0.3 + pt.ctrlShiftX;
+                                    const ctrlY = startY + (endY - startY) * 0.55;
+
+                                    const inv = 1 - localT;
+                                    const px = inv * inv * startX + 2 * inv * localT * ctrlX + localT * localT * endX;
+                                    const py = inv * inv * startY + 2 * inv * localT * ctrlY + localT * localT * endY;
+
+                                    streamCtx.save();
+                                    streamCtx.globalAlpha = Math.sin(localT * Math.PI) * 0.92 * scrollAlphaWeight;
+                                    streamCtx.fillStyle = pt.color;
+                                    streamCtx.shadowColor = pt.color;
+                                    streamCtx.shadowBlur = 8;
+                                    streamCtx.beginPath();
+                                    streamCtx.arc(px, py, pt.radius * (1 - localT * 0.3), 0, Math.PI * 2);
+                                    streamCtx.fill();
+                                    streamCtx.restore();
+                                }
+                            });
+                        }
+                    }
+
+                    // ================= (三) 點擊開蓋且背景染達 78% 後絲滑接入的「持續不斷播放」動畫 =================
+                    if (isContinuousActive) {
+                        if (Math.random() < 0.42) {
+                            spawnContinuousMemory(mouthX, mouthY);
+                        }
+                        for (let s = 0; s < 3; s++) {
+                            if (Math.random() < 0.65) {
+                                spawnContinuousParticle(collectiveCenterX, jarBottomY, cardRects);
+                            }
+                        }
+                    }
+
+                    for (let i = continuousMemories.length - 1; i >= 0; i--) {
+                        const m = continuousMemories[i];
+                        m.t += m.speed;
+                        m.rot += m.rotSpeed;
+
+                        if (m.t >= 1) {
+                            continuousMemories.splice(i, 1);
+                            continue;
+                        }
+
+                        let curX, curY, curScale, curAlpha;
+                        if (m.t < 0.72) {
+                            const u = m.t / 0.72;
+                            const inv = 1 - u;
+                            curX = inv * inv * m.startX + 2 * inv * u * m.ctrlX + u * u * mouthX;
+                            curY = inv * inv * m.startY + 2 * inv * u * m.ctrlY + u * u * mouthY;
+                            curScale = m.scale * (1 - u * 0.25);
+                            curAlpha = Math.min(1, u * 3.2) * continuousBlend;
+                        } else {
+                            const v = (m.t - 0.72) / 0.28;
+                            curX = mouthX + (collectiveCenterX - mouthX) * v + Math.sin(v * Math.PI * 2) * 8;
+                            curY = mouthY + (collectiveCenterY - mouthY) * (v * v);
+                            curScale = m.scale * (0.75 - v * 0.22);
+                            curAlpha = (1 - v * 0.35) * continuousBlend;
+                        }
+
+                        if (m.isPhoto) {
+                            drawMiniPhoto(streamCtx, curX, curY, curScale, m.rot, m.palette, curAlpha);
+                        } else {
+                            drawMiniLetter(streamCtx, curX, curY, curScale, m.rot, curAlpha);
+                        }
+                    }
+
+                    for (let i = continuousParticles.length - 1; i >= 0; i--) {
+                        const pt = continuousParticles[i];
+                        pt.t += pt.speed;
+                        if (pt.t >= 1) {
+                            continuousParticles.splice(i, 1);
+                            continue;
+                        }
+
+                        const u = pt.t;
+                        const inv = 1 - u;
+                        const px = inv * inv * pt.startX + 2 * inv * u * pt.ctrlX + u * u * pt.endX;
+                        const py = inv * inv * pt.startY + 2 * inv * u * pt.ctrlY + u * u * pt.endY;
+
+                        streamCtx.save();
+                        streamCtx.globalAlpha = Math.sin(u * Math.PI) * 0.92 * continuousBlend;
+                        streamCtx.fillStyle = pt.color;
+                        streamCtx.shadowColor = pt.color;
+                        streamCtx.shadowBlur = 8;
+                        streamCtx.beginPath();
+                        streamCtx.arc(px, py, pt.radius * (1 - u * 0.35), 0, Math.PI * 2);
+                        streamCtx.fill();
+                        streamCtx.restore();
+                    }
+                }
+            }
+
+            requestAnimationFrame(mainRenderLoop);
+        }
+        requestAnimationFrame(mainRenderLoop);
+
+        // ================= 5. 開場動畫與新進場時序引擎 =================
         const NUM_PTS = 120;
         let animFrameId = null;
         let timeouts = [];
@@ -1391,6 +2185,24 @@
             clearTimers();
             closeTopMenu();
 
+            smoothScrollP = 0;
+            targetScrollP = 0;
+            isJarClickedOpen = false;
+            clickDyeProgress = 0;
+            continuousBlend = 0;
+            continuousMemories = [];
+            continuousParticles = [];
+
+            document.documentElement.style.setProperty('--cosmic-dye', '0');
+            document.body.classList.remove('cosmic-text-mode');
+            document.querySelectorAll('.particle-formed-card').forEach(c => {
+                c.style.setProperty('--card-materialize', '0');
+                c.style.setProperty('--card-glow-top', '0');
+            });
+
+            const captionEl = document.getElementById('jar-open-caption');
+            if (captionEl) captionEl.textContent = 'Tap lid / body to open';
+
             const overlay = document.getElementById('splash-overlay');
             const animStage = document.getElementById('anim-stage');
             const strokesGroup = document.getElementById('morph-strokes-group');
@@ -1414,14 +2226,13 @@
             const downloadButtonsBox = document.getElementById('download-buttons-box');
             const fanSubtitleContainer = document.getElementById('fan-subtitle-container');
 
-            // 重置所有狀態
             window.scrollTo(0, 0);
             document.body.classList.add('animating');
             document.body.classList.remove('show-rest-sections');
             targetLockup.classList.remove('docked');
 
             glassTopPlate.classList.remove('slide-down');
-            heroJarBackdrop.classList.remove('jar-fade-up', 'jar-lid-open');
+            heroJarBackdrop.classList.remove('jar-fade-up', 'jar-lid-open', 'jar-clicked-open');
             downloadButtonsBox.classList.remove('buttons-ready');
             fanSubtitleContainer.classList.remove('release-fan');
 
@@ -1444,7 +2255,8 @@
 
             const jarWidth = splashJarText.offsetWidth;
             const halfJar = jarWidth / 2;
-            const hideJarOffsetX = (64 / 2) + 14; 
+            const iconBoxW = splashIcon2.offsetWidth || 56;
+            const hideJarOffsetX = (iconBoxW / 2) + 12; 
             splashText.style.transform = `translateX(${halfJar}px)`;
             splashIcon2.style.transform = `translateX(${-halfJar}px)`;
             splashJarText.style.transform = `translateX(${hideJarOffsetX}px) scale(0.75)`;
@@ -1467,7 +2279,6 @@
             splashJarText.style.transition = 'transform 0.68s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.35s ease';
             splashIcon2.style.transition = 'transform 0.68s cubic-bezier(0.16, 1, 0.3, 1)';
 
-            // 量測分裂座標
             const stageRect = animStage.getBoundingClientRect();
             const textRect = splashText.getBoundingClientRect();
             const iconRect = splashIcon2.getBoundingClientRect();
@@ -1492,7 +2303,7 @@
             const infLeftLocalPts  = samplePath('ref-inf-left', LOOP_CENTER_OFFSET, 0, 0.95);
             const infRightLocalPts = samplePath('ref-inf-right', -LOOP_CENTER_OFFSET, 0, 0.95);
 
-            const S_FINAL = 64 / 260;
+            const S_FINAL = iconBoxW / 260;
             const textWaveLocalPts      = samplePath('ref-text-wave', 0, 0, 1.0);
             const finalEmptyJarLocalPts = samplePath('ref-jar-silhouette', 0, 0, S_FINAL);
 
@@ -1622,7 +2433,7 @@
                 overlay.classList.add('transparent-bg');
             }, 2460));
 
-            // 階段 5 (3.26s)：升到頂部定位！App Icon 出現，背後滑出「Jar」，同時【玻璃切面頂部欄從畫面外上方絲滑降下】成為底層板面！
+            // 階段 5 (3.26s)：升到頂部定位！App Icon 出現，背後滑出「Jar」，同時【玻璃切面頂部欄從畫面外上方絲滑降下】
             timeouts.push(setTimeout(() => {
                 splashIcon2.classList.add('logo-complete');
                 splashText.style.transform = 'translateX(0px)';
@@ -1630,11 +2441,10 @@
                 splashJarText.style.opacity = '1';
                 splashJarText.style.transform = 'translateX(0px) scale(1)';
 
-                // 透明玻璃頂部欄從上方螢幕外滑落下來墊在標題後方
                 glassTopPlate.classList.add('slide-down');
             }, 3260));
 
-            // 階段 6 (3.70s)：切換為固定頂部標題，同時【下載按鈕與背面的故事罐往上淡入（像把兩個按鈕裝進罐子裡）】
+            // 階段 6 (3.70s)：切換為固定頂部標題，同時【下載按鈕與背面的故事罐往上淡入】
             timeouts.push(setTimeout(() => {
                 targetLockup.classList.add('docked');
                 overlay.classList.add('hidden');
@@ -1642,7 +2452,7 @@
                 heroJarBackdrop.classList.add('jar-fade-up');
             }, 3700));
 
-            // 階段 7 (4.30s -> 等罐子往上淡入完成後)：瓶蓋微啟，【那行小介紹文字從罐口上方中間位置「扇形展開淡入」】！
+            // 階段 7 (4.30s)：瓶蓋微啟，【那行小介紹文字從罐口上方中間位置「扇形展開淡入」】！
             timeouts.push(setTimeout(() => {
                 heroJarBackdrop.classList.add('jar-lid-open');
                 fanSubtitleContainer.classList.add('release-fan');
