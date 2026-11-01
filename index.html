@@ -1021,7 +1021,7 @@
             100% { background-position: 100% center; }
         }
 
-        /* ================= 6. 三個框框：無框重點流光字色 + 與 App 介面/故事罐絲滑連接的動態圖示 ================= */
+        /* ================= 6. 三個框框：統一微縮 App 介面 + 三階段演化圖示動畫 ================= */
         .features-grid {
             display: grid;
             grid-template-columns: repeat(3, 1fr);
@@ -1087,13 +1087,12 @@
             transition: opacity 0.3s ease;
         }
 
-        /* 每個框框上半部的「App 介面與故事罐連接舞台」 */
         .vignette-visual-box {
             width: 100%;
-            height: 158px;
+            height: 162px;
             border-radius: 18px;
             background: 
-                radial-gradient(circle at 50% 54%, rgba(45, 34, 72, 0.86) 0%, rgba(20, 16, 34, 0.94) 100%);
+                radial-gradient(circle at 50% 54%, rgba(45, 34, 72, 0.88) 0%, rgba(18, 14, 32, 0.96) 100%);
             border: 1px solid rgba(210, 195, 235, 0.38);
             box-shadow: 
                 0 8px 20px rgba(15, 12, 28, 0.12),
@@ -1108,7 +1107,7 @@
 
         body.cosmic-text-mode .vignette-visual-box {
             background: 
-                radial-gradient(circle at 50% 54%, rgba(58, 42, 95, 0.48) 0%, rgba(12, 9, 22, 0.82) 100%);
+                radial-gradient(circle at 50% 54%, rgba(58, 42, 95, 0.52) 0%, rgba(12, 9, 22, 0.86) 100%);
             border-color: rgba(255, 255, 255, 0.14);
         }
 
@@ -1138,78 +1137,115 @@
             overflow: visible;
         }
 
-        /* ===== 第一框動畫時序 (9秒循環)：1.後層半透明框 -> 2.前層有形相片 -> 3.被罐子裝上並蓋上蓋子 -> 4.接合到 App 介面 ===== */
+        /* ================= 第一框動畫時序 (12秒循環)：
+           1. 後層半透明框出現 -> 2. 前層有形相片出現 -> 3. 兩者合二為一 -> 4. 裝進罐子並蓋上蓋子接合 App 介面 -> 5. 罐內播放 3 張圖示切換 (毛毛蟲 -> 結蛹 -> 蝴蝶) ================= */
         .c1-back-imagined {
             transform-box: fill-box;
             transform-origin: center;
-            animation: c1BackFrameSeq 9s cubic-bezier(0.16, 1, 0.3, 1) infinite;
+            animation: c1BackMergeSeq 12s cubic-bezier(0.16, 1, 0.3, 1) infinite;
         }
-        @keyframes c1BackFrameSeq {
-            0%, 4%   { opacity: 0; transform: translate(-14px, 10px) rotate(-12deg) scale(0.7); }
-            12%, 34% { opacity: 0.85; transform: translate(-10px, -2px) rotate(-8deg) scale(1); }
-            48%, 88% { opacity: 0.55; transform: translate(-3px, 4px) rotate(-4deg) scale(0.58); }
-            95%, 100%{ opacity: 0; transform: translate(-3px, 4px) scale(0.4); }
+        @keyframes c1BackMergeSeq {
+            0%, 3%   { opacity: 0; transform: translate(-18px, 8px) rotate(-12deg) scale(0.65); }
+            9%, 18%  { opacity: 0.9; transform: translate(-14px, -2px) rotate(-9deg) scale(1); }
+            /* 22% ~ 32%：與前層相片移動到正中央合二為一 */
+            24%, 34% { opacity: 1; transform: translate(0px, 2px) rotate(0deg) scale(0.96); }
+            42%, 100%{ opacity: 0; transform: translate(0px, 6px) rotate(0deg) scale(0.72); }
         }
 
         .c1-front-photo {
             transform-box: fill-box;
             transform-origin: center;
-            animation: c1FrontPhotoSeq 9s cubic-bezier(0.16, 1, 0.3, 1) infinite;
+            animation: c1FrontMergeSeq 12s cubic-bezier(0.16, 1, 0.3, 1) infinite;
         }
-        @keyframes c1FrontPhotoSeq {
-            0%, 15%  { opacity: 0; transform: translate(16px, 14px) rotate(12deg) scale(0.65); }
-            25%, 36% { opacity: 1; transform: translate(8px, 0px) rotate(6deg) scale(1.04); }
-            48%, 88% { opacity: 0.95; transform: translate(2px, 5px) rotate(3deg) scale(0.60); }
-            95%, 100%{ opacity: 0; transform: translate(2px, 5px) scale(0.4); }
+        @keyframes c1FrontMergeSeq {
+            0%, 10%  { opacity: 0; transform: translate(18px, 12px) rotate(12deg) scale(0.65); }
+            16%, 20% { opacity: 1; transform: translate(12px, 0px) rotate(8deg) scale(1.02); }
+            /* 24% ~ 34%：與後層半透明框在正中央合二為一 */
+            24%, 35% { opacity: 1; transform: translate(0px, 2px) rotate(0deg) scale(0.96); }
+            /* 42% 後：縮小融入罐內並將舞台交給毛毛蟲->結蛹->蝴蝶 3 張圖示切換 */
+            43%, 100%{ opacity: 0; transform: translate(0px, 6px) rotate(0deg) scale(0.70); }
+        }
+
+        /* 合二為一瞬間的融合光暈 */
+        .c1-merge-flash {
+            transform-box: fill-box;
+            transform-origin: center;
+            animation: c1MergeFlashSeq 12s ease-out infinite;
+        }
+        @keyframes c1MergeFlashSeq {
+            0%, 22%  { opacity: 0; transform: scale(0.4); }
+            26%      { opacity: 0.95; transform: scale(1.25); }
+            34%, 100%{ opacity: 0; transform: scale(1.5); }
         }
 
         .c1-jar-body-wrap {
             transform-box: fill-box;
             transform-origin: center;
-            animation: c1JarBodySeq 9s cubic-bezier(0.16, 1, 0.3, 1) infinite;
+            animation: c1JarBodySeq 12s cubic-bezier(0.16, 1, 0.3, 1) infinite;
         }
         @keyframes c1JarBodySeq {
-            0%, 34%  { opacity: 0; transform: translateY(36px) scale(0.82); }
-            46%, 62% { opacity: 1; transform: translateY(0px) scale(1); }
-            72%, 88% { opacity: 1; transform: translateY(2px) scale(0.92); }
-            95%, 100%{ opacity: 0; transform: translateY(12px) scale(0.85); }
+            0%, 26%  { opacity: 0; transform: translateY(34px) scale(0.84); }
+            35%, 91% { opacity: 1; transform: translateY(0px) scale(1); }
+            96%, 100%{ opacity: 0; transform: translateY(14px) scale(0.88); }
         }
 
         .c1-jar-lid-wrap {
             transform-box: fill-box;
             transform-origin: center;
-            animation: c1JarLidSeq 9s cubic-bezier(0.16, 1, 0.3, 1) infinite;
+            animation: c1JarLidSeq 12s cubic-bezier(0.16, 1, 0.3, 1) infinite;
         }
         @keyframes c1JarLidSeq {
-            0%, 42%  { opacity: 0; transform: translateY(-28px) rotate(-8deg); }
-            54%, 62% { opacity: 1; transform: translateY(0px) rotate(0deg); }
-            72%, 88% { opacity: 1; transform: translateY(4px) scale(0.92); }
-            95%, 100%{ opacity: 0; transform: translateY(-10px); }
+            0%, 33%  { opacity: 0; transform: translateY(-26px) rotate(-8deg); }
+            41%, 91% { opacity: 1; transform: translateY(0px) rotate(0deg); }
+            96%, 100%{ opacity: 0; transform: translateY(-12px); }
         }
 
         .c1-app-ui-frame {
             transform-box: fill-box;
             transform-origin: center;
-            animation: c1AppUiSeq 9s cubic-bezier(0.16, 1, 0.3, 1) infinite;
+            animation: c1AppUiSeq 12s cubic-bezier(0.16, 1, 0.3, 1) infinite;
         }
         @keyframes c1AppUiSeq {
-            0%, 58%  { opacity: 0; transform: scale(1.16); }
-            70%, 88% { opacity: 1; transform: scale(1); }
-            95%, 100%{ opacity: 0; transform: scale(0.96); }
+            0%, 36%  { opacity: 0; transform: scale(1.12); }
+            44%, 91% { opacity: 1; transform: scale(1); }
+            96%, 100%{ opacity: 0; transform: scale(0.96); }
         }
 
-        /* ===== 第二框動畫時序 (9.5秒循環)：1.App介面罐子打開 -> 2.出現中心核心 -> 3.同款拍立得相片與火漆信件環繞 ===== */
-        .c2-app-jar-base {
+        /* 蓋上蓋子後 (43% ~ 91%)，罐內依序切換 3 張圖示：1.毛毛蟲 (43~58%) -> 2.結蛹 (59~74%) -> 3.蝴蝶 (75~91%) */
+        .c1-stage-caterpillar {
             transform-box: fill-box;
             transform-origin: center;
-            animation: c2JarBaseSeq 9.5s cubic-bezier(0.16, 1, 0.3, 1) infinite;
+            animation: c1Stage1Seq 12s cubic-bezier(0.16, 1, 0.3, 1) infinite;
         }
-        @keyframes c2JarBaseSeq {
-            0%, 20%  { opacity: 1; transform: translateY(0px) scale(1); }
-            34%, 84% { opacity: 0.32; transform: translateY(18px) scale(0.82); }
-            94%, 100%{ opacity: 1; transform: translateY(0px) scale(1); }
+        @keyframes c1Stage1Seq {
+            0%, 42%  { opacity: 0; transform: scale(0.55) translateY(6px); }
+            45%, 56% { opacity: 1; transform: scale(1) translateY(0px); }
+            59%, 100%{ opacity: 0; transform: scale(0.75) translateY(-4px); }
         }
 
+        .c1-stage-chrysalis {
+            transform-box: fill-box;
+            transform-origin: center;
+            animation: c1Stage2Seq 12s cubic-bezier(0.16, 1, 0.3, 1) infinite;
+        }
+        @keyframes c1Stage2Seq {
+            0%, 57%  { opacity: 0; transform: scale(0.55) translateY(-6px); }
+            60%, 72% { opacity: 1; transform: scale(1) translateY(0px); }
+            75%, 100%{ opacity: 0; transform: scale(0.75) translateY(4px); }
+        }
+
+        .c1-stage-butterfly {
+            transform-box: fill-box;
+            transform-origin: center;
+            animation: c1Stage3Seq 12s cubic-bezier(0.16, 1, 0.3, 1) infinite;
+        }
+        @keyframes c1Stage3Seq {
+            0%, 73%  { opacity: 0; transform: scale(0.45); }
+            77%, 89% { opacity: 1; transform: scale(1.06); }
+            93%, 100%{ opacity: 0; transform: scale(0.6); }
+        }
+
+        /* ================= 第二框動畫時序 (9.5秒循環)：統一第一框 App 介面 + 罐子打開 + 核心與拍立得/信件環繞 ================= */
         .c2-jar-lid-open {
             transform-box: fill-box;
             transform-origin: left center;
@@ -1217,8 +1253,7 @@
         }
         @keyframes c2LidOpenSeq {
             0%, 8%   { opacity: 1; transform: translateY(0px) rotate(0deg); }
-            18%, 28% { opacity: 1; transform: translate(-8px, -18px) rotate(-18deg); }
-            38%, 84% { opacity: 0; transform: translate(-14px, -26px) rotate(-25deg); }
+            18%, 84% { opacity: 1; transform: translate(-10px, -16px) rotate(-22deg); }
             94%, 100%{ opacity: 1; transform: translateY(0px) rotate(0deg); }
         }
 
@@ -1228,9 +1263,9 @@
             animation: c2CoreEmergence 9.5s cubic-bezier(0.16, 1, 0.3, 1) infinite;
         }
         @keyframes c2CoreEmergence {
-            0%, 14%  { opacity: 0; transform: translateY(20px) scale(0.2); }
-            28%, 84% { opacity: 1; transform: translateY(-6px) scale(1); }
-            94%, 100%{ opacity: 0; transform: translateY(18px) scale(0.2); }
+            0%, 12%  { opacity: 0; transform: translateY(16px) scale(0.2); }
+            24%, 84% { opacity: 1; transform: translateY(0px) scale(1); }
+            94%, 100%{ opacity: 0; transform: translateY(16px) scale(0.2); }
         }
 
         .c2-orbit-system {
@@ -1239,8 +1274,8 @@
             animation: c2OrbitExpand 9.5s cubic-bezier(0.16, 1, 0.3, 1) infinite;
         }
         @keyframes c2OrbitExpand {
-            0%, 24%  { opacity: 0; transform: scale(0.35) rotate(-25deg); }
-            38%, 84% { opacity: 1; transform: scale(1) rotate(0deg); }
+            0%, 20%  { opacity: 0; transform: scale(0.35) rotate(-25deg); }
+            34%, 84% { opacity: 1; transform: scale(1) rotate(0deg); }
             94%, 100%{ opacity: 0; transform: scale(0.35) rotate(15deg); }
         }
 
@@ -1253,65 +1288,72 @@
         }
         @keyframes c2LetterFloat {
             0%, 100% { transform: translate(0px, 0px) rotate(-8deg); }
-            50%      { transform: translate(10px, -9px) rotate(4deg); }
+            50%      { transform: translate(8px, -7px) rotate(4deg); }
         }
         @keyframes c2PhotoFloat {
             0%, 100% { transform: translate(0px, 0px) rotate(9deg); }
-            50%      { transform: translate(-10px, 9px) rotate(-4deg); }
+            50%      { transform: translate(-8px, 7px) rotate(-4deg); }
         }
 
-        /* ===== 第三框動畫時序 (9.5秒循環)：1.App介面罐子輕搖共鳴 -> 2.開蓋釋放過往章節相片/信件/心情光球扇形投影 ===== */
-        .c3-jar-shake-group {
+        /* ================= 第三框動畫時序 (12秒循環)：
+           統一第一框 App 介面內有 4 個罐子 (0~25%) -> 放大其中一個罐子至中央 (26~90%) -> 罐內播放 3 張圖示切換 (樹苗 -> 花 -> 壯樹) ================= */
+        .c3-other-three-jars {
             transform-box: fill-box;
-            transform-origin: center bottom;
-            animation: c3JarShakeSeq 9.5s ease-in-out infinite;
+            transform-origin: center;
+            animation: c3OtherJarsFade 12s cubic-bezier(0.16, 1, 0.3, 1) infinite;
         }
-        @keyframes c3JarShakeSeq {
-            0%, 6%   { transform: rotate(0deg); }
-            10%      { transform: rotate(-6deg); }
-            14%      { transform: rotate(6deg); }
-            18%      { transform: rotate(-4deg); }
-            22%      { transform: rotate(4deg); }
-            26%, 100%{ transform: rotate(0deg); }
+        @keyframes c3OtherJarsFade {
+            0%, 22%  { opacity: 1; transform: scale(1); }
+            30%, 88% { opacity: 0.12; transform: scale(0.92); filter: blur(1.5px); }
+            95%, 100%{ opacity: 1; transform: scale(1); filter: blur(0px); }
         }
 
-        .c3-lid-pop {
+        /* 左上角第 1 個罐子從原位 (x=96, y=58) 放大並移動至 App 介面正中央 (x=120, y=82) */
+        .c3-hero-zoom-jar {
+            transform-origin: 120px 82px;
+            animation: c3HeroJarZoom 12s cubic-bezier(0.16, 1, 0.3, 1) infinite;
+        }
+        @keyframes c3HeroJarZoom {
+            0%, 22%  { transform: translate(-24px, -21px) scale(0.44); }
+            32%, 88% { transform: translate(0px, 0px) scale(1); }
+            95%, 100%{ transform: translate(-24px, -21px) scale(0.44); }
+        }
+
+        /* 放大後的罐內依序切換 3 張成長圖示：1.樹苗 (34~51%) -> 2.花 (52~69%) -> 3.壯樹 (70~88%) */
+        .c3-stage-sprout {
             transform-box: fill-box;
-            transform-origin: right center;
-            animation: c3LidPopSeq 9.5s cubic-bezier(0.16, 1, 0.3, 1) infinite;
+            transform-origin: bottom center;
+            animation: c3StageSproutSeq 12s cubic-bezier(0.16, 1, 0.3, 1) infinite;
         }
-        @keyframes c3LidPopSeq {
-            0%, 22%  { transform: translateY(0px) rotate(0deg); }
-            34%, 82% { transform: translate(8px, -16px) rotate(16deg); }
-            92%, 100%{ transform: translateY(0px) rotate(0deg); }
+        @keyframes c3StageSproutSeq {
+            0%, 32%  { opacity: 0; transform: scale(0.4) translateY(8px); }
+            36%, 49% { opacity: 1; transform: scale(1) translateY(0px); }
+            53%, 100%{ opacity: 0; transform: scale(0.75) translateY(-4px); }
         }
 
-        .c3-past-projection {
+        .c3-stage-flower {
             transform-box: fill-box;
-            transform-origin: 120px 105px;
-            animation: c3ProjectionFan 9.5s cubic-bezier(0.16, 1, 0.3, 1) infinite;
+            transform-origin: bottom center;
+            animation: c3StageFlowerSeq 12s cubic-bezier(0.16, 1, 0.3, 1) infinite;
         }
-        @keyframes c3ProjectionFan {
-            0%, 24%  { opacity: 0; transform: translateY(24px) scale(0.25); }
-            38%, 82% { opacity: 1; transform: translateY(0px) scale(1); }
-            92%, 100%{ opacity: 0; transform: translateY(20px) scale(0.25); }
-        }
-
-        .anim-ripple-1 {
-            animation: svgRipplePulse 4.2s ease-out infinite;
-            transform-origin: 120px 88px;
-        }
-        .anim-ripple-2 {
-            animation: svgRipplePulse 4.2s ease-out infinite;
-            animation-delay: -2.1s;
-            transform-origin: 120px 88px;
-        }
-        @keyframes svgRipplePulse {
-            0% { transform: scale(0.6); opacity: 0.75; }
-            100% { transform: scale(1.55); opacity: 0; }
+        @keyframes c3StageFlowerSeq {
+            0%, 50%  { opacity: 0; transform: scale(0.45) translateY(6px); }
+            55%, 67% { opacity: 1; transform: scale(1) translateY(0px); }
+            71%, 100%{ opacity: 0; transform: scale(0.75) translateY(-4px); }
         }
 
-        /* ===== 框框下半部敘事文字：移除重點框線，直接套用與 Your Story, Directed by You. 相同的白底微粉藍流光字色 ===== */
+        .c3-stage-tree {
+            transform-box: fill-box;
+            transform-origin: bottom center;
+            animation: c3StageTreeSeq 12s cubic-bezier(0.16, 1, 0.3, 1) infinite;
+        }
+        @keyframes c3StageTreeSeq {
+            0%, 68%  { opacity: 0; transform: scale(0.45) translateY(8px); }
+            73%, 86% { opacity: 1; transform: scale(1.04) translateY(0px); }
+            91%, 100%{ opacity: 0; transform: scale(0.6); }
+        }
+
+        /* ===== 框框下半部敘事文字：無框線重點流光字色 ===== */
         .vignette-prose {
             font-size: 0.96rem;
             color: var(--text-sub);
@@ -1325,7 +1367,6 @@
             color: rgba(255, 255, 255, 0.68);
         }
 
-        /* 無框線、與 Your Story, Directed by You. 完全同款的「白色主調 + 微粉與微藍緩慢流動漸變」字色 */
         .prose-accent {
             font-weight: 700;
             padding: 0;
@@ -1347,7 +1388,6 @@
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
             animation: whiteSubtlePinkBlueSlowFlow 32s ease-in-out infinite;
-            /* 柔和深色立體襯影，確保無底框時在淺色白卡與深色星空卡上都清晰浮現 */
             filter: drop-shadow(0 1.5px 6px rgba(68, 56, 96, 0.42))
                     drop-shadow(0 0.5px 1.5px rgba(42, 34, 65, 0.34));
         }
@@ -1730,10 +1770,10 @@
                 <h2 id="director-title-el" class="director-single-line-title">Your Story, Directed by You.</h2>
             </div>
 
-            <!-- 下方三個視覺化框框：圖示絲滑連接 App 介面與故事罐 + 無框線重點流光字色 -->
+            <!-- 下方三個視覺化框框：統一 App 介面 + 三階段演化圖示切換 -->
             <div id="particle-target-cards" class="features-grid">
                 
-                <!-- 第 1 框：1.後層半透明框 -> 2.前層有形拍立得相片 -> 3.被故事罐裝上並蓋緊蓋子 -> 4.接合到 App 介面 -->
+                <!-- 第 1 框：半透明框與相片合二為一 -> 裝進罐子並蓋上蓋子接合 App 介面 -> 罐內播放 3 張圖示切換 (毛毛蟲 -> 結蛹 -> 蝴蝶) -->
                 <div class="feature-card particle-formed-card">
                     <div class="vignette-visual-box">
                         <div class="vignette-prism-glow"></div>
@@ -1752,62 +1792,99 @@
                                     <stop offset="50%" stop-color="rgba(165, 160, 200, 0.35)" />
                                     <stop offset="100%" stop-color="rgba(215, 145, 175, 0.48)" />
                                 </linearGradient>
+
+                                <!-- 共用微縮 App 介面模板 (三個框框統一使用) -->
+                                <g id="shared-app-ui-shell">
+                                    <rect x="52" y="8" width="136" height="142" rx="18" fill="rgba(14, 11, 24, 0.85)" stroke="rgba(255, 255, 255, 0.28)" stroke-width="1.5" />
+                                    <!-- App 頂部直紋玻璃欄 -->
+                                    <path d="M 53 26 Q 120 31 187 26" stroke="rgba(212, 163, 115, 0.55)" stroke-width="1" fill="none" />
+                                    <!-- 左上 2x2 小圖示 -->
+                                    <rect x="61" y="14" width="3.5" height="3.5" rx="0.8" stroke="#c89d6c" stroke-width="0.8" />
+                                    <rect x="66" y="14" width="3.5" height="3.5" rx="0.8" stroke="#c89d6c" stroke-width="0.8" />
+                                    <rect x="61" y="19" width="3.5" height="3.5" rx="0.8" fill="#a67449" />
+                                    <rect x="66" y="19" width="3.5" height="3.5" rx="0.8" stroke="#c89d6c" stroke-width="0.8" />
+                                    <!-- 中央 YourStoryJar 字樣 -->
+                                    <text x="120" y="20.5" fill="#ffffff" font-size="7.5" font-weight="700" text-anchor="middle" letter-spacing="-0.2">YourStoryJar</text>
+                                    <!-- 右上 2x2 方格 -->
+                                    <rect x="171" y="14" width="3.2" height="3.2" rx="0.6" fill="#c89d6c" />
+                                    <rect x="175.5" y="14" width="3.2" height="3.2" rx="0.6" fill="#c89d6c" />
+                                    <rect x="171" y="18.5" width="3.2" height="3.2" rx="0.6" fill="#c89d6c" />
+                                    <rect x="175.5" y="18.5" width="3.2" height="3.2" rx="0.6" fill="#c89d6c" />
+                                    <!-- App 底部導航欄 (Jars | Studio | Settings) -->
+                                    <line x1="53" y1="132" x2="187" y2="132" stroke="rgba(255, 255, 255, 0.1)" stroke-width="1" />
+                                    <rect x="64" y="135" width="26" height="11" rx="5.5" fill="rgba(255, 255, 255, 0.1)" stroke="rgba(255, 255, 255, 0.2)" stroke-width="0.8" />
+                                    <circle cx="120" cy="140.5" r="5.5" fill="#ffffff" stroke="rgba(255, 255, 255, 0.35)" stroke-width="1.5" />
+                                    <circle cx="164" cy="140.5" r="3" stroke="rgba(255, 255, 255, 0.55)" stroke-width="1.2" />
+                                </g>
                             </defs>
 
-                            <!-- 步驟 4：微縮 App 介面外框 (頂部欄 + YourStoryJar + 底部導航欄) -->
+                            <!-- 微縮 App 介面外框 -->
                             <g class="c1-app-ui-frame">
-                                <rect x="52" y="8" width="136" height="142" rx="18" fill="rgba(14, 11, 24, 0.85)" stroke="rgba(255, 255, 255, 0.28)" stroke-width="1.5" />
-                                <!-- App 頂部直紋玻璃欄 -->
-                                <path d="M 53 26 Q 120 31 187 26" stroke="rgba(212, 163, 115, 0.55)" stroke-width="1" fill="none" />
-                                <!-- 左上 2x2 小圖示 -->
-                                <rect x="61" y="14" width="3.5" height="3.5" rx="0.8" stroke="#c89d6c" stroke-width="0.8" />
-                                <rect x="66" y="14" width="3.5" height="3.5" rx="0.8" stroke="#c89d6c" stroke-width="0.8" />
-                                <rect x="61" y="19" width="3.5" height="3.5" rx="0.8" fill="#a67449" />
-                                <rect x="66" y="19" width="3.5" height="3.5" rx="0.8" stroke="#c89d6c" stroke-width="0.8" />
-                                <!-- 中央 YourStoryJar 字樣 -->
-                                <text x="120" y="20.5" fill="#ffffff" font-size="7.5" font-weight="700" text-anchor="middle" letter-spacing="-0.2">YourStoryJar</text>
-                                <!-- 右上 2x2 方格 -->
-                                <rect x="171" y="14" width="3.2" height="3.2" rx="0.6" fill="#c89d6c" />
-                                <rect x="175.5" y="14" width="3.2" height="3.2" rx="0.6" fill="#c89d6c" />
-                                <rect x="171" y="18.5" width="3.2" height="3.2" rx="0.6" fill="#c89d6c" />
-                                <rect x="175.5" y="18.5" width="3.2" height="3.2" rx="0.6" fill="#c89d6c" />
-                                <!-- App 底部導航欄 (Jars | Studio | Settings) -->
-                                <line x1="53" y1="132" x2="187" y2="132" stroke="rgba(255, 255, 255, 0.1)" stroke-width="1" />
-                                <rect x="64" y="135" width="26" height="11" rx="5.5" fill="rgba(255, 255, 255, 0.1)" stroke="rgba(255, 255, 255, 0.2)" stroke-width="0.8" />
-                                <circle cx="120" cy="140.5" r="5.5" fill="#ffffff" stroke="rgba(255, 255, 255, 0.35)" stroke-width="1.5" />
-                                <circle cx="164" cy="140.5" r="3" stroke="rgba(255, 255, 255, 0.55)" stroke-width="1.2" />
+                                <use href="#shared-app-ui-shell" />
                             </g>
 
-                            <!-- 步驟 1：先出現後層半透明的想像分鏡框 -->
+                            <!-- 步驟 1：後層半透明框 -->
                             <g class="c1-back-imagined">
-                                <rect x="92" y="48" width="44" height="52" rx="5" fill="rgba(185, 215, 255, 0.18)" stroke="rgba(255, 255, 255, 0.55)" stroke-width="1.4" stroke-dasharray="3 2.5" />
-                                <circle cx="114" cy="68" r="5" fill="rgba(255, 255, 255, 0.35)" />
-                                <path d="M 100 84 Q 112 74 126 82" stroke="rgba(255, 255, 255, 0.45)" stroke-width="1.3" stroke-linecap="round" />
+                                <rect x="98" y="52" width="44" height="52" rx="5" fill="rgba(185, 215, 255, 0.22)" stroke="rgba(255, 255, 255, 0.65)" stroke-width="1.4" stroke-dasharray="3 2.5" />
+                                <circle cx="120" cy="70" r="5" fill="rgba(255, 255, 255, 0.4)" />
+                                <path d="M 106 86 Q 118 76 132 84" stroke="rgba(255, 255, 255, 0.5)" stroke-width="1.3" stroke-linecap="round" />
                             </g>
 
-                            <!-- 步驟 2：再出現前層有形的拍立得相片 (與頂部飛入的相片同款) -->
+                            <!-- 步驟 2：前層有形相片 (隨後與半透明框在中央合二為一) -->
                             <g class="c1-front-photo">
-                                <rect x="98" y="50" width="44" height="52" rx="4.5" fill="#ffffff" filter="drop-shadow(0 4px 10px rgba(0,0,0,0.35))" />
-                                <rect x="102" y="54" width="36" height="33" rx="2.5" fill="url(#polaroid-sky-1)" />
-                                <circle cx="128" cy="63" r="4.5" fill="#fff6b0" />
-                                <line x1="109" y1="94.5" x2="131" y2="94.5" stroke="rgba(30, 28, 36, 0.35)" stroke-width="1.8" stroke-linecap="round" />
+                                <rect x="98" y="52" width="44" height="52" rx="4.5" fill="#ffffff" filter="drop-shadow(0 4px 10px rgba(0,0,0,0.35))" />
+                                <rect x="102" y="56" width="36" height="33" rx="2.5" fill="url(#polaroid-sky-1)" />
+                                <circle cx="128" cy="65" r="4.5" fill="#fff6b0" />
+                                <line x1="109" y1="96.5" x2="131" y2="96.5" stroke="rgba(30, 28, 36, 0.35)" stroke-width="1.8" stroke-linecap="round" />
                             </g>
 
-                            <!-- 步驟 3A：故事罐罐身升起把相片裝起來 (含 App 罐身左斜高光與底部暖光) -->
+                            <!-- 合二為一瞬間的光暈閃光 -->
+                            <circle class="c1-merge-flash" cx="120" cy="78" r="24" fill="rgba(255, 240, 250, 0.65)" filter="blur(4px)" />
+
+                            <!-- 步驟 3：故事罐罐身裝入 -->
                             <g class="c1-jar-body-wrap">
-                                <!-- 罐底暖橘粉光暈 -->
                                 <ellipse cx="120" cy="122" rx="34" ry="7" fill="rgba(235, 135, 110, 0.42)" filter="blur(4px)" />
-                                <!-- 玻璃瓶頸 -->
                                 <rect x="95" y="44" width="50" height="4" rx="1" fill="rgba(255, 255, 255, 0.75)" />
-                                <!-- 玻璃罐身 -->
                                 <rect x="83" y="48" width="74" height="72" rx="14" fill="url(#app-jar-glass)" stroke="rgba(255, 255, 255, 0.88)" stroke-width="2" />
-                                <!-- 左側標誌性斜長玻璃反光條 -->
-                                <path d="M 92 54 L 102 54 L 97 112 L 87 112 Z" fill="rgba(255, 255, 255, 0.38)" />
-                                <!-- 右側細高光邊 -->
+                                <path d="M 92 54 L 102 54 L 97 112 L 87 112 Z" fill="rgba(255, 255, 255, 0.35)" />
                                 <line x1="152" y1="56" x2="152" y2="110" stroke="rgba(255, 255, 255, 0.75)" stroke-width="1.5" stroke-linecap="round" />
+
+                                <!-- 步驟 4：蓋上蓋子後，罐子內播放 3 張圖示切換 (毛毛蟲 -> 結蛹 -> 蝴蝶) -->
+                                <!-- 圖示 1：毛毛蟲 (Caterpillar) -->
+                                <g class="c1-stage-caterpillar">
+                                    <path d="M 100 94 Q 120 98 140 91" stroke="rgba(255, 255, 255, 0.65)" stroke-width="1.8" stroke-linecap="round" />
+                                    <circle cx="107" cy="90" r="4.5" fill="#74c69d" />
+                                    <circle cx="113" cy="84" r="5" fill="#95d5b2" />
+                                    <circle cx="120" cy="81" r="5.2" fill="#b7e4c7" />
+                                    <circle cx="127" cy="85" r="5" fill="#95d5b2" />
+                                    <circle cx="133" cy="83" r="5.5" fill="#d8f3dc" />
+                                    <circle cx="135" cy="82" r="1.1" fill="#1d1d1f" />
+                                    <path d="M 134 78 Q 137 73 140 75 M 132 78 Q 133 73 136 73" stroke="#ffffff" stroke-width="1.2" stroke-linecap="round" />
+                                </g>
+
+                                <!-- 圖示 2：結蛹 (Chrysalis / Pupa) -->
+                                <g class="c1-stage-chrysalis">
+                                    <path d="M 102 64 Q 120 67 138 63" stroke="rgba(255, 255, 255, 0.75)" stroke-width="2" stroke-linecap="round" />
+                                    <line x1="120" y1="65" x2="120" y2="72" stroke="#ffffff" stroke-width="1.4" />
+                                    <path d="M 120 71 C 129 75, 129 91, 120 103 C 111 91, 111 75, 120 71 Z" fill="#e9d8a6" stroke="#ffffff" stroke-width="1.5" />
+                                    <path d="M 114 81 Q 120 84 126 81 M 113 88 Q 120 91 127 88 M 115 95 Q 120 97 125 95" stroke="rgba(166, 116, 73, 0.65)" stroke-width="1.2" stroke-linecap="round" />
+                                </g>
+
+                                <!-- 圖示 3：蝴蝶 (Butterfly) -->
+                                <g class="c1-stage-butterfly">
+                                    <!-- 左上翅与右上翅 -->
+                                    <path d="M 120 84 C 104 64, 92 72, 102 86 C 106 91, 115 87, 120 84 Z" fill="#ffb3c6" stroke="#ffffff" stroke-width="1.4" />
+                                    <path d="M 120 84 C 136 64, 148 72, 138 86 C 134 91, 125 87, 120 84 Z" fill="#ffb3c6" stroke="#ffffff" stroke-width="1.4" />
+                                    <!-- 左下翅与右下翅 -->
+                                    <path d="M 120 85 C 107 88, 102 100, 112 101 C 117 101, 119 92, 120 85 Z" fill="#a2d2ff" stroke="#ffffff" stroke-width="1.3" />
+                                    <path d="M 120 85 C 133 88, 138 100, 128 101 C 123 101, 121 92, 120 85 Z" fill="#a2d2ff" stroke="#ffffff" stroke-width="1.3" />
+                                    <!-- 蝶身與觸角 -->
+                                    <line x1="120" y1="74" x2="120" y2="96" stroke="#ffffff" stroke-width="2.2" stroke-linecap="round" />
+                                    <path d="M 120 75 Q 115 68 111 70 M 120 75 Q 125 68 129 70" stroke="#ffffff" stroke-width="1.2" stroke-linecap="round" />
+                                </g>
                             </g>
 
-                            <!-- 步驟 3B：黑色直紋瓶蓋降下蓋緊 -->
+                            <!-- 黑色直紋瓶蓋降下蓋緊 -->
                             <g class="c1-jar-lid-wrap">
                                 <rect x="90" y="34" width="60" height="10" rx="2.5" fill="#18181c" stroke="rgba(255, 255, 255, 0.4)" stroke-width="1" />
                                 <line x1="96" y1="35" x2="96" y2="43" stroke="#3a3a42" stroke-width="1.5" />
@@ -1827,7 +1904,7 @@
                     </p>
                 </div>
 
-                <!-- 第 2 框：1.App 介面罐子打開 -> 2.出現中心核心 -> 3.與頂部飛入同款的「拍立得相片」與「火漆信件」環繞 -->
+                <!-- 第 2 框：採用與第一框完全相同的 App 介面 -> 罐子打開 -> 出現中心核心與同款拍立得相片/火漆信件環繞 -->
                 <div class="feature-card particle-formed-card">
                     <div class="vignette-visual-box">
                         <div class="vignette-prism-glow" style="animation-delay: -4s;"></div>
@@ -1840,62 +1917,61 @@
                                 </radialGradient>
                             </defs>
 
-                            <!-- 步驟 1：微縮 App 介面中的故事罐打開蓋子 -->
-                            <g class="c2-app-jar-base">
-                                <rect x="64" y="18" width="112" height="126" rx="16" fill="rgba(14, 11, 24, 0.65)" stroke="rgba(255, 255, 255, 0.2)" stroke-width="1.2" />
-                                <path d="M 65 32 Q 120 36 175 32" stroke="rgba(212, 163, 115, 0.4)" stroke-width="1" />
-                                <!-- 罐身 -->
-                                <rect x="98" y="54" width="44" height="4" rx="1" fill="rgba(255, 255, 255, 0.7)" />
-                                <rect x="86" y="58" width="68" height="66" rx="13" fill="url(#app-jar-glass)" stroke="rgba(255, 255, 255, 0.82)" stroke-width="1.8" />
-                                <path d="M 94 64 L 103 64 L 99 116 L 90 116 Z" fill="rgba(255, 255, 255, 0.35)" />
+                            <!-- 與第一框完全相同的微縮 App 介面 -->
+                            <use href="#shared-app-ui-shell" />
+
+                            <!-- App 介面中央的故事罐身 -->
+                            <g>
+                                <ellipse cx="120" cy="122" rx="30" ry="6" fill="rgba(235, 135, 110, 0.35)" filter="blur(4px)" />
+                                <rect x="98" y="52" width="44" height="4" rx="1" fill="rgba(255, 255, 255, 0.7)" />
+                                <rect x="86" y="56" width="68" height="66" rx="13" fill="url(#app-jar-glass)" stroke="rgba(255, 255, 255, 0.82)" stroke-width="1.8" />
+                                <path d="M 94 62 L 103 62 L 99 114 L 90 114 Z" fill="rgba(255, 255, 255, 0.32)" />
                             </g>
 
                             <!-- 向上掀開的直紋黑蓋 -->
                             <g class="c2-jar-lid-open">
-                                <rect x="93" y="44" width="54" height="9.5" rx="2.2" fill="#18181c" stroke="rgba(255, 255, 255, 0.4)" stroke-width="1" />
-                                <line x1="100" y1="45" x2="100" y2="52.5" stroke="#3a3a42" stroke-width="1.4" />
-                                <line x1="107" y1="45" x2="107" y2="52.5" stroke="#3a3a42" stroke-width="1.4" />
-                                <line x1="114" y1="45" x2="114" y2="52.5" stroke="#3a3a42" stroke-width="1.4" />
-                                <line x1="121" y1="45" x2="121" y2="52.5" stroke="#3a3a42" stroke-width="1.4" />
-                                <line x1="128" y1="45" x2="128" y2="52.5" stroke="#3a3a42" stroke-width="1.4" />
-                                <line x1="135" y1="45" x2="135" y2="52.5" stroke="#3a3a42" stroke-width="1.4" />
-                                <line x1="141" y1="45" x2="141" y2="52.5" stroke="#3a3a42" stroke-width="1.4" />
+                                <rect x="93" y="42" width="54" height="9.5" rx="2.2" fill="#18181c" stroke="rgba(255, 255, 255, 0.4)" stroke-width="1" />
+                                <line x1="100" y1="43" x2="100" y2="50.5" stroke="#3a3a42" stroke-width="1.4" />
+                                <line x1="107" y1="43" x2="107" y2="50.5" stroke="#3a3a42" stroke-width="1.4" />
+                                <line x1="114" y1="43" x2="114" y2="50.5" stroke="#3a3a42" stroke-width="1.4" />
+                                <line x1="121" y1="43" x2="121" y2="50.5" stroke="#3a3a42" stroke-width="1.4" />
+                                <line x1="128" y1="43" x2="128" y2="50.5" stroke="#3a3a42" stroke-width="1.4" />
+                                <line x1="135" y1="43" x2="135" y2="50.5" stroke="#3a3a42" stroke-width="1.4" />
+                                <line x1="141" y1="43" x2="141" y2="50.5" stroke="#3a3a42" stroke-width="1.4" />
                             </g>
 
-                            <!-- 步驟 2：從罐口升起的中心記憶核心 -->
+                            <!-- 中心記憶核心 -->
                             <g class="c2-memory-core">
-                                <circle cx="120" cy="78" r="28" fill="url(#core-glow-2)" />
-                                <circle cx="120" cy="78" r="8.5" fill="#ffffff" stroke="rgba(255, 215, 235, 0.9)" stroke-width="2" />
+                                <circle cx="120" cy="84" r="26" fill="url(#core-glow-2)" />
+                                <circle cx="120" cy="84" r="8" fill="#ffffff" stroke="rgba(255, 215, 235, 0.9)" stroke-width="2" />
                             </g>
 
-                            <!-- 步驟 3：雙層環繞星軌 + 與頂部飛入完全同款的「火漆信件 (左)」與「拍立得相片 (右)」 -->
+                            <!-- 雙層環繞星軌 + 同款火漆信件(左)與拍立得相片(右) -->
                             <g class="c2-orbit-system">
-                                <ellipse cx="120" cy="74" rx="78" ry="30" transform="rotate(-14 120 74)" stroke="rgba(255, 255, 255, 0.45)" stroke-width="1.3" stroke-dasharray="4 4" />
-                                <ellipse cx="120" cy="74" rx="64" ry="22" transform="rotate(16 120 74)" stroke="rgba(185, 225, 255, 0.38)" stroke-width="1.2" />
+                                <ellipse cx="120" cy="82" rx="68" ry="26" transform="rotate(-14 120 82)" stroke="rgba(255, 255, 255, 0.48)" stroke-width="1.3" stroke-dasharray="4 4" />
+                                <ellipse cx="120" cy="82" rx="56" ry="19" transform="rotate(16 120 82)" stroke="rgba(185, 225, 255, 0.4)" stroke-width="1.2" />
 
-                                <!-- 左側環繞：與頂部飛入同款的「火漆印章信件 (米白信封 + V型折線 + 紅蠟封章)」 -->
+                                <!-- 左側環繞：同款火漆印章信件 -->
                                 <g class="c2-revolving-letter">
-                                    <g transform="translate(54, 52) rotate(-12)">
-                                        <rect x="-17" y="-11" width="34" height="22" rx="3.2" fill="#fff9f0" filter="drop-shadow(0 3px 7px rgba(0,0,0,0.35))" />
-                                        <path d="M -15.5 -9.5 L 0 2.5 L 15.5 -9.5" stroke="#d8bfa3" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round" fill="none" />
-                                        <circle cx="0" cy="2" r="3.6" fill="#e06355" />
+                                    <g transform="translate(62, 62) rotate(-12)">
+                                        <rect x="-15" y="-10" width="30" height="20" rx="3" fill="#fff9f0" filter="drop-shadow(0 3px 6px rgba(0,0,0,0.35))" />
+                                        <path d="M -13.5 -8.5 L 0 2.2 L 13.5 -8.5" stroke="#d8bfa3" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round" fill="none" />
+                                        <circle cx="0" cy="1.8" r="3.2" fill="#e06355" />
                                     </g>
                                 </g>
 
-                                <!-- 右側環繞：與頂部飛入同款的「拍立得相片 (白框 + 漸層風景 + 太陽亮點 + 底部手寫線)」 -->
+                                <!-- 右側環繞：同款拍立得相片 -->
                                 <g class="c2-revolving-photo">
-                                    <g transform="translate(184, 86) rotate(12)">
-                                        <rect x="-14" y="-16.5" width="28" height="33" rx="3.5" fill="#ffffff" filter="drop-shadow(0 3px 7px rgba(0,0,0,0.35))" />
-                                        <rect x="-11.2" y="-13.5" width="22.4" height="20.5" rx="2" fill="url(#polaroid-sky-2)" />
-                                        <circle cx="4.5" cy="-6.5" r="3.4" fill="#fff6b0" />
-                                        <line x1="-6.5" y1="11.5" x2="6.5" y2="11.5" stroke="rgba(30, 28, 36, 0.35)" stroke-width="1.5" stroke-linecap="round" />
+                                    <g transform="translate(176, 92) rotate(12)">
+                                        <rect x="-13" y="-15" width="26" height="30" rx="3.2" fill="#ffffff" filter="drop-shadow(0 3px 6px rgba(0,0,0,0.35))" />
+                                        <rect x="-10.5" y="-12.5" width="21" height="19" rx="1.8" fill="url(#polaroid-sky-2)" />
+                                        <circle cx="4" cy="-6" r="3.1" fill="#fff6b0" />
+                                        <line x1="-6" y1="10.5" x2="6" y2="10.5" stroke="rgba(30, 28, 36, 0.35)" stroke-width="1.4" stroke-linecap="round" />
                                     </g>
                                 </g>
 
-                                <!-- 隨機路過的靈感星點與十字星芒 -->
-                                <circle cx="174" cy="42" r="3.5" fill="#a2d2ff" />
-                                <circle cx="68" cy="104" r="3" fill="#ffc8dd" />
-                                <path d="M 96 34 L 96 42 M 92 38 L 100 38" stroke="#ffffff" stroke-width="1.4" stroke-linecap="round" />
+                                <circle cx="168" cy="52" r="3.2" fill="#a2d2ff" />
+                                <circle cx="72" cy="108" r="2.8" fill="#ffc8dd" />
                             </g>
                         </svg>
                     </div>
@@ -1904,76 +1980,94 @@
                     </p>
                 </div>
 
-                <!-- 第 3 框：App 介面時光罐搖晃共鳴 -> 開蓋扇形釋放過往章節的相片、信件與心情狀態投影 (整段文字皆為重點流光字色) -->
+                <!-- 第 3 框：採用與第一框完全相同的 App 介面 -> 內有 4 個故事罐 -> 放大其中一個播放 3 張圖示切換 (樹苗 -> 花 -> 壯樹) -->
                 <div class="feature-card particle-formed-card">
                     <div class="vignette-visual-box">
                         <div class="vignette-prism-glow" style="animation-delay: -8s;"></div>
                         <svg class="vignette-svg" viewBox="0 0 240 158" fill="none">
-                            <defs>
-                                <linearGradient id="beam-grad-3" x1="50%" y1="100%" x2="50%" y2="0%">
-                                    <stop offset="0%" stop-color="rgba(255, 215, 235, 0.45)" />
-                                    <stop offset="60%" stop-color="rgba(185, 225, 255, 0.18)" />
-                                    <stop offset="100%" stop-color="rgba(185, 225, 255, 0)" />
-                                </linearGradient>
-                            </defs>
+                            <!-- 與第一框完全相同的微縮 App 介面 -->
+                            <use href="#shared-app-ui-shell" />
 
-                            <!-- 微縮 App 介面背景框 -->
-                            <rect x="56" y="10" width="128" height="138" rx="18" fill="rgba(14, 11, 24, 0.72)" stroke="rgba(255, 255, 255, 0.22)" stroke-width="1.3" />
-                            <path d="M 57 26 Q 120 30 183 26" stroke="rgba(212, 163, 115, 0.45)" stroke-width="1" />
-                            <text x="120" y="20" fill="rgba(255,255,255,0.85)" font-size="7" font-weight="700" text-anchor="middle">YourStoryJar</text>
-
-                            <!-- 向外擴散的時光共鳴波紋 -->
-                            <circle class="anim-ripple-1" cx="120" cy="96" r="28" stroke="rgba(225, 205, 255, 0.45)" stroke-width="1.3" />
-                            <circle class="anim-ripple-2" cx="120" cy="96" r="28" stroke="rgba(185, 235, 255, 0.45)" stroke-width="1.3" />
-
-                            <!-- 步驟 2：開蓋後從罐內向上投射出的「過往章節記憶扇形投影 (相片 + 火漆信件 + 心情光球)」 -->
-                            <g class="c3-past-projection">
-                                <!-- 投影光束 -->
-                                <path d="M 98 76 L 68 28 L 172 28 L 142 76 Z" fill="url(#beam-grad-3)" />
-
-                                <!-- 左翼：過往某天的拍立得相片 -->
-                                <g transform="translate(88, 46) rotate(-14) scale(0.78)">
-                                    <rect x="-13" y="-15" width="26" height="30" rx="3.2" fill="#ffffff" filter="drop-shadow(0 3px 6px rgba(0,0,0,0.3))" />
-                                    <rect x="-10.5" y="-12.5" width="21" height="19" rx="1.8" fill="url(#polaroid-sky-1)" />
-                                    <circle cx="4" cy="-6" r="3.2" fill="#fff6b0" />
-                                    <line x1="-6" y1="10.5" x2="6" y2="10.5" stroke="rgba(30, 28, 36, 0.35)" stroke-width="1.4" stroke-linecap="round" />
+                            <!-- 其餘 3 個背景故事罐 (右上、左下、右下)，在左上角主罐放大時柔和退居背景 -->
+                            <g class="c3-other-three-jars">
+                                <!-- 右上罐 (中心 144, 61) -->
+                                <g transform="translate(144, 61)">
+                                    <rect x="-12" y="-21" width="24" height="4.5" rx="1.2" fill="#18181c" stroke="rgba(255,255,255,0.35)" stroke-width="0.8" />
+                                    <rect x="-15" y="-16" width="30" height="31" rx="6.5" fill="url(#app-jar-glass)" stroke="rgba(255,255,255,0.75)" stroke-width="1.2" />
+                                    <path d="M -11 -13 L -7 -13 L -9 11 L -13 11 Z" fill="rgba(255,255,255,0.3)" />
                                 </g>
-
-                                <!-- 右翼：封存當時想法的火漆信件 -->
-                                <g transform="translate(152, 48) rotate(14) scale(0.8)">
-                                    <rect x="-15" y="-10" width="30" height="20" rx="3" fill="#fff9f0" filter="drop-shadow(0 3px 6px rgba(0,0,0,0.3))" />
-                                    <path d="M -14 -8.5 L 0 2 L 14 -8.5" stroke="#d8bfa3" stroke-width="1.3" fill="none" />
-                                    <circle cx="0" cy="1.8" r="3.2" fill="#e06355" />
+                                <!-- 左下罐 (中心 96, 105) -->
+                                <g transform="translate(96, 105)">
+                                    <rect x="-12" y="-21" width="24" height="4.5" rx="1.2" fill="#18181c" stroke="rgba(255,255,255,0.35)" stroke-width="0.8" />
+                                    <rect x="-15" y="-16" width="30" height="31" rx="6.5" fill="url(#app-jar-glass)" stroke="rgba(255,255,255,0.75)" stroke-width="1.2" />
+                                    <path d="M -11 -13 L -7 -13 L -9 11 L -13 11 Z" fill="rgba(255,255,255,0.3)" />
                                 </g>
-
-                                <!-- 中央：象徵過去狀態與特別心情的微光記憶球 -->
-                                <circle cx="120" cy="38" r="6" fill="#ffffff" filter="drop-shadow(0 0 8px rgba(255,215,235,0.9))" />
-                                <circle cx="110" cy="56" r="3" fill="#a2d2ff" />
-                                <circle cx="132" cy="54" r="3.5" fill="#ffc8dd" />
+                                <!-- 右下罐 (中心 144, 105) -->
+                                <g transform="translate(144, 105)">
+                                    <rect x="-12" y="-21" width="24" height="4.5" rx="1.2" fill="#18181c" stroke="rgba(255,255,255,0.35)" stroke-width="0.8" />
+                                    <rect x="-15" y="-16" width="30" height="31" rx="6.5" fill="url(#app-jar-glass)" stroke="rgba(255,255,255,0.75)" stroke-width="1.2" />
+                                    <path d="M -11 -13 L -7 -13 L -9 11 L -13 11 Z" fill="rgba(255,255,255,0.3)" />
+                                </g>
                             </g>
 
-                            <!-- 步驟 1：輕微搖晃 (Shake) 並打開瓶蓋的 App 故事罐 -->
-                            <g class="c3-jar-shake-group">
-                                <!-- 兩側搖晃感應弧線 -->
-                                <path d="M 80 86 C 75 94, 75 104, 80 112" stroke="rgba(255, 255, 255, 0.45)" stroke-width="1.4" stroke-linecap="round" />
-                                <path d="M 160 86 C 165 94, 165 104, 160 112" stroke="rgba(255, 255, 255, 0.45)" stroke-width="1.4" stroke-linecap="round" />
+                            <!-- 被選中並放大至 App 介面中央的主故事罐 (初始位於左上角 96, 61，放大後位於中央 120, 82) -->
+                            <g class="c3-hero-zoom-jar">
+                                <ellipse cx="120" cy="121" rx="32" ry="6.5" fill="rgba(235, 135, 110, 0.4)" filter="blur(4px)" />
+                                <!-- 黑色直紋瓶蓋 -->
+                                <rect x="91" y="36" width="58" height="9.5" rx="2.2" fill="#18181c" stroke="rgba(255, 255, 255, 0.42)" stroke-width="1" />
+                                <line x1="98" y1="37" x2="98" y2="44.5" stroke="#3a3a42" stroke-width="1.4" />
+                                <line x1="105" y1="37" x2="105" y2="44.5" stroke="#3a3a42" stroke-width="1.4" />
+                                <line x1="112" y1="37" x2="112" y2="44.5" stroke="#3a3a42" stroke-width="1.4" />
+                                <line x1="119" y1="37" x2="119" y2="44.5" stroke="#3a3a42" stroke-width="1.4" />
+                                <line x1="126" y1="37" x2="126" y2="44.5" stroke="#3a3a42" stroke-width="1.4" />
+                                <line x1="133" y1="37" x2="133" y2="44.5" stroke="#3a3a42" stroke-width="1.4" />
+                                <line x1="140" y1="37" x2="140" y2="44.5" stroke="#3a3a42" stroke-width="1.4" />
+                                <!-- 瓶頸與玻璃罐身 -->
+                                <rect x="96" y="45.5" width="48" height="3.5" rx="1" fill="rgba(255, 255, 255, 0.75)" />
+                                <rect x="85" y="49" width="70" height="70" rx="14" fill="url(#app-jar-glass)" stroke="rgba(255, 255, 255, 0.9)" stroke-width="2" />
+                                <path d="M 93 55 L 103 55 L 98 112 L 88 112 Z" fill="rgba(255, 255, 255, 0.35)" />
+                                <line x1="150" y1="57" x2="150" y2="110" stroke="rgba(255, 255, 255, 0.75)" stroke-width="1.4" stroke-linecap="round" />
 
-                                <!-- 玻璃瓶頸與罐身 -->
-                                <rect x="100" y="72" width="40" height="3.5" rx="1" fill="rgba(255, 255, 255, 0.75)" />
-                                <rect x="90" y="75.5" width="60" height="58" rx="12" fill="url(#app-jar-glass)" stroke="rgba(255, 255, 255, 0.88)" stroke-width="1.8" />
-                                <path d="M 97 81 L 105 81 L 101 127 L 93 127 Z" fill="rgba(255, 255, 255, 0.38)" />
-                                <circle cx="120" cy="105" r="9" fill="rgba(255, 210, 230, 0.45)" stroke="rgba(255, 255, 255, 0.7)" stroke-width="1.3" />
+                                <!-- 罐內播放 3 張成長圖示切換：1.樹苗 (Sprout) -> 2.花 (Flower) -> 3.壯樹 (Mighty Tree) -->
+                                <!-- 圖示 1：樹苗 (Seedling / Sprout) -->
+                                <g class="c3-stage-sprout">
+                                    <path d="M 102 104 Q 120 100 138 104" stroke="rgba(255, 255, 255, 0.65)" stroke-width="1.8" stroke-linecap="round" />
+                                    <path d="M 120 102 Q 120 90 120 82" stroke="#95d5b2" stroke-width="2.4" stroke-linecap="round" />
+                                    <path d="M 120 87 C 109 85, 107 75, 116 75 C 120 75, 120 82, 120 87 Z" fill="#84fab0" stroke="#ffffff" stroke-width="1.2" />
+                                    <path d="M 120 83 C 131 81, 133 71, 124 71 C 120 71, 120 78, 120 83 Z" fill="#b7e4c7" stroke="#ffffff" stroke-width="1.2" />
+                                </g>
 
-                                <!-- 彈開的黑色直紋瓶蓋 -->
-                                <g class="c3-lid-pop">
-                                    <rect x="96" y="63" width="48" height="9" rx="2" fill="#18181c" stroke="rgba(255, 255, 255, 0.4)" stroke-width="1" />
-                                    <line x1="102" y1="64" x2="102" y2="71" stroke="#3a3a42" stroke-width="1.3" />
-                                    <line x1="108" y1="64" x2="108" y2="71" stroke="#3a3a42" stroke-width="1.3" />
-                                    <line x1="114" y1="64" x2="114" y2="71" stroke="#3a3a42" stroke-width="1.3" />
-                                    <line x1="120" y1="64" x2="120" y2="71" stroke="#3a3a42" stroke-width="1.3" />
-                                    <line x1="126" y1="64" x2="126" y2="71" stroke="#3a3a42" stroke-width="1.3" />
-                                    <line x1="132" y1="64" x2="132" y2="71" stroke="#3a3a42" stroke-width="1.3" />
-                                    <line x1="138" y1="64" x2="138" y2="71" stroke="#3a3a42" stroke-width="1.3" />
+                                <!-- 圖示 2：花 (Blooming Flower) -->
+                                <g class="c3-stage-flower">
+                                    <path d="M 102 104 Q 120 100 138 104" stroke="rgba(255, 255, 255, 0.65)" stroke-width="1.8" stroke-linecap="round" />
+                                    <path d="M 120 102 L 120 78" stroke="#95d5b2" stroke-width="2.2" stroke-linecap="round" />
+                                    <path d="M 120 92 C 112 90, 111 84, 117 85 Z" fill="#95d5b2" />
+                                    <path d="M 120 90 C 128 88, 129 82, 123 83 Z" fill="#95d5b2" />
+                                    <!-- 花瓣與花蕊 -->
+                                    <circle cx="120" cy="68" r="5.5" fill="#ffb3c6" />
+                                    <circle cx="127" cy="73" r="5.5" fill="#ffc8dd" />
+                                    <circle cx="124" cy="81" r="5.5" fill="#ffb3c6" />
+                                    <circle cx="116" cy="81" r="5.5" fill="#ffc8dd" />
+                                    <circle cx="113" cy="73" r="5.5" fill="#ffb3c6" />
+                                    <circle cx="120" cy="75" r="4.5" fill="#fff6b0" stroke="#ffffff" stroke-width="1.2" />
+                                </g>
+
+                                <!-- 圖示 3：壯樹 (Mighty Tree) -->
+                                <g class="c3-stage-tree">
+                                    <path d="M 98 105 Q 120 100 142 105" stroke="rgba(255, 255, 255, 0.75)" stroke-width="1.8" stroke-linecap="round" />
+                                    <!-- 茂密樹冠 -->
+                                    <circle cx="109" cy="78" r="10.5" fill="#52b788" />
+                                    <circle cx="131" cy="78" r="10.5" fill="#52b788" />
+                                    <circle cx="113" cy="67" r="11" fill="#74c69d" />
+                                    <circle cx="127" cy="67" r="11" fill="#74c69d" />
+                                    <circle cx="120" cy="72" r="13.5" fill="#95d5b2" stroke="rgba(255, 255, 255, 0.7)" stroke-width="1.2" />
+                                    <!-- 粗壯樹幹與分枝 -->
+                                    <path d="M 114 103 Q 117 93 117 82 L 123 82 Q 123 93 126 103 Z" fill="#d4a373" />
+                                    <path d="M 120 86 L 112 77 M 120 84 L 128 76" stroke="#d4a373" stroke-width="2.2" stroke-linecap="round" />
+                                    <!-- 樹冠微光果實/星點 -->
+                                    <circle cx="115" cy="66" r="1.8" fill="#fff6b0" />
+                                    <circle cx="126" cy="71" r="1.8" fill="#ffc8dd" />
+                                    <circle cx="112" cy="77" r="1.6" fill="#ffffff" />
                                 </g>
                             </g>
                         </svg>
