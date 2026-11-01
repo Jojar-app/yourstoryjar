@@ -561,7 +561,7 @@
             opacity: 1;
         }
 
-        /* ================= 4. 全螢幕背景與記憶流畫布 (修正手機滑動網址列收起時的白邊問題) ================= */
+        /* ================= 4. 全螢幕背景與記憶流畫布 ================= */
         #cosmic-bg-canvas {
             position: fixed;
             top: 0;
@@ -928,7 +928,7 @@
             letter-spacing: -0.01em;
         }
 
-        /* ================= 5. 「Your Story, Directed by You.」：與罐子同款的「粉色蓋藍色與白色混合體」+ 極緩慢流動漸變 ================= */
+        /* ================= 5. 「Your Story, Directed by You.」：以白色為主調，僅混合微微的粉與藍作格調提升 + 32秒極緩慢流動 ================= */
         .director-philosophy-bridge {
             position: relative;
             z-index: 7;
@@ -948,8 +948,8 @@
             height: 92px;
             transform: translate(-50%, -50%) scale(calc(0.65 + var(--director-materialize, 0) * 0.45));
             background: radial-gradient(ellipse at 50% 50%, 
-                rgba(235, 175, 205, calc(0.32 * (1 - var(--director-materialize, 0) * 0.45))) 0%, 
-                rgba(175, 210, 245, calc(0.24 * (1 - var(--director-materialize, 0) * 0.5))) 48%, 
+                rgba(225, 185, 215, calc(0.28 * (1 - var(--director-materialize, 0) * 0.45))) 0%, 
+                rgba(185, 215, 245, calc(0.22 * (1 - var(--director-materialize, 0) * 0.5))) 48%, 
                 transparent 76%);
             filter: blur(16px);
             opacity: calc(var(--director-materialize, 0) * 1.1);
@@ -957,7 +957,7 @@
             z-index: 1;
         }
 
-        /* 罐子同款色系：柔霧莓果粉蓋在冰晶藍與珍珠白之上，並以 32 秒超慢速優雅流動 */
+        /* 白色為主調（佔比約 75%），搭配極淡雅的微櫻花粉與微冰晶藍格調點綴 */
         .director-single-line-title {
             position: relative;
             z-index: 3;
@@ -970,51 +970,54 @@
             line-height: 1.28;
             letter-spacing: calc(-0.02em + (1 - var(--director-materialize, 0)) * 0.08em);
             opacity: var(--director-materialize, 0);
-            /* 柔和深色立體襯底陰影，讓珍珠白、冰晶藍與柔粉在淺色與深色背景上都清晰浮現 */
+            /* 柔和溫潤的環境光影襯托，讓純白主調在淺色背景與深色星空背景上都立體清晰 */
             filter: blur(calc((1 - var(--director-materialize, 0)) * 11px))
-                    drop-shadow(0 2px 8px rgba(75, 62, 102, calc(var(--director-materialize, 0) * 0.36)))
-                    drop-shadow(0 1px 2px rgba(45, 38, 68, calc(var(--director-materialize, 0) * 0.28)));
+                    drop-shadow(0 2px 10px rgba(70, 60, 98, calc(var(--director-materialize, 0) * 0.34)))
+                    drop-shadow(0 1px 2px rgba(45, 38, 68, calc(var(--director-materialize, 0) * 0.24)));
             transform: translateY(calc((1 - var(--director-materialize, 0)) * 14px))
                        scale(calc(0.94 + var(--director-materialize, 0) * 0.06));
             background: linear-gradient(
                 115deg,
-                #82a8d9 0%,
-                #eef5ff 14%,
-                #e08eb4 28%,
-                #f6bfd8 42%,
-                #ffffff 54%,
-                #94b9e8 68%,
-                #df92b8 84%,
-                #82a8d9 100%
+                #ffffff 0%,
+                #ffffff 18%,
+                #dfecfc 28%,
+                #ffffff 38%,
+                #ffffff 52%,
+                #fbe0ec 62%,
+                #ffffff 72%,
+                #e3effd 84%,
+                #ffffff 93%,
+                #ffffff 100%
             );
             background-size: 320% 100%;
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
-            /* 32 秒極緩慢流動漸變感 */
-            animation: jarPinkBlueWhiteSlowFlow 32s ease-in-out infinite;
+            animation: whiteSubtlePinkBlueSlowFlow 32s ease-in-out infinite;
             will-change: opacity, filter, transform, background-position;
         }
 
         body.cosmic-text-mode .director-single-line-title {
             filter: blur(calc((1 - var(--director-materialize, 0)) * 11px))
-                    drop-shadow(0 4px 16px rgba(10, 8, 22, 0.75));
+                    drop-shadow(0 4px 16px rgba(10, 8, 22, 0.72));
             background: linear-gradient(
                 115deg,
-                #9ec4f2 0%,
-                #ffffff 15%,
-                #f09ec2 30%,
-                #ffd1e6 45%,
-                #ffffff 58%,
-                #a8ccf7 72%,
-                #eb9ec2 86%,
-                #9ec4f2 100%
+                #ffffff 0%,
+                #ffffff 18%,
+                #d8eaff 28%,
+                #ffffff 38%,
+                #ffffff 52%,
+                #ffdbed 62%,
+                #ffffff 72%,
+                #dcecff 84%,
+                #ffffff 93%,
+                #ffffff 100%
             );
             background-size: 320% 100%;
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
         }
 
-        @keyframes jarPinkBlueWhiteSlowFlow {
+        @keyframes whiteSubtlePinkBlueSlowFlow {
             0% { background-position: 100% center; }
             50% { background-position: 0% center; }
             100% { background-position: 100% center; }
@@ -1273,7 +1276,7 @@
     <!-- 底層畫布：圖二深色宇宙星雲與星星從罐口釋放並染滿背景 -->
     <canvas id="cosmic-bg-canvas"></canvas>
 
-    <!-- 外層記憶流畫布：繪製罐外飛入的 80% 相片 + 20% 信件、以及緩慢沉澱結晶的粒子與煙霧 -->
+    <!-- 外層記憶流畫布：繪製罐外快速飛入的 80% 相片 + 20% 信件、以及緩慢沉澱結晶的粒子與煙霧 -->
     <canvas id="memory-stream-canvas"></canvas>
 
     <!-- ================= 1. 透明玻璃切面頂部欄 ================= -->
@@ -1469,7 +1472,7 @@
 
             </div>
 
-            <!-- 單行排版「Your Story, Directed by You.」：罐子同款粉色蓋藍色與白色混合體 + 32秒極緩慢流動漸變 -->
+            <!-- 單行排版「Your Story, Directed by You.」：白色為主調，僅混合微微的粉與藍作格調提升 + 32秒極緩慢流動 -->
             <div id="director-mist-stage" class="director-philosophy-bridge">
                 <div class="director-smoke-aura"></div>
                 <h2 id="director-title-el" class="director-single-line-title">Your Story, Directed by You.</h2>
@@ -1623,7 +1626,7 @@
 
         window.addEventListener('click', closeTopMenu);
 
-        // ================= 4. 三畫布系統 (修正手機滑動時網址列隱藏導致的底邊與右邊白邊) =================
+        // ================= 4. 雙速記憶系統：相片與信件進入集合體前採用「上一版輕快速度」，進入集合體後與底部粒子煙霧採用「緩慢結晶速度」 =================
         const cosmicCanvas = document.getElementById('cosmic-bg-canvas');
         const cosmicCtx = cosmicCanvas.getContext('2d');
 
@@ -1659,8 +1662,14 @@
         ];
         const RARE_GOLD_COLOR = { r: 242, g: 205, b: 135 };
 
-        let smoothScrollP = 0;
-        let targetScrollP = 0;
+        // 雙速滑動變數：
+        // fastScrollP -> 供「進入集合體前的相片與信件」使用（恢復上一版 440px 映射與 0.14 快速阻尼）
+        // slowScrollP -> 供「進入集合體後的內部旋轉」與「底部粒子煙霧結晶」使用（維持現在的 640px 映射與 0.048 慢速阻尼）
+        let targetFastScrollP = 0;
+        let fastScrollP = 0;
+        let targetSlowScrollP = 0;
+        let slowScrollP = 0;
+
         let isJarClickedOpen = false;
         let clickDyeProgress = 0;
         let continuousBlend = 0;
@@ -1678,7 +1687,6 @@
         let collectiveNodes = [];
         let flameWisps = [];
 
-        // 針對手機瀏覽器網址列伸縮：畫布高度涵蓋最大螢幕高度 (含 +120px 緩衝區)，絕不露出底部或右側白邊
         function resizeCanvases() {
             const dpr = window.devicePixelRatio || 1;
             const w = Math.max(document.documentElement.clientWidth || 0, window.innerWidth || 0);
@@ -1728,6 +1736,7 @@
         initCosmicStars();
 
         function initScrollScrubbedPool() {
+            // 相片與信件恢復上一版的 startP 與 durationP (0.28)
             scrollBoundMemories = [];
             const totalItems = 48;
             for (let i = 0; i < totalItems; i++) {
@@ -1748,8 +1757,8 @@
                     normStartY = 0.55 + ((i * 11) % 38) / 100;
                 }
 
-                const startP = 0.01 + (i / totalItems) * 0.65;
-                const durationP = 0.32;
+                const startP = 0.01 + (i / totalItems) * 0.68;
+                const durationP = 0.28;
 
                 scrollBoundMemories.push({
                     isPhoto,
@@ -1766,7 +1775,7 @@
                 });
             }
 
-            // (A) 飛往單行標題的結晶煙霧粒子：拉長 durationP 讓結晶過程更緩慢從容，僅保留 1 粒金色
+            // 粒子與煙霧保留現狀（緩慢日積月累的結晶感）
             scrollBoundTitleSmoke = [];
             for (let k = 0; k < 42; k++) {
                 const isRareGold = (k === 15);
@@ -1783,7 +1792,6 @@
                 });
             }
 
-            // (B) 飛往三個介紹框的結晶煙霧粒子：拉長 durationP 呈現日積月累的結晶感，僅保留 3 粒金色
             scrollBoundMistParticles = [];
             for (let j = 0; j < 84; j++) {
                 const isRareGold = (j === 12 || j === 45 || j === 76);
@@ -1852,15 +1860,16 @@
                 continuousMemories = [];
                 continuousTitleSmoke = [];
                 continuousMistParticles = [];
-                if (smoothScrollP <= 0.02) {
+                if (fastScrollP <= 0.02) {
                     collectiveAppearTimestamp = null;
                     delayedFlameFactor = 0;
                 }
             }
         }
 
+        // 持續飛入的相片與信件：恢復上一版的快速飛入速度 (0.013 + Math.random() * 0.011)，並在落入集合體時轉為現在的慢速
         function spawnContinuousMemory(mouthX, mouthY) {
-            if (continuousMemories.length > 36) return;
+            if (continuousMemories.length > 50) return;
             const isPhoto = Math.random() < 0.8;
             const w = canvasW;
             const h = window.innerHeight;
@@ -1891,9 +1900,9 @@
                 ctrlX,
                 ctrlY,
                 t: 0,
-                speed: 0.0065 + Math.random() * 0.0045, // 放慢飛入速度，溫柔優雅
+                speed: 0.013 + Math.random() * 0.011, // 恢復上一版進入集合體前的速度
                 rot: (Math.random() - 0.5) * 1.5,
-                rotSpeed: (Math.random() - 0.5) * 0.025,
+                rotSpeed: (Math.random() - 0.5) * 0.05,
                 scale: 0.85 + Math.random() * 0.35,
                 palette: PHOTO_PALETTES[Math.floor(Math.random() * PHOTO_PALETTES.length)]
             });
@@ -1906,7 +1915,6 @@
             return count;
         }
 
-        // 【緩慢結晶感】將持續滲出粒子的速度大幅放慢約 4 倍 (0.0032 ~ 0.0052)，呈現一點一滴日積月累沉澱結晶的過程
         function spawnContinuousTitleSmoke(jarBottomX, jarBottomY, titleRect) {
             if (continuousTitleSmoke.length > 28 || !titleRect) return;
             const startX = jarBottomX + (Math.random() - 0.5) * 110;
@@ -1926,7 +1934,7 @@
                 endX,
                 endY,
                 t: 0,
-                speed: 0.0036 + Math.random() * 0.0022, // 緩慢飄落結晶
+                speed: 0.0036 + Math.random() * 0.0022,
                 baseRadius: 2.3 + Math.random() * 1.6,
                 smokeMaxRadius: 26 + Math.random() * 14,
                 rgb: chosenRgb
@@ -1953,14 +1961,13 @@
                 endX,
                 endY,
                 t: 0,
-                speed: 0.0028 + Math.random() * 0.0020, // 緩慢沉澱結晶至三個框框
+                speed: 0.0028 + Math.random() * 0.0020,
                 baseRadius: 2.2 + Math.random() * 1.8,
                 smokeMaxRadius: 22 + Math.random() * 15,
                 rgb: chosenRgb
             });
         }
 
-        // 繪製帶有「日積月累結晶感」的緩慢粒子與雲霧：前段帶有晶瑩十字星芒核心，後段緩緩化為柔和結晶雲霧融入框框
         function drawSmokeDispersingParticle(ctx, px, py, progressT, baseR, smokeMaxR, rgb, weightAlpha) {
             if (weightAlpha <= 0.01) return;
             ctx.save();
@@ -1973,12 +1980,10 @@
                 ctx.shadowColor = `rgb(${rgb.r}, ${rgb.g}, ${rgb.b})`;
                 ctx.shadowBlur = 7;
 
-                // 結晶圓核
                 ctx.beginPath();
                 ctx.arc(px, py, baseR, 0, Math.PI * 2);
                 ctx.fill();
 
-                // 微小結晶十字星芒高光
                 ctx.strokeStyle = `rgba(255, 255, 255, ${alpha * 0.85})`;
                 ctx.lineWidth = 0.9;
                 const arm = baseR * 1.9;
@@ -2151,7 +2156,6 @@
             const h = canvasH;
             cosmicCtx.clearRect(0, 0, w, h);
 
-            // 同步更新 html 與 body 的底色，確保手機在任何網址列伸縮或下拉回彈時都絕不露出白邊
             const r = Math.round(247 + (19 - 247) * dyeProgress);
             const g = Math.round(247 + (12 - 247) * dyeProgress);
             const b = Math.round(250 + (36 - 250) * dyeProgress);
@@ -2245,11 +2249,12 @@
             cosmicCtx.restore();
         }
 
-        // 監聽頁面滑動：拉長滑動映射距離 (640px)，配合緩慢阻尼呈現日積月累的結晶感
+        // 監聽頁面滑動：同時更新「快進度 (給飛入集合體前的相片信件)」與「慢進度 (給集合體內部與底部粒子煙霧)」
         window.addEventListener('scroll', () => {
             if (document.body.classList.contains('animating')) return;
             const scrollY = window.scrollY;
-            targetScrollP = Math.min(1, Math.max(0, scrollY / 640));
+            targetFastScrollP = Math.min(1, Math.max(0, scrollY / 440));
+            targetSlowScrollP = Math.min(1, Math.max(0, scrollY / 640));
         }, { passive: true });
 
         // 60fps 主渲染迴圈
@@ -2262,10 +2267,16 @@
             jarInnerCtx.clearRect(0, 0, 286, 332);
 
             if (!document.body.classList.contains('animating')) {
-                // 【緩慢結晶阻尼】將滑動追隨係數由 0.14 調慢為 0.048，讓滑動時的粒子與煙霧呈現緩慢沉澱結晶的節奏
-                smoothScrollP += (targetScrollP - smoothScrollP) * 0.048;
-                if (Math.abs(targetScrollP - smoothScrollP) < 0.0003) {
-                    smoothScrollP = targetScrollP;
+                // 1. 快進度：恢復上一版 0.14 阻尼，讓相片與信件飛入集合體前的速度輕快流暢
+                fastScrollP += (targetFastScrollP - fastScrollP) * 0.14;
+                if (Math.abs(targetFastScrollP - fastScrollP) < 0.0005) {
+                    fastScrollP = targetFastScrollP;
+                }
+
+                // 2. 慢進度：保留現在的 0.048 阻尼，供集合體轉動與底部粒子煙霧緩慢結晶使用
+                slowScrollP += (targetSlowScrollP - slowScrollP) * 0.048;
+                if (Math.abs(targetSlowScrollP - slowScrollP) < 0.0003) {
+                    slowScrollP = targetSlowScrollP;
                 }
 
                 if (isJarClickedOpen) {
@@ -2274,7 +2285,7 @@
                     clickDyeProgress = Math.max(0, clickDyeProgress - dt / 900);
                 }
 
-                const scrollDyeProgress = Math.min(1, smoothScrollP * 1.25);
+                const scrollDyeProgress = Math.min(1, fastScrollP * 1.25);
                 const effectiveDyeProgress = Math.max(scrollDyeProgress, clickDyeProgress);
 
                 document.documentElement.style.setProperty('--cosmic-dye', effectiveDyeProgress.toFixed(3));
@@ -2307,15 +2318,16 @@
 
                     const isContinuousActive = isJarClickedOpen && (clickDyeProgress >= 0.78) && isCollectiveInView;
                     if (isContinuousActive) {
-                        continuousBlend = Math.min(1, continuousBlend + dt / 800);
+                        continuousBlend = Math.min(1, continuousBlend + dt / 500);
                     } else {
-                        continuousBlend = Math.max(0, continuousBlend - dt / 500);
+                        continuousBlend = Math.max(0, continuousBlend - dt / 400);
                     }
 
-                    const activeEnergy = Math.max(smoothScrollP, continuousBlend * 0.92);
+                    // 集合體的能量隨飛入的相片同步聚集，但內部旋轉與下方結晶維持慢速
+                    const activeEnergy = Math.max(fastScrollP, continuousBlend * 0.92);
 
-                    const directorFormProgress = Math.min(1, Math.max(smoothScrollP * 2.1, clickDyeProgress * 1.25, continuousBlend));
-                    const cardFormProgress = Math.min(1, Math.max(smoothScrollP * 1.18, continuousBlend));
+                    const directorFormProgress = Math.min(1, Math.max(slowScrollP * 2.1, clickDyeProgress * 1.25, continuousBlend));
+                    const cardFormProgress = Math.min(1, Math.max(slowScrollP * 1.18, continuousBlend));
 
                     document.documentElement.style.setProperty('--director-materialize', directorFormProgress.toFixed(3));
                     document.documentElement.style.setProperty('--card-materialize', cardFormProgress.toFixed(3));
@@ -2348,7 +2360,7 @@
                         seepGlow.style.setProperty('--seep-glow-opacity', Math.min(1, activeEnergy * 1.2).toFixed(2));
                     }
 
-                    // ================= (一) 罐內畫布 (#jar-inner-canvas) =================
+                    // ================= (一) 罐內畫布 (#jar-inner-canvas)：進入集合體後按現在的慢速度旋轉 =================
                     if (activeEnergy > 0.01 && isCollectiveInView) {
                         const localCX = 143;
                         const localCY = 226;
@@ -2369,7 +2381,8 @@
                         }
 
                         const visibleNodes = Math.floor(collectiveNodes.length * Math.min(1, activeEnergy * 1.15));
-                        const orbitPhase = smoothScrollP * Math.PI * 2.5 + (continuousBlend > 0 ? now * 0.0007 : 0);
+                        // 集合體內部維持現在的慢速度 (slowScrollP 與 0.0007 自轉速度)
+                        const orbitPhase = slowScrollP * Math.PI * 2.5 + (continuousBlend > 0 ? now * 0.0007 : 0);
 
                         for (let i = 0; i < visibleNodes; i++) {
                             const node = collectiveNodes[i];
@@ -2403,12 +2416,13 @@
 
                     const cardRects = Array.from(cardEls).map(el => el.getBoundingClientRect());
 
-                    // ================= (二) 隨用戶滑動畫面而動的相片/信件 + 緩慢沉澱結晶的粒子與煙霧 =================
-                    if (smoothScrollP > 0.002 && isCollectiveInView && continuousBlend < 1) {
+                    // ================= (二) 滑動模式：相片與信件按上一版的快速度 (fastScrollP) 飛入，粒子與煙霧按現在的慢速度 (slowScrollP) 結晶 =================
+                    if ((fastScrollP > 0.002 || slowScrollP > 0.002) && isCollectiveInView && continuousBlend < 1) {
                         const scrollAlphaWeight = 1 - continuousBlend;
 
+                        // 1. 相片與信件：使用 fastScrollP（恢復上一版飛入集合體前的輕快速度）
                         scrollBoundMemories.forEach(item => {
-                            const localT = (smoothScrollP - item.startP) / item.durationP;
+                            const localT = (fastScrollP - item.startP) / item.durationP;
                             if (localT > 0 && localT < 1) {
                                 const sx = item.normStartX * canvasW;
                                 const sy = item.normStartY * window.innerHeight;
@@ -2440,9 +2454,10 @@
                             }
                         });
 
+                        // 2. 粒子與煙霧：使用 slowScrollP（保留現狀的緩慢結晶感）
                         if (titleRect) {
                             scrollBoundTitleSmoke.forEach(pt => {
-                                const localT = (smoothScrollP - pt.startP) / pt.durationP;
+                                const localT = (slowScrollP - pt.startP) / pt.durationP;
                                 if (localT > 0 && localT < 1) {
                                     const startX = collectiveScreenX + pt.offsetXNorm * 115;
                                     const startY = jarBottomY - 6;
@@ -2462,7 +2477,7 @@
 
                         if (cardRects.length > 0) {
                             scrollBoundMistParticles.forEach(pt => {
-                                const localT = (smoothScrollP - pt.startP) / pt.durationP;
+                                const localT = (slowScrollP - pt.startP) / pt.durationP;
                                 if (localT > 0 && localT < 1) {
                                     const targetCard = cardRects[pt.cardIdx % cardRects.length];
                                     const startX = collectiveScreenX + pt.offsetXNorm * 130;
@@ -2482,9 +2497,9 @@
                         }
                     }
 
-                    // ================= (三) 點擊開蓋且背景染達 78% 後絲滑接入的「緩慢日積月累結晶」持續動畫 =================
+                    // ================= (三) 點擊開蓋且背景染達 78% 後絲滑接入的持續動畫 =================
                     if (isContinuousActive) {
-                        if (Math.random() < 0.22) {
+                        if (Math.random() < 0.42) {
                             spawnContinuousMemory(mouthX, mouthY);
                         }
                         if (Math.random() < 0.24) {
@@ -2497,8 +2512,14 @@
 
                     for (let i = continuousMemories.length - 1; i >= 0; i--) {
                         const m = continuousMemories[i];
-                        m.t += m.speed;
-                        m.rot += m.rotSpeed;
+                        // 進入集合體前 (t < 0.74) 按上一版的快速度飛入；落入集合體時 (t >= 0.74) 平滑減速銜接集合體的慢速
+                        if (m.t < 0.74) {
+                            m.t += m.speed;
+                            m.rot += m.rotSpeed;
+                        } else {
+                            m.t += m.speed * 0.45;
+                            m.rot += m.rotSpeed * 0.45;
+                        }
 
                         if (m.t >= 1) {
                             continuousMemories.splice(i, 1);
@@ -2612,8 +2633,10 @@
             clearTimers();
             closeTopMenu();
 
-            smoothScrollP = 0;
-            targetScrollP = 0;
+            targetFastScrollP = 0;
+            fastScrollP = 0;
+            targetSlowScrollP = 0;
+            slowScrollP = 0;
             isJarClickedOpen = false;
             clickDyeProgress = 0;
             continuousBlend = 0;
