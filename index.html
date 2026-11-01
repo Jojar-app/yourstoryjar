@@ -42,7 +42,7 @@
             overflow: hidden;
         }
 
-        /* ================= 1. 頂部透明玻璃切面導航欄 (依檔案一結構，保留中間上線、只去除中間下面那條線) ================= */
+        /* ================= 1. 頂部透明玻璃導航欄 (中間完全無線條，僅保留左右兩側清晰金棕+亮白玻璃切面邊緣) ================= */
         #glass-top-plate {
             position: fixed;
             top: 0;
@@ -60,7 +60,7 @@
             pointer-events: auto;
         }
 
-        /* 還原檔案一的透明直紋毛玻璃質感 + 微弧形玻璃切面下邊緣 */
+        /* 主玻璃板本體：不設全寬底邊線，確保正中間完全乾淨無任何線條 */
         .glass-plate-surface {
             position: absolute;
             inset: 0;
@@ -79,43 +79,35 @@
             backdrop-filter: blur(20px) saturate(180%);
             -webkit-backdrop-filter: blur(20px) saturate(180%);
             border-radius: 0 0 50% 50% / 0 0 18px 18px;
-            border-bottom: 1.5px solid rgba(255, 255, 255, calc(0.95 - var(--cosmic-dye) * 0.6));
-            /* 移除原本連貫中央下方的 0 2px 0 陰影線，改由 ::before 僅在左右兩側繪製下緣線，讓中間只保留 ::after 上面那條線 */
-            box-shadow: 
-                0 8px 28px rgba(20, 20, 30, calc(0.06 + var(--cosmic-dye) * 0.28)),
-                inset 0 -3px 6px rgba(255, 255, 255, calc(0.85 - var(--cosmic-dye) * 0.65)),
-                inset 0 1px 0 rgba(255, 255, 255, 0.9);
+            border-bottom: none;
+            box-shadow: 0 8px 28px rgba(20, 20, 30, calc(0.05 + var(--cosmic-dye) * 0.28));
             transition: background-color 0.2s ease;
         }
 
-        /* 下方邊緣線：只在左右兩側呈現，到了中間自動消隱去除，不產生中間下面第二條線 */
-        .glass-plate-surface::before {
-            content: "";
+        /* 左右兩側專屬邊緣層：向下預留 6px 空間避免陰影被遮罩裁切，中間 (30% ~ 70%) 完全透明無任何上下線，左右兩側清晰呈現原版金棕邊緣 */
+        .glass-plate-side-edges {
             position: absolute;
-            inset: 0;
-            border-radius: 0 0 50% 50% / 0 0 18px 18px;
-            box-shadow: 0 2px 0 rgba(166, 116, 73, 0.22);
-            -webkit-mask-image: linear-gradient(90deg, #000 0%, #000 14%, transparent 28%, transparent 72%, #000 86%, #000 100%);
-            mask-image: linear-gradient(90deg, #000 0%, #000 14%, transparent 28%, transparent 72%, #000 86%, #000 100%);
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: -6px;
             pointer-events: none;
+            -webkit-mask-image: linear-gradient(90deg, #000 0%, #000 18%, transparent 30%, transparent 70%, #000 82%, #000 100%);
+            mask-image: linear-gradient(90deg, #000 0%, #000 18%, transparent 30%, transparent 70%, #000 82%, #000 100%);
         }
 
-        /* 檔案一的玻璃切面邊緣微折射光暈線 (保留中間上面那條隱約可見的線) */
-        .glass-plate-surface::after {
+        .glass-plate-side-edges::before {
             content: "";
             position: absolute;
-            bottom: 0px;
-            left: 8%;
-            right: 8%;
-            height: 2.5px;
-            background: linear-gradient(90deg, 
-                transparent 0%, 
-                rgba(255, 255, 255, 0.9) 20%, 
-                rgba(210, 180, 150, 0.45) 50%, 
-                rgba(255, 255, 255, 0.9) 80%, 
-                transparent 100%);
-            border-radius: 50%;
-            pointer-events: none;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 6px;
+            border-radius: 0 0 50% 50% / 0 0 18px 18px;
+            border-bottom: 1.5px solid rgba(255, 255, 255, calc(0.95 - var(--cosmic-dye) * 0.55));
+            box-shadow: 
+                0 2px 0 rgba(166, 116, 73, 0.36),
+                inset 0 -3px 6px rgba(255, 255, 255, calc(0.88 - var(--cosmic-dye) * 0.65));
         }
 
         .glass-plate-controls {
@@ -588,7 +580,7 @@
             position: relative;
         }
 
-        /* ===== 罐子上方英文句子：點開罐子時從「罐內罐身中間」優雅升起展開 (已移除出來後的飄浮動效) ===== */
+        /* ===== 罐子上方英文句子 ===== */
         .fan-subtitle-stage {
             position: relative;
             min-height: 76px;
@@ -661,12 +653,12 @@
             transform: translate(0px, 0px) rotate(0deg) scale(1);
         }
 
-        /* ===== 故事罐與下載按鈕舞台 (恢復檔案一的外觀與滑動視差動畫，並結合檔案二減輕 40% 的內部遮蓋感) ===== */
+        /* ===== 故事罐與下載按鈕舞台 (恢復原本清透淺色澤 + 集合體位置透明度再提升 40% + 移除球體與罐子本身滑動位移) ===== */
         .jar-download-stage {
             position: relative;
             max-width: 420px;
             height: 430px;
-            margin: 36px auto 52px;
+            margin: 36px auto 44px;
             display: flex;
             align-items: center;
             justify-content: center;
@@ -694,15 +686,12 @@
             transform: translateY(0px) scale(1);
         }
 
-        /* 恢復檔案一：隨用戶滑動畫面而產生視差移動與微傾角的容器 */
         #scroll-reactive-jar {
             display: flex;
             flex-direction: column;
             align-items: center;
-            will-change: transform;
         }
 
-        /* 恢復檔案一的黑色直紋瓶蓋 */
         .hero-jar-lid {
             width: 216px;
             height: 36px;
@@ -740,30 +729,22 @@
             position: relative;
         }
 
-        /* 恢復檔案一的圓角透明玻璃罐身外觀 (286 x 332) */
+        /* 罐身外框與環境光暈：不重複疊加深色底，由單一玻璃層控制色澤，恢復原本清透淺色感 */
         #hero-jar-body-el {
             width: 286px;
             height: 332px;
             border-radius: 38px;
-            background: 
-                radial-gradient(circle at 30% 78%, rgba(195, 120, 155, 0.22) 0%, transparent 55%),
-                radial-gradient(circle at 75% 70%, rgba(185, 45, 75, 0.18) 0%, transparent 50%),
-                linear-gradient(168deg, 
-                    rgba(185, 200, 225, 0.32) 0%, 
-                    rgba(145, 150, 185, 0.26) 46%, 
-                    rgba(95, 75, 115, 0.36) 100%);
+            background: rgba(255, 255, 255, 0.08);
             border: 3.5px solid rgba(255, 255, 255, 0.88);
             box-shadow: 
                 0 24px 45px rgba(235, 135, 110, 0.28),
-                0 8px 25px rgba(30, 25, 45, 0.1),
+                0 8px 25px rgba(30, 25, 45, 0.08),
                 inset 0 0 28px rgba(255, 255, 255, 0.55);
             position: relative;
             overflow: hidden;
-            backdrop-filter: blur(5px);
-            -webkit-backdrop-filter: blur(5px);
         }
 
-        /* 罐內記憶集合體畫布 (z-index: 1，位於前置玻璃遮罩層下方) */
+        /* 罐內記憶集合體畫布 (z-index: 1) */
         #jar-inner-canvas {
             position: absolute;
             inset: 0;
@@ -773,41 +754,29 @@
             z-index: 1;
         }
 
-        /* 【關鍵遮蓋層】參考檔案二的罐子遮蓋感 (檔案二原本是透過整層毛玻璃蓋在集合體上方)，
-           並以檔案二為基礎，將「集合體位置 (中下段 50% 68%)」的罐子透明度提升 40% (即遮蓋濃度減輕 40%) */
+        /* 單一前置毛玻璃層：恢復原本清透的淡藍紫與莓果色澤，且在集合體位置 (50% 68%) 將透明度再提升 40% */
         .jar-front-glass-occlusion {
             position: absolute;
             inset: 0;
             border-radius: 34px;
             background: 
+                radial-gradient(circle at 30% 78%, rgba(215, 145, 175, 0.22) 0%, transparent 52%),
+                radial-gradient(circle at 75% 70%, rgba(205, 85, 110, 0.16) 0%, transparent 48%),
                 radial-gradient(circle at 50% 68%, 
-                    rgba(155, 150, 185, calc((0.42 - var(--cosmic-dye) * 0.14) * 0.6)) 0%, 
-                    rgba(125, 95, 115, calc((0.56 - var(--cosmic-dye) * 0.1) * 0.6)) 52%, 
-                    rgba(95, 75, 115, 0.54) 100%),
+                    rgba(185, 195, 220, 0.14) 0%, 
+                    rgba(165, 165, 198, 0.20) 52%, 
+                    rgba(135, 120, 158, 0.36) 100%),
                 linear-gradient(168deg, 
-                    rgba(185, 200, 225, 0.46) 0%, 
-                    rgba(145, 150, 185, 0.25) 48%, 
-                    rgba(95, 75, 115, 0.34) 100%);
-            backdrop-filter: blur(3.6px); /* 檔案二為 blur(6px)，提升 40% 透明度對應為 3.6px */
-            -webkit-backdrop-filter: blur(3.6px);
-            box-shadow: inset 0 0 24px rgba(255, 255, 255, 0.42);
+                    rgba(205, 218, 240, 0.52) 0%, 
+                    rgba(175, 180, 212, 0.28) 46%, 
+                    rgba(140, 122, 160, 0.22) 72%,
+                    rgba(130, 110, 150, 0.38) 100%);
+            backdrop-filter: blur(2.2px);
+            -webkit-backdrop-filter: blur(2.2px);
+            box-shadow: inset 0 0 28px rgba(255, 255, 255, 0.58);
             pointer-events: none;
             z-index: 2;
         }
-
-        /* 恢復檔案一：罐內隨滑動飄浮的三顆故事微光粒子 */
-        .jar-floating-orb {
-            position: absolute;
-            border-radius: 50%;
-            background: radial-gradient(circle, rgba(255, 255, 255, 0.85) 0%, rgba(255, 225, 190, 0.3) 60%, transparent 100%);
-            pointer-events: none;
-            will-change: transform;
-            z-index: 3;
-        }
-
-        .orb-1 { width: 36px; height: 36px; bottom: 22%; left: 22%; }
-        .orb-2 { width: 24px; height: 24px; bottom: 38%; right: 20%; }
-        .orb-3 { width: 18px; height: 18px; top: 28%; left: 48%; }
 
         .hero-jar-sheen {
             position: absolute;
@@ -819,7 +788,6 @@
             transform: skewX(-6deg);
             border-radius: 10px;
             pointer-events: none;
-            will-change: transform;
             z-index: 4;
         }
 
@@ -835,6 +803,7 @@
             z-index: 4;
         }
 
+        /* 罐底滲出微光：改為非金色的極光青與星雲紫粉微光 */
         .jar-bottom-seep-glow {
             position: absolute;
             bottom: -4px;
@@ -842,7 +811,7 @@
             transform: translateX(-50%);
             width: 170px;
             height: 20px;
-            background: radial-gradient(ellipse at 50% 50%, rgba(255, 215, 150, 0.85) 0%, rgba(181, 255, 233, 0.45) 50%, transparent 80%);
+            background: radial-gradient(ellipse at 50% 50%, rgba(228, 208, 255, 0.85) 0%, rgba(181, 255, 233, 0.5) 50%, transparent 80%);
             opacity: var(--seep-glow-opacity, 0);
             filter: blur(4px);
             transition: opacity 0.3s ease;
@@ -857,7 +826,7 @@
             right: 0;
             text-align: center;
             font-size: 0.72rem;
-            color: rgba(255, 255, 255, 0.85);
+            color: rgba(255, 255, 255, 0.88);
             letter-spacing: 0.04em;
             font-weight: 500;
             text-shadow: 0 1px 4px rgba(0, 0, 0, 0.3);
@@ -942,27 +911,28 @@
             letter-spacing: -0.01em;
         }
 
-        /* ================= 5. 單行排版「Your Story, Directed by You.」：更深邃低調的黑金微虹光 + 慢速柔和流動 ================= */
+        /* ================= 5. 單行排版「Your Story, Directed by You.」：加寬虹光寬度(包覆三個多單詞) + 放慢流動速度 + 移除下方虛線 ================= */
         .director-philosophy-bridge {
             position: relative;
             z-index: 7;
-            margin: 10px auto 0;
-            padding: 14px 12px 4px;
+            margin: 8px auto 28px;
+            padding: 12px 12px 6px;
             display: flex;
             flex-direction: column;
             align-items: center;
         }
 
+        /* 非金色的星雲紫與極光青柔和煙霧背景光暈 */
         .director-smoke-aura {
             position: absolute;
             top: 50%;
             left: 50%;
-            width: 360px;
-            height: 96px;
-            transform: translate(-50%, -55%) scale(calc(0.65 + var(--director-materialize, 0) * 0.5));
+            width: 380px;
+            height: 92px;
+            transform: translate(-50%, -50%) scale(calc(0.65 + var(--director-materialize, 0) * 0.5));
             background: radial-gradient(ellipse at 50% 50%, 
-                rgba(165, 125, 78, calc(0.28 * (1 - var(--director-materialize, 0) * 0.55))) 0%, 
-                rgba(38, 30, 48, calc(0.14 * (1 - var(--director-materialize, 0) * 0.6))) 48%, 
+                rgba(210, 190, 245, calc(0.32 * (1 - var(--director-materialize, 0) * 0.5))) 0%, 
+                rgba(181, 240, 235, calc(0.22 * (1 - var(--director-materialize, 0) * 0.55))) 48%, 
                 transparent 76%);
             filter: blur(16px);
             opacity: calc(var(--director-materialize, 0) * 1.1);
@@ -970,11 +940,11 @@
             z-index: 1;
         }
 
-        /* 單行置中排版 */
+        /* 單行置中：加寬虹光區段 (約佔漸層中央 36% 跨度，配合 230% 寬度可同時包覆 3.5 個以上單詞)，並放慢速度至 18.5s */
         .director-single-line-title {
             position: relative;
             z-index: 3;
-            margin: 6px 0 10px;
+            margin: 4px 0;
             text-align: center;
             white-space: nowrap;
             font-size: clamp(1.3rem, 4.2vw, 2.05rem);
@@ -984,46 +954,46 @@
             letter-spacing: calc(-0.02em + (1 - var(--director-materialize, 0)) * 0.1em);
             opacity: var(--director-materialize, 0);
             filter: blur(calc((1 - var(--director-materialize, 0)) * 11px))
-                    drop-shadow(0 4px 14px rgba(20, 16, 28, calc(var(--director-materialize, 0) * 0.16)));
+                    drop-shadow(0 4px 14px rgba(20, 16, 28, calc(var(--director-materialize, 0) * 0.14)));
             transform: translateY(calc((1 - var(--director-materialize, 0)) * 14px))
                        scale(calc(0.94 + var(--director-materialize, 0) * 0.06));
-            /* 壓暗後的低調黑金基底 + 柔和金光帶點點微虹光 (淡玫瑰、暖香檳、微極光青與星雲紫) */
             background: linear-gradient(
-                112deg,
+                110deg,
                 #14111a 0%,
-                #1a1622 24%,
-                #473522 37%,
-                #967142 45%,
-                #cbb082 49%,
-                #c49fa8 52.5%,
-                #9db5b2 55.5%,
-                #7d5c34 61%,
-                #1d1826 75%,
+                #1c1724 22%,
+                #54402b 31%,
+                #a37c4c 37%,
+                #cfb284 42%,
+                #cfa4b2 48%,
+                #a89ec9 53.5%,
+                #94bcb8 59%,
+                #c4a678 64.5%,
+                #7d5c36 70%,
+                #1c1724 79%,
                 #14111a 100%
             );
-            background-size: 280% auto;
+            background-size: 230% auto;
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
-            /* 放慢流動速度至 11.5 秒，呈現優雅低調的光澤緩動 */
-            animation: subtleDarkGoldHoloFlow 11.5s ease-in-out infinite;
+            animation: subtleDarkGoldHoloFlow 18.5s ease-in-out infinite;
             will-change: opacity, filter, transform, background-position;
         }
 
-        /* 在深色宇宙背景下，同樣維持沉穩內斂的暗金帶微虹光，不刺眼 */
         body.cosmic-text-mode .director-single-line-title {
             background: linear-gradient(
-                112deg,
-                #8c7252 0%,
-                #9e8260 24%,
-                #bca078 38%,
-                #e0c9a2 48%,
-                #dfb8c2 52%,
-                #b3d6d0 55.5%,
-                #c4a478 62%,
-                #967b5a 78%,
-                #8c7252 100%
+                110deg,
+                #856c4e 0%,
+                #967b5a 22%,
+                #b89b72 32%,
+                #dec69e 39%,
+                #e3b6c4 46%,
+                #c7b8e6 52.5%,
+                #aee0d8 59%,
+                #d9c098 65%,
+                #9e8260 76%,
+                #856c4e 100%
             );
-            background-size: 280% auto;
+            background-size: 230% auto;
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
         }
@@ -1032,22 +1002,6 @@
             0% { background-position: 100% center; }
             50% { background-position: 0% center; }
             100% { background-position: 100% center; }
-        }
-
-        .director-branch-svg {
-            width: 100%;
-            max-width: 680px;
-            height: 42px;
-            overflow: visible;
-            pointer-events: none;
-            opacity: var(--director-materialize, 0);
-            transition: opacity 0.4s ease;
-        }
-
-        @media (max-width: 680px) {
-            .director-branch-svg {
-                height: 28px;
-            }
         }
 
         .features-grid {
@@ -1070,10 +1024,10 @@
             background: rgba(255, 255, 255, calc(0.06 + var(--card-materialize, 0) * 0.88));
             padding: 30px 24px;
             border-radius: 22px;
-            border: 1.5px solid rgba(200, 150, 102, calc(0.08 + var(--card-materialize, 0) * 0.38));
+            border: 1.5px solid rgba(185, 175, 210, calc(0.12 + var(--card-materialize, 0) * 0.36));
             box-shadow: 
                 0 12px 32px rgba(20, 18, 30, calc(var(--card-materialize, 0) * 0.07)),
-                0 0 calc((1 - var(--card-materialize, 0)) * 28px) rgba(255, 215, 160, calc((1 - var(--card-materialize, 0)) * 0.35));
+                0 0 calc((1 - var(--card-materialize, 0)) * 28px) rgba(210, 195, 245, calc((1 - var(--card-materialize, 0)) * 0.35));
             opacity: calc(0.05 + var(--card-materialize, 0) * 0.95);
             transform: translateY(calc((1 - var(--card-materialize, 0)) * 24px)) scale(calc(0.96 + var(--card-materialize, 0) * 0.04));
             filter: blur(calc((1 - var(--card-materialize, 0)) * 5px));
@@ -1086,7 +1040,7 @@
 
         body.cosmic-text-mode .feature-card.particle-formed-card {
             background: rgba(24, 18, 40, calc(0.12 + var(--card-materialize, 0) * 0.76));
-            border-color: rgba(230, 190, 138, calc(0.15 + var(--card-materialize, 0) * 0.35));
+            border-color: rgba(210, 195, 245, calc(0.15 + var(--card-materialize, 0) * 0.32));
             box-shadow: 0 14px 34px rgba(0, 0, 0, calc(var(--card-materialize, 0) * 0.35));
         }
 
@@ -1105,7 +1059,7 @@
             left: 12%;
             right: 12%;
             height: 2.5px;
-            background: linear-gradient(90deg, transparent, rgba(230, 180, 120, 0.95), rgba(181, 255, 233, 0.85), transparent);
+            background: linear-gradient(90deg, transparent, rgba(228, 208, 255, 0.9), rgba(181, 255, 233, 0.85), rgba(255, 200, 216, 0.9), transparent);
             opacity: var(--card-glow-top, 0);
             transition: opacity 0.3s ease;
         }
@@ -1306,9 +1260,10 @@
     <!-- 外層記憶流畫布：繪製罐外飛入的 80% 相片 + 20% 信件、粒子化為煙霧幻化出單行標題與下方三個介紹框 -->
     <canvas id="memory-stream-canvas"></canvas>
 
-    <!-- ================= 1. 透明玻璃切面頂部欄 (依檔案一結構，只去除中間下面那條線) ================= -->
+    <!-- ================= 1. 透明玻璃切面頂部欄 (中間完全無邊緣線，僅保留左右兩側清晰金棕+亮白玻璃切面) ================= -->
     <div id="glass-top-plate">
         <div class="glass-plate-surface"></div>
+        <div class="glass-plate-side-edges"></div>
         <div class="glass-plate-controls">
             <div class="app-left-badge" title="YourStoryJar">
                 <span>⊞</span><span>🎨</span>
@@ -1446,16 +1401,15 @@
     <div id="download-section" class="main-wrapper">
         
         <header>
-            <!-- 罐子上方扇形展開的英文句子 (點開罐子時從「罐內罐身中間」優雅出來，已移除飄浮晃動) -->
+            <!-- 罐子上方扇形展開的英文句子 -->
             <div id="fan-subtitle-container" class="fan-subtitle-stage">
                 <div class="jar-mouth-mist"></div>
                 <p id="hero-subtitle"></p>
             </div>
 
-            <!-- 兩個下載按鈕 + 背面隨滑動而動且可點擊開啟的 3D 玻璃故事罐 -->
+            <!-- 兩個下載按鈕 + 背面 3D 玻璃故事罐 (已移除球體與罐子本身滑動位移) -->
             <div class="jar-download-stage">
                 
-                <!-- 背面故事罐 (恢復檔案一的外觀與滑動動畫 + 檔案二減輕 40% 的內部毛玻璃遮蓋層) -->
                 <div id="hero-jar-backdrop" onclick="handleJarOpenClick(event)" title="Tap lid / body to open">
                     <div id="scroll-reactive-jar">
                         <div id="interactive-jar-lid" class="hero-jar-lid"></div>
@@ -1463,13 +1417,9 @@
                         <div id="hero-jar-body-el">
                             <!-- 1. 罐內底層畫布：繪製集合體與延遲 0.5s 的彩色火焰 -->
                             <canvas id="jar-inner-canvas" width="286" height="332"></canvas>
-                            <!-- 2. 前置玻璃遮蓋層：以檔案二的遮蓋感為基礎，將集合體位置的透明度提升 40% -->
+                            <!-- 2. 單一前置毛玻璃層：恢復原本明亮淺色澤，且集合體位置透明度再提升 40% -->
                             <div class="jar-front-glass-occlusion"></div>
-                            <!-- 3. 檔案一的三顆隨滑動漂浮的記憶微光球 -->
-                            <div class="jar-floating-orb orb-1"></div>
-                            <div class="jar-floating-orb orb-2"></div>
-                            <div class="jar-floating-orb orb-3"></div>
-                            <!-- 4. 玻璃罐左斜高光與右側反光條 -->
+                            <!-- 3. 玻璃罐左斜高光與右側反光條 -->
                             <div id="interactive-jar-sheen" class="hero-jar-sheen"></div>
                             <div class="hero-jar-rim-light"></div>
                             <div id="jar-seep-glow" class="jar-bottom-seep-glow"></div>
@@ -1503,26 +1453,13 @@
 
             </div>
 
-            <!-- 單行排版「Your Story, Directed by You.」：由粒子化成的煙霧再幻化而成的低調深邃黑金微虹光字體 -->
+            <!-- 單行排版「Your Story, Directed by You.」：已移除下方虛線，加寬微虹光包覆超過三個單詞並放慢流動速度 -->
             <div id="director-mist-stage" class="director-philosophy-bridge">
                 <div class="director-smoke-aura"></div>
                 <h2 id="director-title-el" class="director-single-line-title">Your Story, Directed by You.</h2>
-                <!-- 連接至下方三個英文介紹框的三岔流光引線 -->
-                <svg class="director-branch-svg" viewBox="0 0 680 42" preserveAspectRatio="none">
-                    <defs>
-                        <linearGradient id="branch-line-grad" x1="0%" y1="0%" x2="100%" y2="0%">
-                            <stop offset="0%" stop-color="rgba(166, 116, 73, 0.45)" />
-                            <stop offset="50%" stop-color="rgba(212, 163, 115, 0.85)" />
-                            <stop offset="100%" stop-color="rgba(166, 116, 73, 0.45)" />
-                        </linearGradient>
-                    </defs>
-                    <path d="M 340,2 C 340,22 110,16 110,42" fill="none" stroke="url(#branch-line-grad)" stroke-width="1.5" stroke-dasharray="4 3" />
-                    <path d="M 340,2 L 340,42" fill="none" stroke="url(#branch-line-grad)" stroke-width="1.8" />
-                    <path d="M 340,2 C 340,22 570,16 570,42" fill="none" stroke="url(#branch-line-grad)" stroke-width="1.5" stroke-dasharray="4 3" />
-                </svg>
             </div>
 
-            <!-- 下方三個全英文介紹框：由罐底滲出的粒子「煙消雲散」凝聚構成 -->
+            <!-- 下方三個全英文介紹框：由罐底滲出的非金色雲霧粒子（僅保留 4 粒金色）煙消雲散凝聚構成 -->
             <div id="particle-target-cards" class="features-grid">
                 <div class="feature-card particle-formed-card">
                     <span class="card-step-num">Scene I · Visualize</span>
@@ -1598,7 +1535,7 @@
             img2.src = 'icon2.png';
         })();
 
-        // 2. 罐子上方英文句子產生器 (已去掉 "and"，並移除出來後的飄浮動效)
+        // 2. 罐子上方英文句子產生器
         const SUBTITLE_INITIAL_EN = "A resting place for the fragments of your life — a story jar that visualizes and preserves your very existence.";
         const SUBTITLE_OPENED_EN  = "As time accumulates, open your jar anytime to draw a fragment of the past — meet yourself again in that chapter of life.";
 
@@ -1615,7 +1552,6 @@
             const total = words.length;
             const mid = (total - 1) / 2;
 
-            // 點開罐子時 (fromJarCenter = true)，從罐內罐身正中間 (+248px) 優雅升起展開
             const baseStartY = fromJarCenter ? 248 : 74;
             const arcCurveY  = fromJarCenter ? 36 : 26;
             const emergeDur  = fromJarCenter ? '1.12s' : '0.85s';
@@ -1671,7 +1607,7 @@
 
         window.addEventListener('click', closeTopMenu);
 
-        // ================= 4. 三畫布系統：底層宇宙染色 + 罐內集合體(回到上一版參數並受前置毛玻璃遮蓋) + 罐外粒子煙霧 =================
+        // ================= 4. 三畫布系統 =================
         const cosmicCanvas = document.getElementById('cosmic-bg-canvas');
         const cosmicCtx = cosmicCanvas.getContext('2d');
 
@@ -1689,13 +1625,21 @@
             ['#e0c3fc', '#8ec5fc', '#ffffff']
         ];
 
-        // 彩色火焰回到上一版的柔和參數
         const FLAME_COLORS = [
             { core: 'rgba(255, 245, 200, 0.85)', mid: 'rgba(255, 110, 155, 0.55)', outer: 'rgba(255, 65, 120, 0)' },
             { core: 'rgba(255, 250, 215, 0.85)', mid: 'rgba(255, 175, 65, 0.55)',  outer: 'rgba(255, 115, 25, 0)' },
             { core: 'rgba(245, 230, 255, 0.85)', mid: 'rgba(185, 115, 255, 0.52)', outer: 'rgba(120, 50, 220, 0)' },
             { core: 'rgba(230, 255, 250, 0.85)', mid: 'rgba(85, 235, 215, 0.52)',  outer: 'rgba(35, 175, 210, 0)' }
         ];
+
+        // 罐底粒子與煙霧調色盤：去除金色，改用櫻花粉、極光青、星雲紫、冰晶藍；全場僅保留 4 粒金色點綴
+        const NON_GOLD_MIST_COLORS = [
+            { r: 255, g: 200, b: 220 }, // 櫻花粉
+            { r: 181, g: 255, b: 233 }, // 極光青
+            { r: 222, g: 198, b: 255 }, // 星雲紫
+            { r: 185, g: 225, b: 255 }  // 冰晶藍
+        ];
+        const RARE_GOLD_COLOR = { r: 242, g: 205, b: 135 };
 
         let smoothScrollP = 0;
         let targetScrollP = 0;
@@ -1796,14 +1740,10 @@
                 });
             }
 
+            // (A) 飛往單行標題的煙霧粒子：去除金色，僅保留 1 粒金色點綴 (k === 15)
             scrollBoundTitleSmoke = [];
-            const inkGoldSmokeColors = [
-                { r: 165, g: 118, b: 65 },
-                { r: 38,  g: 30,  b: 52 },
-                { r: 210, g: 172, b: 110 },
-                { r: 132, g: 88,  b: 42 }
-            ];
             for (let k = 0; k < 44; k++) {
+                const isRareGold = (k === 15);
                 scrollBoundTitleSmoke.push({
                     offsetXNorm: ((k * 23) % 100) / 100 - 0.5,
                     targetXNorm: 0.08 + ((k * 29) % 84) / 100,
@@ -1813,19 +1753,14 @@
                     durationP: 0.24,
                     baseRadius: 2.4 + (k % 3) * 0.8,
                     smokeMaxRadius: 32 + (k % 4) * 11,
-                    rgb: inkGoldSmokeColors[k % inkGoldSmokeColors.length]
+                    rgb: isRareGold ? RARE_GOLD_COLOR : NON_GOLD_MIST_COLORS[k % NON_GOLD_MIST_COLORS.length]
                 });
             }
 
+            // (B) 飛往三個介紹框的煙霧粒子：去除金色，僅保留 3 粒金色點綴 (j === 12, 45, 76)，合計全場僅 4 粒金色
             scrollBoundMistParticles = [];
-            const cardColors = [
-                { r: 255, g: 229, b: 163 },
-                { r: 255, g: 200, b: 216 },
-                { r: 181, g: 255, b: 233 },
-                { r: 228, g: 208, b: 255 },
-                { r: 212, g: 163, b: 115 }
-            ];
             for (let j = 0; j < 90; j++) {
+                const isRareGold = (j === 12 || j === 45 || j === 76);
                 scrollBoundMistParticles.push({
                     cardIdx: j % 3,
                     offsetXNorm: ((j * 19) % 100) / 100 - 0.5,
@@ -1836,13 +1771,12 @@
                     durationP: 0.28,
                     baseRadius: 2.2 + (j % 3) * 0.8,
                     smokeMaxRadius: 26 + (j % 4) * 10,
-                    rgb: cardColors[j % cardColors.length]
+                    rgb: isRareGold ? RARE_GOLD_COLOR : NON_GOLD_MIST_COLORS[j % NON_GOLD_MIST_COLORS.length]
                 });
             }
         }
         initScrollScrubbedPool();
 
-        // 相片、信件與火焰回到上一版的尺寸與柔和參數
         function initCollectiveAndFlames() {
             collectiveNodes = [];
             for (let i = 0; i < 42; i++) {
@@ -1939,6 +1873,14 @@
             });
         }
 
+        // 持續模式下的煙霧與粒子：同樣控制全場最多僅出現 3~4 粒金色粒子
+        function countCurrentGoldParticles() {
+            let count = 0;
+            continuousTitleSmoke.forEach(p => { if (p.isGold) count++; });
+            continuousMistParticles.forEach(p => { if (p.isGold) count++; });
+            return count;
+        }
+
         function spawnContinuousTitleSmoke(jarBottomX, jarBottomY, titleRect) {
             if (continuousTitleSmoke.length > 42 || !titleRect) return;
             const startX = jarBottomX + (Math.random() - 0.5) * 110;
@@ -1946,12 +1888,11 @@
             const endX = titleRect.left + titleRect.width * (0.1 + Math.random() * 0.8);
             const endY = titleRect.top + titleRect.height * (0.2 + Math.random() * 0.6);
 
-            const inkGoldSmokeColors = [
-                { r: 175, g: 130, b: 75 },
-                { r: 215, g: 178, b: 115 },
-                { r: 145, g: 102, b: 58 }
-            ];
+            const allowGold = countCurrentGoldParticles() < 4 && Math.random() < 0.03;
+            const chosenRgb = allowGold ? RARE_GOLD_COLOR : NON_GOLD_MIST_COLORS[Math.floor(Math.random() * NON_GOLD_MIST_COLORS.length)];
+
             continuousTitleSmoke.push({
+                isGold: allowGold,
                 startX,
                 startY,
                 ctrlX: startX + (endX - startX) * 0.3 + (Math.random() - 0.5) * 35,
@@ -1962,7 +1903,7 @@
                 speed: 0.018 + Math.random() * 0.014,
                 baseRadius: 2.3 + Math.random() * 1.8,
                 smokeMaxRadius: 30 + Math.random() * 16,
-                rgb: inkGoldSmokeColors[Math.floor(Math.random() * inkGoldSmokeColors.length)]
+                rgb: chosenRgb
             });
         }
 
@@ -1974,14 +1915,11 @@
             const endX = targetCard.left + 12 + Math.random() * Math.max(20, targetCard.width - 24);
             const endY = targetCard.top + Math.random() * Math.min(80, targetCard.height * 0.55);
 
-            const colors = [
-                { r: 255, g: 229, b: 163 },
-                { r: 255, g: 200, b: 216 },
-                { r: 181, g: 255, b: 233 },
-                { r: 228, g: 208, b: 255 },
-                { r: 212, g: 163, b: 115 }
-            ];
+            const allowGold = countCurrentGoldParticles() < 4 && Math.random() < 0.035;
+            const chosenRgb = allowGold ? RARE_GOLD_COLOR : NON_GOLD_MIST_COLORS[Math.floor(Math.random() * NON_GOLD_MIST_COLORS.length)];
+
             continuousMistParticles.push({
+                isGold: allowGold,
                 startX,
                 startY,
                 ctrlX: startX + (endX - startX) * 0.25 + (Math.random() - 0.5) * 45,
@@ -1992,7 +1930,7 @@
                 speed: 0.015 + Math.random() * 0.013,
                 baseRadius: 2.2 + Math.random() * 2.2,
                 smokeMaxRadius: 24 + Math.random() * 18,
-                rgb: colors[Math.floor(Math.random() * colors.length)]
+                rgb: chosenRgb
             });
         }
 
@@ -2029,7 +1967,6 @@
             ctx.restore();
         }
 
-        // 相片與信件繪製回到上一版的柔和表現
         function drawMiniPhoto(ctx, x, y, scale, rot, palette, alpha) {
             if (alpha <= 0.01) return;
             ctx.save();
@@ -2101,7 +2038,6 @@
             ctx.restore();
         }
 
-        // 彩色火焰回到上一版的柔和參數
         function drawColorfulMemoryFlames(ctx, now, centerX, centerY, flameEnergy) {
             if (flameEnergy <= 0.01) return;
             ctx.save();
@@ -2260,34 +2196,11 @@
             cosmicCtx.restore();
         }
 
-        // 【恢復檔案一】隨用戶滑動畫面而動的背面故事罐動畫 (Scroll-Reactive Jar：包含罐子本身視差移動與微傾角、瓶蓋微浮、高光平移與三顆微光球漂浮)
+        // 監聽頁面滑動：已移除罐子本身的位移/搖擺動畫與球體移動，僅保留滑動進度更新
         window.addEventListener('scroll', () => {
             if (document.body.classList.contains('animating')) return;
             const scrollY = window.scrollY;
             targetScrollP = Math.min(1, Math.max(0, scrollY / 440));
-
-            const reactiveJar = document.getElementById('scroll-reactive-jar');
-            const jarLid = document.getElementById('interactive-jar-lid');
-            const jarSheen = document.getElementById('interactive-jar-sheen');
-            const orbs = document.querySelectorAll('.jar-floating-orb');
-
-            if (reactiveJar) {
-                const moveY = Math.min(40, scrollY * 0.12);
-                const tilt = Math.sin(scrollY * 0.012) * 2.2;
-                reactiveJar.style.transform = `translateY(${moveY}px) rotate(${tilt}deg)`;
-            }
-            if (jarLid && !isJarClickedOpen) {
-                const lidLift = -7 - Math.min(14, scrollY * 0.06);
-                jarLid.style.transform = `translateY(${lidLift}px) rotate(${-1.2 - scrollY * 0.008}deg)`;
-            }
-            if (jarSheen) {
-                const sheenShift = Math.sin(scrollY * 0.015) * 8;
-                jarSheen.style.transform = `skewX(-6deg) translateX(${sheenShift}px)`;
-            }
-            orbs.forEach((orb, idx) => {
-                const orbY = -(scrollY * (0.15 + idx * 0.06)) % 120;
-                orb.style.transform = `translateY(${orbY}px)`;
-            });
         }, { passive: true });
 
         // 60fps 主渲染迴圈
@@ -2387,10 +2300,10 @@
                         seepGlow.style.setProperty('--seep-glow-opacity', Math.min(1, activeEnergy * 1.2).toFixed(2));
                     }
 
-                    // ================= (一) 罐內畫布 (#jar-inner-canvas)：相片、信件與火焰回到上一版柔和參數，並被前方 .jar-front-glass-occlusion 溫潤遮蓋 =================
+                    // ================= (一) 罐內畫布 (#jar-inner-canvas) =================
                     if (activeEnergy > 0.01 && isCollectiveInView) {
                         const localCX = 143;
-                        const localCY = 226; // 對應檔案二 0.68 高度位置
+                        const localCY = 226;
 
                         const coreRadius = (42 + activeEnergy * 68) + Math.sin(now * 0.004) * 4;
                         const auraGrad = jarInnerCtx.createRadialGradient(localCX, localCY, 6, localCX, localCY, coreRadius);
@@ -2427,7 +2340,7 @@
                             }
 
                             if (isAtBottom) {
-                                jarInnerCtx.fillStyle = '#ffe8a3';
+                                jarInnerCtx.fillStyle = '#e4d0ff';
                                 jarInnerCtx.globalAlpha = 0.85 * activeEnergy;
                                 jarInnerCtx.beginPath();
                                 jarInnerCtx.arc(nx, ny + 8, 2.3, 0, Math.PI * 2);
@@ -2442,7 +2355,7 @@
 
                     const cardRects = Array.from(cardEls).map(el => el.getBoundingClientRect());
 
-                    // ================= (二) 隨用戶滑動畫面而動的相片/信件 + 煙霧幻化單行標題与三個介紹框 =================
+                    // ================= (二) 隨用戶滑動畫面而動的相片/信件 + 非金色煙霧幻化標題與介紹框 =================
                     if (smoothScrollP > 0.002 && isCollectiveInView && continuousBlend < 1) {
                         const scrollAlphaWeight = 1 - continuousBlend;
 
@@ -2665,12 +2578,6 @@
             continuousMistParticles = [];
 
             buildFanSubtitleText(SUBTITLE_INITIAL_EN, false, false);
-
-            const reactiveJar = document.getElementById('scroll-reactive-jar');
-            if (reactiveJar) reactiveJar.style.transform = 'translateY(0px) rotate(0deg)';
-            document.querySelectorAll('.jar-floating-orb').forEach(orb => {
-                orb.style.transform = 'translateY(0px)';
-            });
 
             document.documentElement.style.setProperty('--cosmic-dye', '0');
             document.documentElement.style.setProperty('--director-materialize', '0');
