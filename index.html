@@ -49,7 +49,7 @@
             overflow: hidden;
         }
 
-        /* ================= 1. 頂部透明玻璃導航欄 (中間完全無線條，僅保留左右兩側金棕+亮白玻璃切面邊緣) ================= */
+        /* ================= 1. 頂部透明玻璃導航欄 ================= */
         #glass-top-plate {
             position: fixed;
             top: 0;
@@ -585,7 +585,7 @@
         }
 
         .main-wrapper {
-            max-width: 860px;
+            max-width: 880px;
             width: 100%;
             margin: 0 auto;
             padding: 136px 20px 100px;
@@ -928,11 +928,11 @@
             letter-spacing: -0.01em;
         }
 
-        /* ================= 5. 「Your Story, Directed by You.」：以白色為主調，僅混合微微的粉與藍作格調提升 + 32秒極緩慢流動 ================= */
+        /* ================= 5. 「Your Story, Directed by You.」：白色主調混合微粉與微藍 ================= */
         .director-philosophy-bridge {
             position: relative;
             z-index: 7;
-            margin: 8px auto 30px;
+            margin: 8px auto 34px;
             padding: 12px 8px 6px;
             max-width: 100%;
             display: flex;
@@ -957,7 +957,6 @@
             z-index: 1;
         }
 
-        /* 白色為主調（佔比約 75%），搭配極淡雅的微櫻花粉與微冰晶藍格調點綴 */
         .director-single-line-title {
             position: relative;
             z-index: 3;
@@ -970,7 +969,6 @@
             line-height: 1.28;
             letter-spacing: calc(-0.02em + (1 - var(--director-materialize, 0)) * 0.08em);
             opacity: var(--director-materialize, 0);
-            /* 柔和溫潤的環境光影襯托，讓純白主調在淺色背景與深色星空背景上都立體清晰 */
             filter: blur(calc((1 - var(--director-materialize, 0)) * 11px))
                     drop-shadow(0 2px 10px rgba(70, 60, 98, calc(var(--director-materialize, 0) * 0.34)))
                     drop-shadow(0 1px 2px rgba(45, 38, 68, calc(var(--director-materialize, 0) * 0.24)));
@@ -1023,52 +1021,58 @@
             100% { background-position: 100% center; }
         }
 
+        /* ================= 6. 全新三個框框設計：無老套標題、無編號，改為「微光玻璃視覺意象舞台 + 詩意輕亮點敘事」 ================= */
         .features-grid {
             display: grid;
             grid-template-columns: repeat(3, 1fr);
-            gap: 22px;
+            gap: 24px;
             text-align: left;
             position: relative;
             z-index: 7;
         }
 
-        @media (max-width: 760px) {
+        @media (max-width: 780px) {
             .features-grid {
                 grid-template-columns: 1fr;
+                gap: 20px;
             }
         }
 
-        /* 粒子日積月累結晶構成框框 */
         .feature-card.particle-formed-card {
-            background: rgba(255, 255, 255, calc(0.06 + var(--card-materialize, 0) * 0.88));
-            padding: 30px 24px;
-            border-radius: 22px;
-            border: 1.5px solid rgba(185, 175, 210, calc(0.12 + var(--card-materialize, 0) * 0.36));
+            background: rgba(255, 255, 255, calc(0.06 + var(--card-materialize, 0) * 0.86));
+            padding: 24px 22px 28px;
+            border-radius: 26px;
+            border: 1.5px solid rgba(190, 182, 218, calc(0.12 + var(--card-materialize, 0) * 0.38));
             box-shadow: 
-                0 12px 32px rgba(20, 18, 30, calc(var(--card-materialize, 0) * 0.07)),
-                0 0 calc((1 - var(--card-materialize, 0)) * 28px) rgba(210, 195, 245, calc((1 - var(--card-materialize, 0)) * 0.35));
+                0 14px 36px rgba(22, 18, 36, calc(var(--card-materialize, 0) * 0.06)),
+                0 0 calc((1 - var(--card-materialize, 0)) * 28px) rgba(210, 195, 245, calc((1 - var(--card-materialize, 0)) * 0.35)),
+                inset 0 1px 1px rgba(255, 255, 255, 0.9);
             opacity: calc(0.05 + var(--card-materialize, 0) * 0.95);
             transform: translateY(calc((1 - var(--card-materialize, 0)) * 24px)) scale(calc(0.96 + var(--card-materialize, 0) * 0.04));
             filter: blur(calc((1 - var(--card-materialize, 0)) * 5px));
-            transition: transform 0.35s ease, box-shadow 0.35s ease, background 0.35s ease, color 0.35s ease;
+            transition: transform 0.38s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.38s ease, background 0.35s ease, border-color 0.35s ease;
             position: relative;
             overflow: hidden;
-            backdrop-filter: blur(14px);
-            -webkit-backdrop-filter: blur(14px);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
         }
 
         body.cosmic-text-mode .feature-card.particle-formed-card {
-            background: rgba(24, 18, 40, calc(0.12 + var(--card-materialize, 0) * 0.76));
-            border-color: rgba(210, 195, 245, calc(0.15 + var(--card-materialize, 0) * 0.32));
-            box-shadow: 0 14px 34px rgba(0, 0, 0, calc(var(--card-materialize, 0) * 0.35));
+            background: linear-gradient(165deg, 
+                rgba(32, 24, 52, calc(0.15 + var(--card-materialize, 0) * 0.72)) 0%, 
+                rgba(18, 14, 32, calc(0.15 + var(--card-materialize, 0) * 0.78)) 100%);
+            border-color: rgba(225, 205, 255, calc(0.12 + var(--card-materialize, 0) * 0.28));
+            box-shadow: 
+                0 18px 40px rgba(0, 0, 0, calc(var(--card-materialize, 0) * 0.42)),
+                inset 0 1px 1px rgba(255, 255, 255, 0.14);
         }
 
-        body.cosmic-text-mode .feature-card.particle-formed-card h3 {
-            color: #ffffff;
-        }
-
-        body.cosmic-text-mode .feature-card.particle-formed-card p {
-            color: rgba(255, 255, 255, 0.8);
+        .feature-card.particle-formed-card:hover {
+            transform: translateY(-5px);
+            border-color: rgba(225, 185, 220, 0.65);
         }
 
         .feature-card.particle-formed-card::before {
@@ -1083,38 +1087,169 @@
             transition: opacity 0.3s ease;
         }
 
-        .card-step-num {
-            display: inline-block;
-            font-size: 0.7rem;
-            font-weight: 700;
-            letter-spacing: 0.14em;
-            text-transform: uppercase;
-            color: var(--bronze-gold);
-            margin-bottom: 8px;
+        /* 每個框框上半部的「微縮玻璃視覺舞台 (Visual Vignette Stage)」 */
+        .vignette-visual-box {
+            width: 100%;
+            height: 128px;
+            border-radius: 18px;
+            background: 
+                radial-gradient(circle at 50% 50%, rgba(235, 210, 245, 0.32) 0%, rgba(195, 225, 255, 0.18) 55%, rgba(255, 255, 255, 0.45) 100%);
+            border: 1px solid rgba(210, 195, 235, 0.45);
+            box-shadow: inset 0 2px 12px rgba(255, 255, 255, 0.8);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+            overflow: hidden;
+            transition: background 0.35s ease, border-color 0.35s ease, box-shadow 0.35s ease;
         }
 
-        body.cosmic-text-mode .card-step-num {
-            color: #e6be8a;
+        body.cosmic-text-mode .vignette-visual-box {
+            background: 
+                radial-gradient(circle at 50% 50%, rgba(145, 105, 220, 0.22) 0%, rgba(85, 165, 225, 0.12) 55%, rgba(14, 10, 26, 0.55) 100%);
+            border-color: rgba(255, 255, 255, 0.12);
+            box-shadow: inset 0 1px 10px rgba(255, 255, 255, 0.06);
         }
 
-        .feature-card:hover {
-            transform: translateY(-4px);
+        /* 舞台內的稜鏡虹光微暈 */
+        .vignette-prism-glow {
+            position: absolute;
+            width: 110px;
+            height: 110px;
+            border-radius: 50%;
+            background: conic-gradient(from 45deg, rgba(255, 195, 220, 0.35), rgba(185, 235, 255, 0.35), rgba(225, 200, 255, 0.35), rgba(185, 255, 235, 0.35), rgba(255, 195, 220, 0.35));
+            filter: blur(18px);
+            animation: slowPrismSpin 14s linear infinite;
+            pointer-events: none;
         }
 
-        .feature-card h3 {
-            font-size: 1.12rem;
-            font-weight: 700;
-            margin-bottom: 10px;
-            color: var(--text-main);
-            letter-spacing: -0.01em;
-            transition: color 0.35s ease;
+        @keyframes slowPrismSpin {
+            0% { transform: rotate(0deg) scale(0.95); }
+            50% { transform: rotate(180deg) scale(1.08); }
+            100% { transform: rotate(360deg) scale(0.95); }
         }
 
-        .feature-card p {
-            font-size: 0.94rem;
+        .vignette-svg {
+            width: 100%;
+            height: 100%;
+            max-width: 200px;
+            position: relative;
+            z-index: 2;
+            overflow: visible;
+        }
+
+        /* SVG 內部微動畫 */
+        .anim-float-slow {
+            animation: svgFloatSlow 5.2s ease-in-out infinite;
+            transform-origin: center;
+        }
+
+        .anim-float-delayed {
+            animation: svgFloatSlow 5.2s ease-in-out infinite;
+            animation-delay: -2.6s;
+            transform-origin: center;
+        }
+
+        @keyframes svgFloatSlow {
+            0%, 100% { transform: translateY(0px) rotate(0deg); }
+            50% { transform: translateY(-4.5px) rotate(1.5deg); }
+        }
+
+        .anim-orbit-cw {
+            animation: svgOrbitCW 18s linear infinite;
+            transform-origin: 100px 64px;
+        }
+
+        .anim-orbit-ccw {
+            animation: svgOrbitCCW 22s linear infinite;
+            transform-origin: 100px 64px;
+        }
+
+        @keyframes svgOrbitCW {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        @keyframes svgOrbitCCW {
+            0% { transform: rotate(360deg); }
+            100% { transform: rotate(0deg); }
+        }
+
+        .anim-ripple-1 {
+            animation: svgRipplePulse 4.2s ease-out infinite;
+            transform-origin: 100px 66px;
+        }
+
+        .anim-ripple-2 {
+            animation: svgRipplePulse 4.2s ease-out infinite;
+            animation-delay: -2.1s;
+            transform-origin: 100px 66px;
+        }
+
+        @keyframes svgRipplePulse {
+            0% { transform: scale(0.65); opacity: 0.85; }
+            100% { transform: scale(1.48); opacity: 0; }
+        }
+
+        .anim-jar-sway {
+            animation: svgJarGentleSway 6s ease-in-out infinite;
+            transform-origin: 100px 66px;
+        }
+
+        .feature-card.particle-formed-card:hover .anim-jar-sway {
+            animation-duration: 1.6s;
+        }
+
+        @keyframes svgJarGentleSway {
+            0%, 100% { transform: rotate(-3deg); }
+            50% { transform: rotate(3deg); }
+        }
+
+        /* 根據日夜/星空模式自動切換 SVG 線條色彩 */
+        .svg-stroke-main {
+            stroke: #423859;
+            transition: stroke 0.35s ease;
+        }
+        body.cosmic-text-mode .svg-stroke-main {
+            stroke: #f0eaff;
+        }
+
+        .svg-stroke-sub {
+            stroke: rgba(110, 95, 145, 0.55);
+            transition: stroke 0.35s ease;
+        }
+        body.cosmic-text-mode .svg-stroke-sub {
+            stroke: rgba(215, 205, 255, 0.45);
+        }
+
+        /* 框框下半部的無標題敘事文字排版 */
+        .vignette-prose {
+            font-size: 0.95rem;
             color: var(--text-sub);
-            line-height: 1.65;
+            line-height: 1.76;
+            letter-spacing: 0.01em;
+            font-weight: 450;
             transition: color 0.35s ease;
+        }
+
+        body.cosmic-text-mode .vignette-prose {
+            color: rgba(255, 255, 255, 0.74);
+        }
+
+        /* 內文關鍵意境詞的輕柔提亮（取代傳統死板的大標題） */
+        .prose-accent {
+            color: var(--text-main);
+            font-weight: 600;
+            background: linear-gradient(90deg, rgba(235, 185, 215, 0.28), rgba(185, 220, 255, 0.28));
+            padding: 1px 6px;
+            border-radius: 6px;
+            transition: color 0.35s ease, background 0.35s ease;
+        }
+
+        body.cosmic-text-mode .prose-accent {
+            color: #ffffff;
+            background: linear-gradient(90deg, rgba(240, 175, 215, 0.22), rgba(165, 215, 255, 0.22));
+            text-shadow: 0 1px 8px rgba(220, 195, 255, 0.35);
         }
 
         /* 其餘內容區塊 */
@@ -1434,11 +1569,8 @@
                         <div id="interactive-jar-lid" class="hero-jar-lid"></div>
                         <div id="jar-mouth-anchor" class="hero-jar-neck"></div>
                         <div id="hero-jar-body-el">
-                            <!-- 1. 罐內底層畫布：繪製集合體與延遲 0.5s 的彩色火焰 -->
                             <canvas id="jar-inner-canvas" width="286" height="332"></canvas>
-                            <!-- 2. 單一前置毛玻璃層 -->
                             <div class="jar-front-glass-occlusion"></div>
-                            <!-- 3. 玻璃罐左斜高光與右側反光條 -->
                             <div id="interactive-jar-sheen" class="hero-jar-sheen"></div>
                             <div class="hero-jar-rim-light"></div>
                             <div id="jar-seep-glow" class="jar-bottom-seep-glow"></div>
@@ -1472,31 +1604,131 @@
 
             </div>
 
-            <!-- 單行排版「Your Story, Directed by You.」：白色為主調，僅混合微微的粉與藍作格調提升 + 32秒極緩慢流動 -->
+            <!-- 單行排版「Your Story, Directed by You.」 -->
             <div id="director-mist-stage" class="director-philosophy-bridge">
                 <div class="director-smoke-aura"></div>
                 <h2 id="director-title-el" class="director-single-line-title">Your Story, Directed by You.</h2>
             </div>
 
-            <!-- 下方三個全英文介紹框：由緩慢沉澱結晶的粒子與煙霧凝聚構成 -->
+            <!-- 下方三個視覺化框框：已移除 SCENE I/II/III 與粗體大標題，改用「動態微光視覺舞台 + 輕亮點敘事內文」 -->
             <div id="particle-target-cards" class="features-grid">
+                
+                <!-- 第 1 框：光學取景框與稜鏡分鏡 (Visualizing & Directing) -->
                 <div class="feature-card particle-formed-card">
-                    <span class="card-step-num">Scene I · Visualize</span>
-                    <h3>Tangible Chapters, Directed by You</h3>
-                    <p>Turn the intangible moments of your life into something you can see and hold. Whether real memories or imagined worlds, you are the director of your own story.</p>
+                    <div class="vignette-visual-box">
+                        <div class="vignette-prism-glow"></div>
+                        <svg class="vignette-svg" viewBox="0 0 200 128" fill="none">
+                            <defs>
+                                <linearGradient id="prism-card-1" x1="0%" y1="0%" x2="100%" y2="100%">
+                                    <stop offset="0%" stop-color="#ffc8dd" stop-opacity="0.75" />
+                                    <stop offset="50%" stop-color="#ffffff" stop-opacity="0.9" />
+                                    <stop offset="100%" stop-color="#a2d2ff" stop-opacity="0.75" />
+                                </linearGradient>
+                            </defs>
+                            <!-- 導演取景框四角 (Viewfinder Brackets) -->
+                            <path class="svg-stroke-sub" d="M 38 38 L 38 24 L 54 24" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" />
+                            <path class="svg-stroke-sub" d="M 162 38 L 162 24 L 146 24" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" />
+                            <path class="svg-stroke-sub" d="M 38 90 L 38 104 L 54 104" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" />
+                            <path class="svg-stroke-sub" d="M 162 90 L 162 104 L 146 104" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" />
+
+                            <!-- 後層想像分鏡卡片 -->
+                            <g class="anim-float-delayed">
+                                <rect x="86" y="34" width="46" height="54" rx="7" transform="rotate(8 109 61)" fill="rgba(195, 220, 255, 0.25)" class="svg-stroke-sub" stroke-width="1.4" />
+                            </g>
+
+                            <!-- 前層具象化記憶相框 -->
+                            <g class="anim-float-slow">
+                                <rect x="68" y="34" width="50" height="58" rx="8" transform="rotate(-5 93 63)" fill="url(#prism-card-1)" class="svg-stroke-main" stroke-width="1.8" />
+                                <circle cx="88" cy="52" r="5" fill="#ffafcc" />
+                                <path class="svg-stroke-main" d="M 74 76 Q 86 64 96 73 T 112 69" stroke-width="1.5" stroke-linecap="round" />
+                            </g>
+
+                            <!-- 中心對焦十字星芒 -->
+                            <path class="svg-stroke-main" d="M 134 40 L 134 50 M 129 45 L 139 45" stroke-width="1.5" stroke-linecap="round" />
+                            <circle cx="62" cy="82" r="2.5" fill="#a2d2ff" />
+                        </svg>
+                    </div>
+                    <p class="vignette-prose">
+                        Turn the intangible moments of your life into <span class="prose-accent">something you can see and hold</span>. Whether real memories or imagined worlds, you are the <span class="prose-accent">director of your own story</span>.
+                    </p>
                 </div>
 
+                <!-- 第 2 框：環繞身邊的記憶星軌 (Everything That Surrounds You) -->
                 <div class="feature-card particle-formed-card">
-                    <span class="card-step-num">Scene II · Collect</span>
-                    <h3>Everything Held Dear — Or Passing By</h3>
-                    <p>Your jar can hold anything that surrounds you—what you cherish, what carries meaning, reflections of yourself, or even fleeting, random moments passing by. Every time you open it, a new discovery awaits.</p>
+                    <div class="vignette-visual-box">
+                        <div class="vignette-prism-glow" style="animation-delay: -4s;"></div>
+                        <svg class="vignette-svg" viewBox="0 0 200 128" fill="none">
+                            <defs>
+                                <radialGradient id="core-glow-2" cx="50%" cy="50%" r="50%">
+                                    <stop offset="0%" stop-color="#ffffff" stop-opacity="1" />
+                                    <stop offset="45%" stop-color="#ffd6e8" stop-opacity="0.85" />
+                                    <stop offset="100%" stop-color="#a2d2ff" stop-opacity="0" />
+                                </radialGradient>
+                            </defs>
+                            <!-- 雙層環繞星軌 -->
+                            <ellipse cx="100" cy="64" rx="64" ry="26" transform="rotate(-14 100 64)" class="svg-stroke-sub" stroke-width="1.3" stroke-dasharray="4 4" />
+                            <ellipse cx="100" cy="64" rx="52" ry="20" transform="rotate(18 100 64)" class="svg-stroke-sub" stroke-width="1.2" />
+
+                            <!-- 中心故事罐記憶核 -->
+                            <circle cx="100" cy="64" r="22" fill="url(#core-glow-2)" />
+                            <circle cx="100" cy="64" r="7.5" fill="#ffffff" class="svg-stroke-main" stroke-width="1.8" />
+
+                            <!-- 軌道上漂浮的珍視之物：微縮信箋、相片與隨機路過的流星 -->
+                            <g class="anim-float-slow">
+                                <!-- 左上微縮信件 -->
+                                <rect x="42" y="38" width="20" height="14" rx="3" transform="rotate(-12 52 45)" fill="rgba(255, 255, 255, 0.85)" class="svg-stroke-main" stroke-width="1.5" />
+                                <path class="svg-stroke-main" d="M 43 40 L 52 46 L 60 40" stroke-width="1.2" stroke-linecap="round" />
+                                <!-- 右下微縮相片 -->
+                                <rect x="138" y="68" width="18" height="21" rx="3" transform="rotate(14 147 78)" fill="rgba(255, 255, 255, 0.85)" class="svg-stroke-main" stroke-width="1.5" />
+                                <circle cx="147" cy="76" r="3" fill="#ffafcc" />
+                            </g>
+
+                            <!-- 路過的隨機靈感光點 -->
+                            <g class="anim-float-delayed">
+                                <circle cx="146" cy="36" r="4" fill="#a2d2ff" class="svg-stroke-main" stroke-width="1.3" />
+                                <circle cx="56" cy="86" r="3.2" fill="#ffc8dd" />
+                                <path class="svg-stroke-main" d="M 78 26 L 78 34 M 74 30 L 82 30" stroke-width="1.4" stroke-linecap="round" />
+                            </g>
+                        </svg>
+                    </div>
+                    <p class="vignette-prose">
+                        Your jar can hold <span class="prose-accent">anything that surrounds you</span>—what you cherish, what carries meaning, reflections of yourself, or even fleeting, random moments passing by. Every time you open it, <span class="prose-accent">a new discovery awaits</span>.
+                    </p>
                 </div>
 
+                <!-- 第 3 框：時光波紋與重遇過去的自己 (Shake or Open Your Time Jar) -->
                 <div class="feature-card particle-formed-card">
-                    <span class="card-step-num">Scene III · Rediscover</span>
-                    <h3>A Time Capsule of Who You Were</h3>
-                    <p>Shake or open your time jar whenever you wish—to reconnect with your past states of mind, evolving thoughts, inner beliefs, and the quiet moods of days gone by.</p>
+                    <div class="vignette-visual-box">
+                        <div class="vignette-prism-glow" style="animation-delay: -8s;"></div>
+                        <svg class="vignette-svg" viewBox="0 0 200 128" fill="none">
+                            <!-- 向外擴散的時光共鳴波紋 -->
+                            <circle class="anim-ripple-1 svg-stroke-sub" cx="100" cy="66" r="30" stroke-width="1.4" />
+                            <circle class="anim-ripple-2 svg-stroke-sub" cx="100" cy="66" r="30" stroke-width="1.4" />
+
+                            <!-- 輕微搖晃的極簡玻璃時光瓶 -->
+                            <g class="anim-jar-sway">
+                                <!-- 瓶蓋 -->
+                                <rect x="85" y="28" width="30" height="7" rx="2.5" fill="rgba(255, 255, 255, 0.8)" class="svg-stroke-main" stroke-width="1.7" />
+                                <!-- 瓶身 -->
+                                <rect x="78" y="37" width="44" height="54" rx="12" fill="rgba(255, 255, 255, 0.42)" class="svg-stroke-main" stroke-width="1.8" />
+                                <!-- 瓶內過去章節的記憶光核 -->
+                                <circle cx="100" cy="66" r="11" fill="rgba(255, 200, 221, 0.55)" class="svg-stroke-main" stroke-width="1.5" />
+                                <path class="svg-stroke-main" d="M 95 66 C 95 63, 97 61, 100 61" stroke-width="1.4" stroke-linecap="round" />
+                                <!-- 瓶中升起的微光記憶點 -->
+                                <circle cx="90" cy="50" r="2.2" fill="#a2d2ff" />
+                                <circle cx="110" cy="54" r="2.6" fill="#ffafcc" />
+                            </g>
+
+                            <!-- 兩側象徵搖晃與時光回響的弧線 -->
+                            <path class="svg-stroke-sub" d="M 64 52 C 59 60, 59 72, 64 80" stroke-width="1.5" stroke-linecap="round" />
+                            <path class="svg-stroke-sub" d="M 136 52 C 141 60, 141 72, 136 80" stroke-width="1.5" stroke-linecap="round" />
+                        </svg>
+                    </div>
+                    <p class="vignette-prose">
+                        <span class="prose-accent">Shake or open your time jar</span> whenever you wish—to reconnect with your <span class="prose-accent">past states of mind</span>, evolving thoughts, inner beliefs, and the quiet moods of days gone by.
+                    </p>
                 </div>
+
             </div>
         </header>
 
@@ -1626,7 +1858,7 @@
 
         window.addEventListener('click', closeTopMenu);
 
-        // ================= 4. 雙速記憶系統：相片與信件進入集合體前採用「上一版輕快速度」，進入集合體後與底部粒子煙霧採用「緩慢結晶速度」 =================
+        // ================= 4. 雙速記憶系統 =================
         const cosmicCanvas = document.getElementById('cosmic-bg-canvas');
         const cosmicCtx = cosmicCanvas.getContext('2d');
 
@@ -1662,9 +1894,6 @@
         ];
         const RARE_GOLD_COLOR = { r: 242, g: 205, b: 135 };
 
-        // 雙速滑動變數：
-        // fastScrollP -> 供「進入集合體前的相片與信件」使用（恢復上一版 440px 映射與 0.14 快速阻尼）
-        // slowScrollP -> 供「進入集合體後的內部旋轉」與「底部粒子煙霧結晶」使用（維持現在的 640px 映射與 0.048 慢速阻尼）
         let targetFastScrollP = 0;
         let fastScrollP = 0;
         let targetSlowScrollP = 0;
@@ -1736,7 +1965,6 @@
         initCosmicStars();
 
         function initScrollScrubbedPool() {
-            // 相片與信件恢復上一版的 startP 與 durationP (0.28)
             scrollBoundMemories = [];
             const totalItems = 48;
             for (let i = 0; i < totalItems; i++) {
@@ -1775,7 +2003,6 @@
                 });
             }
 
-            // 粒子與煙霧保留現狀（緩慢日積月累的結晶感）
             scrollBoundTitleSmoke = [];
             for (let k = 0; k < 42; k++) {
                 const isRareGold = (k === 15);
@@ -1867,7 +2094,6 @@
             }
         }
 
-        // 持續飛入的相片與信件：恢復上一版的快速飛入速度 (0.013 + Math.random() * 0.011)，並在落入集合體時轉為現在的慢速
         function spawnContinuousMemory(mouthX, mouthY) {
             if (continuousMemories.length > 50) return;
             const isPhoto = Math.random() < 0.8;
@@ -1900,7 +2126,7 @@
                 ctrlX,
                 ctrlY,
                 t: 0,
-                speed: 0.013 + Math.random() * 0.011, // 恢復上一版進入集合體前的速度
+                speed: 0.013 + Math.random() * 0.011,
                 rot: (Math.random() - 0.5) * 1.5,
                 rotSpeed: (Math.random() - 0.5) * 0.05,
                 scale: 0.85 + Math.random() * 0.35,
@@ -2249,7 +2475,6 @@
             cosmicCtx.restore();
         }
 
-        // 監聽頁面滑動：同時更新「快進度 (給飛入集合體前的相片信件)」與「慢進度 (給集合體內部與底部粒子煙霧)」
         window.addEventListener('scroll', () => {
             if (document.body.classList.contains('animating')) return;
             const scrollY = window.scrollY;
@@ -2267,13 +2492,11 @@
             jarInnerCtx.clearRect(0, 0, 286, 332);
 
             if (!document.body.classList.contains('animating')) {
-                // 1. 快進度：恢復上一版 0.14 阻尼，讓相片與信件飛入集合體前的速度輕快流暢
                 fastScrollP += (targetFastScrollP - fastScrollP) * 0.14;
                 if (Math.abs(targetFastScrollP - fastScrollP) < 0.0005) {
                     fastScrollP = targetFastScrollP;
                 }
 
-                // 2. 慢進度：保留現在的 0.048 阻尼，供集合體轉動與底部粒子煙霧緩慢結晶使用
                 slowScrollP += (targetSlowScrollP - slowScrollP) * 0.048;
                 if (Math.abs(targetSlowScrollP - slowScrollP) < 0.0003) {
                     slowScrollP = targetSlowScrollP;
@@ -2323,7 +2546,6 @@
                         continuousBlend = Math.max(0, continuousBlend - dt / 400);
                     }
 
-                    // 集合體的能量隨飛入的相片同步聚集，但內部旋轉與下方結晶維持慢速
                     const activeEnergy = Math.max(fastScrollP, continuousBlend * 0.92);
 
                     const directorFormProgress = Math.min(1, Math.max(slowScrollP * 2.1, clickDyeProgress * 1.25, continuousBlend));
@@ -2337,7 +2559,6 @@
                         card.style.setProperty('--card-glow-top', (0.65 + 0.35 * Math.sin(now * 0.0025)) * cardFormProgress);
                     });
 
-                    // 彩色火焰延遲 0.5 秒 (500ms) 後才點燃
                     if (activeEnergy > 0.02 && isCollectiveInView) {
                         if (collectiveAppearTimestamp === null) {
                             collectiveAppearTimestamp = now;
@@ -2360,7 +2581,7 @@
                         seepGlow.style.setProperty('--seep-glow-opacity', Math.min(1, activeEnergy * 1.2).toFixed(2));
                     }
 
-                    // ================= (一) 罐內畫布 (#jar-inner-canvas)：進入集合體後按現在的慢速度旋轉 =================
+                    // ================= (一) 罐內畫布 (#jar-inner-canvas) =================
                     if (activeEnergy > 0.01 && isCollectiveInView) {
                         const localCX = 143;
                         const localCY = 226;
@@ -2381,7 +2602,6 @@
                         }
 
                         const visibleNodes = Math.floor(collectiveNodes.length * Math.min(1, activeEnergy * 1.15));
-                        // 集合體內部維持現在的慢速度 (slowScrollP 與 0.0007 自轉速度)
                         const orbitPhase = slowScrollP * Math.PI * 2.5 + (continuousBlend > 0 ? now * 0.0007 : 0);
 
                         for (let i = 0; i < visibleNodes; i++) {
@@ -2416,11 +2636,10 @@
 
                     const cardRects = Array.from(cardEls).map(el => el.getBoundingClientRect());
 
-                    // ================= (二) 滑動模式：相片與信件按上一版的快速度 (fastScrollP) 飛入，粒子與煙霧按現在的慢速度 (slowScrollP) 結晶 =================
+                    // ================= (二) 滑動模式 =================
                     if ((fastScrollP > 0.002 || slowScrollP > 0.002) && isCollectiveInView && continuousBlend < 1) {
                         const scrollAlphaWeight = 1 - continuousBlend;
 
-                        // 1. 相片與信件：使用 fastScrollP（恢復上一版飛入集合體前的輕快速度）
                         scrollBoundMemories.forEach(item => {
                             const localT = (fastScrollP - item.startP) / item.durationP;
                             if (localT > 0 && localT < 1) {
@@ -2454,7 +2673,6 @@
                             }
                         });
 
-                        // 2. 粒子與煙霧：使用 slowScrollP（保留現狀的緩慢結晶感）
                         if (titleRect) {
                             scrollBoundTitleSmoke.forEach(pt => {
                                 const localT = (slowScrollP - pt.startP) / pt.durationP;
@@ -2512,7 +2730,6 @@
 
                     for (let i = continuousMemories.length - 1; i >= 0; i--) {
                         const m = continuousMemories[i];
-                        // 進入集合體前 (t < 0.74) 按上一版的快速度飛入；落入集合體時 (t >= 0.74) 平滑減速銜接集合體的慢速
                         if (m.t < 0.74) {
                             m.t += m.speed;
                             m.rot += m.rotSpeed;
