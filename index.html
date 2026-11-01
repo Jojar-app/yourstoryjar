@@ -5,7 +5,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
     <title>YourStoryJar - Make your story infinite...</title>
     <script>
-        // 強制關閉瀏覽器捲動位置記憶，確保在任何位置刷新頁面都自動回到最頂部
         if ('scrollRestoration' in history) {
             history.scrollRestoration = 'manual';
         }
@@ -223,26 +222,33 @@
             transform: translateY(-7.4px) rotate(-45deg);
         }
 
+        /* ================= 右上角三橫按鈕下拉選單：隨背景染色 (--cosmic-dye) 動態變色 ================= */
         .glass-dropdown-menu {
             position: absolute;
             top: calc(100% + 12px);
             right: 0;
-            width: 250px;
-            background: rgba(255, 255, 255, 0.9);
+            width: 258px;
+            background: rgba(255, 255, 255, calc(0.92 - var(--cosmic-dye) * 0.80));
+            background-color: rgba(18, 14, 34, calc(var(--cosmic-dye) * 0.90));
             backdrop-filter: blur(24px) saturate(180%);
             -webkit-backdrop-filter: blur(24px) saturate(180%);
             border-radius: 20px;
-            border: 1.5px solid rgba(255, 255, 255, 0.95);
+            border: 1.5px solid rgba(255, 255, 255, calc(0.95 - var(--cosmic-dye) * 0.72));
             box-shadow: 
-                0 18px 40px rgba(20, 20, 35, 0.12),
-                0 0 0 1px rgba(166, 116, 73, 0.16),
-                inset 0 1px 2px rgba(255, 255, 255, 0.95);
+                0 18px 40px rgba(10, 8, 24, calc(0.12 + var(--cosmic-dye) * 0.45)),
+                0 0 0 1px rgba(166, 116, 73, calc(0.16 + var(--cosmic-dye) * 0.22)),
+                inset 0 1px 2px rgba(255, 255, 255, calc(0.95 - var(--cosmic-dye) * 0.75));
             padding: 8px;
             opacity: 0;
             visibility: hidden;
             transform: translateY(-10px) scale(0.96);
             transform-origin: top right;
-            transition: all 0.28s cubic-bezier(0.16, 1, 0.3, 1);
+            transition: opacity 0.28s cubic-bezier(0.16, 1, 0.3, 1),
+                        transform 0.28s cubic-bezier(0.16, 1, 0.3, 1),
+                        visibility 0.28s,
+                        background-color 0.3s ease,
+                        border-color 0.3s ease,
+                        box-shadow 0.3s ease;
             z-index: 1000;
         }
 
@@ -262,29 +268,52 @@
             color: var(--text-main);
             font-size: 0.9rem;
             font-weight: 600;
-            transition: background 0.2s ease, color 0.2s ease;
+            cursor: pointer;
+            transition: background 0.22s ease, color 0.22s ease;
+        }
+
+        body.cosmic-text-mode .menu-item {
+            color: rgba(255, 255, 255, 0.86);
         }
 
         .menu-item:hover {
-            background: rgba(166, 116, 73, 0.1);
-            color: var(--bronze-gold);
-        }
-
-        .menu-item.active-page {
             background: rgba(166, 116, 73, 0.12);
             color: var(--bronze-gold);
         }
 
-        .menu-badge {
-            font-size: 0.68rem;
-            background: var(--bronze-gold);
-            color: #ffffff;
-            padding: 2px 7px;
-            border-radius: 8px;
-            font-weight: 600;
+        body.cosmic-text-mode .menu-item:hover {
+            background: rgba(230, 190, 138, 0.16);
+            color: #f6e3ba;
         }
 
-        /* ================= 2. 品牌標題與圖二 App Logo 容器 ================= */
+        .menu-item.active-page {
+            background: rgba(166, 116, 73, 0.14);
+            color: var(--bronze-gold);
+        }
+
+        body.cosmic-text-mode .menu-item.active-page {
+            background: rgba(225, 200, 255, 0.16);
+            color: #f6e3ba;
+        }
+
+        /* 選單內代表當前頁面的「罐子 ⇄ 沙漏」簡約 Loop 動畫圖示 */
+        .menu-loop-indicator {
+            width: 22px;
+            height: 22px;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+            color: currentColor;
+        }
+
+        .menu-loop-indicator svg {
+            width: 20px;
+            height: 20px;
+            overflow: visible;
+        }
+
+        /* ================= 2. 品牌標題與圖二 App Logo 容器 (點擊可回到頂部並蓋上蓋子) ================= */
         .brand-lockup {
             display: inline-flex;
             align-items: center;
@@ -310,10 +339,22 @@
         #target-brand-lockup {
             opacity: 0;
             pointer-events: auto;
+            cursor: pointer;
+            user-select: none;
+            -webkit-tap-highlight-color: transparent;
+            transition: transform 0.25s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.3s ease;
         }
 
         #target-brand-lockup.docked {
             opacity: 1;
+        }
+
+        #target-brand-lockup:hover {
+            transform: scale(1.02);
+        }
+
+        #target-brand-lockup:active {
+            transform: scale(0.97);
         }
 
         .wordmark-wrapper {
@@ -592,6 +633,11 @@
             min-height: 100vh;
             pointer-events: none;
             z-index: 4;
+            transition: opacity 0.4s ease;
+        }
+
+        body.non-download-view #memory-stream-canvas {
+            opacity: 0;
         }
 
         .main-wrapper {
@@ -603,9 +649,27 @@
             overflow-x: clip;
         }
 
+        /* ================= 多頁面獨立視圖切換系統 (Download / Q&A / Contact & About Developer) ================= */
+        .page-view {
+            display: none;
+            opacity: 0;
+            transform: translateY(18px);
+            transition: opacity 0.55s cubic-bezier(0.16, 1, 0.3, 1),
+                        transform 0.55s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+
+        .page-view.active-view {
+            display: block;
+        }
+
+        .page-view.view-visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
         header {
             text-align: center;
-            margin-bottom: 56px;
+            margin-bottom: 40px;
             position: relative;
         }
 
@@ -744,6 +808,12 @@
 
         .jar-lid-open .hero-jar-lid {
             transform: translateY(-7px) rotate(-1.2deg);
+        }
+
+        /* 點擊「蓋上蓋子 (Close the Lid)」或頂部欄品牌時，瓶蓋緊密蓋回罐口 */
+        .jar-lid-sealed .hero-jar-lid {
+            transform: translateY(1px) rotate(0deg) !important;
+            box-shadow: 0 4px 12px rgba(166, 116, 73, 0.28);
         }
 
         .jar-clicked-open .hero-jar-lid {
@@ -938,7 +1008,7 @@
             letter-spacing: -0.01em;
         }
 
-        /* ================= 5. 「Your Story, Directed by You.」：白色主調混合微粉與微藍 ================= */
+        /* ================= 5. 「Your Story, Directed by You.」 ================= */
         .director-philosophy-bridge {
             position: relative;
             z-index: 7;
@@ -1031,7 +1101,7 @@
             100% { background-position: 100% center; }
         }
 
-        /* ================= 6. 三個框框：簡約大氣幾何流光圖示 + 0.2秒停留連續生長動畫 ================= */
+        /* ================= 6. 三個框框 ================= */
         .features-grid {
             display: grid;
             grid-template-columns: repeat(3, 1fr);
@@ -1147,8 +1217,7 @@
             overflow: visible;
         }
 
-        /* ================= 第一框動畫時序 (6.0秒緊湊循環，每個生長圖示精準停留 0.2秒 = 3.33% 週期)：
-           1. 半透明框與相片合二為一 -> 2. 裝罐蓋蓋子接合 App 介面 -> 3. 連續生長變形：毛毛蟲(停0.2s) -> 生長捲曲為晶體蛹(停0.2s) -> 破繭展開為幾何蝶(停0.2s) ================= */
+        /* 第一框動畫時序 (6.0秒循環，每階段精準停留 0.2秒) */
         .c1-back-imagined {
             transform-box: fill-box;
             transform-origin: center;
@@ -1217,41 +1286,38 @@
             96%, 100%{ opacity: 0; transform: scale(0.96); }
         }
 
-        /* 階段 1：極簡幾何幼蟲 (44% 開始生長 -> 50%~53.4% 精準停留 0.2s -> 53.4%~58% 向中央收攏立起直接化為蛹核) */
         .c1-stage-caterpillar {
             transform-origin: 120px 86px;
             animation: c1Stage1Grow 6s cubic-bezier(0.22, 1, 0.36, 1) infinite;
         }
         @keyframes c1Stage1Grow {
             0%, 44%     { opacity: 0; transform: translateY(10px) scaleX(0.2) scaleY(0.2); }
-            50%, 53.4%  { opacity: 1; transform: translateY(0px) scaleX(1) scaleY(1); } /* 停留 0.2 秒 */
-            58%, 100%   { opacity: 0; transform: translateY(-4px) scaleX(0.32) scaleY(1.25); } /* 收攏拉長生長為蛹 */
+            50%, 53.4%  { opacity: 1; transform: translateY(0px) scaleX(1) scaleY(1); }
+            58%, 100%   { opacity: 0; transform: translateY(-4px) scaleX(0.32) scaleY(1.25); }
         }
 
-        /* 階段 2：簡約大氣晶體懸蛹 (54.5% 順著收攏的幼蟲向上生長成形 -> 60.5%~63.9% 精準停留 0.2s -> 63.9%~69% 向兩側裂開展翅) */
         .c1-stage-chrysalis {
             transform-origin: 120px 84px;
             animation: c1Stage2Grow 6s cubic-bezier(0.22, 1, 0.36, 1) infinite;
         }
         @keyframes c1Stage2Grow {
             0%, 54.5%   { opacity: 0; transform: scaleX(0.35) scaleY(0.3); }
-            60.5%, 63.9%{ opacity: 1; transform: scaleX(1) scaleY(1); } /* 停留 0.2 秒 */
-            69%, 100%   { opacity: 0; transform: scaleX(1.65) scaleY(0.85); } /* 向左右破繭生長為蝶翼 */
+            60.5%, 63.9%{ opacity: 1; transform: scaleX(1) scaleY(1); }
+            69%, 100%   { opacity: 0; transform: scaleX(1.65) scaleY(0.85); }
         }
 
-        /* 階段 3：正式大氣幾何流光蝶 (65% 從裂開的晶體蛹中直接向外展翅生長 -> 71.5%~74.9% 精準停留 0.2s -> 隨後優雅羽化) */
         .c1-stage-butterfly {
             transform-origin: 120px 84px;
             animation: c1Stage3Grow 6s cubic-bezier(0.22, 1, 0.36, 1) infinite;
         }
         @keyframes c1Stage3Grow {
             0%, 65%     { opacity: 0; transform: scaleX(0.18) scaleY(0.45); }
-            71.5%, 74.9%{ opacity: 1; transform: scaleX(1) scaleY(1); } /* 停留 0.2 秒 */
+            71.5%, 74.9%{ opacity: 1; transform: scaleX(1) scaleY(1); }
             82%         { opacity: 0.9; transform: translateY(-3px) scaleX(1.06) scaleY(1.04); }
             89%, 100%   { opacity: 0; transform: translateY(-8px) scale(0.75); }
         }
 
-        /* ================= 第二框動畫時序 (9.5秒循環) ================= */
+        /* 第二框動畫時序 */
         .c2-jar-lid-open {
             transform-box: fill-box;
             transform-origin: left center;
@@ -1301,8 +1367,7 @@
             50%      { transform: translate(-8px, 7px) rotate(-4deg); }
         }
 
-        /* ================= 第三框動畫時序 (6.0秒緊湊循環，每個生長圖示精準停留 0.2秒 = 3.33% 週期)：
-           1. App 介面內有 4 個罐子 -> 2. 放大左上罐至中央 -> 3. 沿同一主幹連續向上生長：新芽樹苗(停0.2s) -> 頂端綻放聖潔蓮花(停0.2s) -> 花冠向外延展長成大氣生命之樹(停0.2s) ================= */
+        /* 第三框動畫時序 (6.0秒循環，每階段精準停留 0.2秒) */
         .c3-other-three-jars {
             transform-box: fill-box;
             transform-origin: center;
@@ -1324,41 +1389,38 @@
             95%, 100%{ transform: translate(-24px, -21px) scale(0.44); }
         }
 
-        /* 階段 1：極簡幾何新芽樹苗 (32% 從土壤基座向上破土生長 -> 38%~41.4% 精準停留 0.2s -> 41.4%~47% 向上抽高延伸為花莖) */
         .c3-stage-sprout {
             transform-origin: 120px 104px;
             animation: c3StageSproutGrow 6s cubic-bezier(0.22, 1, 0.36, 1) infinite;
         }
         @keyframes c3StageSproutGrow {
             0%, 32%     { opacity: 0; transform: scaleY(0.1) scaleX(0.2); }
-            38%, 41.4%  { opacity: 1; transform: scaleY(1) scaleX(1); } /* 停留 0.2 秒 */
-            47%, 100%   { opacity: 0; transform: scaleY(1.28) scaleX(0.65); } /* 向上抽高生長為花朵 */
+            38%, 41.4%  { opacity: 1; transform: scaleY(1) scaleX(1); }
+            47%, 100%   { opacity: 0; transform: scaleY(1.28) scaleX(0.65); }
         }
 
-        /* 階段 2：簡約大氣幾何蓮花 (43% 順著抽高的嫩芽頂端綻放生長 -> 49.5%~52.9% 精準停留 0.2s -> 52.9%~59% 花冠向四周延展化為樹冠) */
         .c3-stage-flower {
             transform-origin: 120px 86px;
             animation: c3StageFlowerGrow 6s cubic-bezier(0.22, 1, 0.36, 1) infinite;
         }
         @keyframes c3StageFlowerGrow {
             0%, 43%     { opacity: 0; transform: translateY(10px) scale(0.25); }
-            49.5%, 52.9%{ opacity: 1; transform: translateY(0px) scale(1); } /* 停留 0.2 秒 */
-            59%, 100%   { opacity: 0; transform: translateY(-6px) scale(1.42); } /* 向外擴張生長為壯樹樹冠 */
+            49.5%, 52.9%{ opacity: 1; transform: translateY(0px) scale(1); }
+            59%, 100%   { opacity: 0; transform: translateY(-6px) scale(1.42); }
         }
 
-        /* 階段 3：正式大氣幾何生命之樹 (55% 從擴張的花冠與主幹直接生長為參天壯樹 -> 62.5%~65.9% 精準停留 0.2s -> 隨後優雅收合) */
         .c3-stage-tree {
             transform-origin: 120px 104px;
             animation: c3StageTreeGrow 6s cubic-bezier(0.22, 1, 0.36, 1) infinite;
         }
         @keyframes c3StageTreeGrow {
             0%, 55%     { opacity: 0; transform: scaleY(0.45) scaleX(0.38); }
-            62.5%, 65.9%{ opacity: 1; transform: scaleY(1) scaleX(1); } /* 停留 0.2 秒 */
+            62.5%, 65.9%{ opacity: 1; transform: scaleY(1) scaleX(1); }
             75%         { opacity: 0.95; transform: scaleY(1.03) scaleX(1.03); }
             84%, 100%   { opacity: 0; transform: scale(0.75); }
         }
 
-        /* ===== 框框下半部敘事文字：無框線重點流光字色 ===== */
+        /* 框框下半部敘事文字 */
         .vignette-prose {
             font-size: 0.96rem;
             color: var(--text-sub);
@@ -1417,31 +1479,114 @@
             -webkit-text-fill-color: transparent;
         }
 
-        /* 其餘內容區塊 */
-        .content-fade-up {
-            opacity: 0;
-            transform: translateY(28px);
-            transition: opacity 0.9s cubic-bezier(0.16, 1, 0.3, 1),
-                        transform 0.9s cubic-bezier(0.16, 1, 0.3, 1);
+        /* ================= Download 頁面底部：「蓋上蓋子 (Close the Lid)」回到頂部按鈕 ================= */
+        .close-lid-action-wrap {
+            margin: 48px auto 12px;
+            text-align: center;
+            position: relative;
+            z-index: 8;
         }
 
-        body.show-rest-sections .content-fade-up {
-            opacity: 1;
-            transform: translateY(0);
+        .close-lid-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 11px;
+            padding: 13px 28px;
+            border-radius: 999px;
+            background: rgba(255, 255, 255, calc(0.82 - var(--cosmic-dye) * 0.68));
+            background-color: rgba(26, 20, 44, calc(var(--cosmic-dye) * 0.78));
+            border: 1.5px solid rgba(166, 116, 73, calc(0.35 + var(--cosmic-dye) * 0.25));
+            box-shadow: 
+                0 10px 26px rgba(20, 16, 34, calc(0.08 + var(--cosmic-dye) * 0.32)),
+                inset 0 1px 1px rgba(255, 255, 255, calc(0.9 - var(--cosmic-dye) * 0.65));
+            color: var(--text-main);
+            font-size: 0.94rem;
+            font-weight: 700;
+            letter-spacing: 0.03em;
+            cursor: pointer;
+            backdrop-filter: blur(14px);
+            -webkit-backdrop-filter: blur(14px);
+            transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+
+        body.cosmic-text-mode .close-lid-btn {
+            color: #ffffff;
+            border-color: rgba(246, 227, 186, 0.48);
+        }
+
+        .close-lid-btn:hover {
+            transform: translateY(-3px) scale(1.02);
+            box-shadow: 0 14px 32px rgba(166, 116, 73, 0.22);
+            border-color: var(--bronze-light);
+        }
+
+        .close-lid-btn:active {
+            transform: translateY(0px) scale(0.98);
+        }
+
+        .close-lid-btn svg {
+            width: 18px;
+            height: 18px;
+            stroke: currentColor;
+            transition: transform 0.3s ease;
+        }
+
+        .close-lid-btn:hover svg {
+            transform: translateY(-2px);
+        }
+
+        /* ================= 獨立頁面視圖：Q&A / Help 與 Contact & About Developer 區塊樣式 ================= */
+        .subpage-header-bar {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 24px;
+            flex-wrap: wrap;
+            gap: 12px;
+        }
+
+        .back-to-jar-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            background: rgba(255, 255, 255, calc(0.78 - var(--cosmic-dye) * 0.64));
+            background-color: rgba(24, 18, 40, calc(var(--cosmic-dye) * 0.78));
+            border: 1px solid rgba(166, 116, 73, 0.35);
+            color: var(--text-main);
+            padding: 9px 18px;
+            border-radius: 999px;
+            font-size: 0.86rem;
+            font-weight: 600;
+            cursor: pointer;
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            transition: all 0.25s ease;
+        }
+
+        body.cosmic-text-mode .back-to-jar-btn {
+            color: #ffffff;
+            border-color: rgba(246, 227, 186, 0.4);
+        }
+
+        .back-to-jar-btn:hover {
+            transform: translateX(-3px);
+            border-color: var(--bronze-gold);
         }
 
         .qa-section,
         .philosophy-section {
-            margin: 56px 0;
-            padding: 42px 30px;
-            background: rgba(255, 255, 255, 0.94);
-            border-radius: 24px;
-            border: 1px solid var(--border-light);
-            box-shadow: 0 8px 28px rgba(0, 0, 0, 0.06);
-            scroll-margin-top: 130px;
+            margin: 12px 0 36px;
+            padding: 42px 32px;
+            background: rgba(255, 255, 255, calc(0.94 - var(--cosmic-dye) * 0.80));
+            background-color: rgba(24, 18, 42, calc(var(--cosmic-dye) * 0.82));
+            border-radius: 26px;
+            border: 1.5px solid rgba(190, 182, 218, calc(0.28 + var(--cosmic-dye) * 0.12));
+            box-shadow: 0 12px 34px rgba(0, 0, 0, calc(0.06 + var(--cosmic-dye) * 0.32));
             position: relative;
             z-index: 7;
-            backdrop-filter: blur(12px);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            transition: background-color 0.35s ease, border-color 0.35s ease, color 0.35s ease;
         }
 
         .section-tag {
@@ -1454,6 +1599,10 @@
             display: block;
         }
 
+        body.cosmic-text-mode .section-tag {
+            color: #e6be8a;
+        }
+
         .qa-section h2,
         .philosophy-section h2 {
             font-size: 1.55rem;
@@ -1461,11 +1610,17 @@
             margin-bottom: 18px;
             letter-spacing: -0.01em;
             color: var(--text-main);
+            transition: color 0.35s ease;
+        }
+
+        body.cosmic-text-mode .qa-section h2,
+        body.cosmic-text-mode .philosophy-section h2 {
+            color: #ffffff;
         }
 
         .qa-item {
-            padding: 16px 0;
-            border-bottom: 1px solid var(--border-light);
+            padding: 18px 0;
+            border-bottom: 1px solid rgba(160, 155, 180, 0.18);
         }
 
         .qa-item:last-child {
@@ -1474,9 +1629,14 @@
         }
 
         .qa-item h4 {
-            font-size: 1.02rem;
+            font-size: 1.04rem;
             margin-bottom: 6px;
             color: var(--text-main);
+            transition: color 0.35s ease;
+        }
+
+        body.cosmic-text-mode .qa-item h4 {
+            color: #f6e3ba;
         }
 
         .qa-item p,
@@ -1484,6 +1644,12 @@
             color: #4a4a4e;
             font-size: 0.96rem;
             margin-bottom: 14px;
+            transition: color 0.35s ease;
+        }
+
+        body.cosmic-text-mode .qa-item p,
+        body.cosmic-text-mode .philosophy-section p {
+            color: rgba(255, 255, 255, 0.78);
         }
 
         .philosophy-section p:last-child,
@@ -1494,18 +1660,28 @@
         .support-section {
             text-align: center;
             padding: 52px 24px;
-            background: linear-gradient(180deg, rgba(255, 255, 255, 0.96) 0%, rgba(243, 242, 247, 0.94) 100%);
-            border-radius: 24px;
-            border: 1px solid var(--border-light);
-            scroll-margin-top: 130px;
+            background: linear-gradient(180deg, 
+                rgba(255, 255, 255, calc(0.96 - var(--cosmic-dye) * 0.82)) 0%, 
+                rgba(243, 242, 247, calc(0.94 - var(--cosmic-dye) * 0.80)) 100%);
+            background-color: rgba(22, 16, 38, calc(var(--cosmic-dye) * 0.82));
+            border-radius: 26px;
+            border: 1.5px solid rgba(190, 182, 218, calc(0.28 + var(--cosmic-dye) * 0.12));
             position: relative;
             z-index: 7;
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            transition: background-color 0.35s ease, border-color 0.35s ease;
         }
 
         .support-section h2 {
             font-size: 1.5rem;
             margin-bottom: 12px;
             color: var(--text-main);
+            transition: color 0.35s ease;
+        }
+
+        body.cosmic-text-mode .support-section h2 {
+            color: #ffffff;
         }
 
         .support-section p {
@@ -1513,6 +1689,11 @@
             max-width: 480px;
             margin: 0 auto 28px;
             font-size: 0.96rem;
+            transition: color 0.35s ease;
+        }
+
+        body.cosmic-text-mode .support-section p {
+            color: rgba(255, 255, 255, 0.76);
         }
 
         .coffee-button {
@@ -1537,7 +1718,7 @@
 
         footer {
             text-align: center;
-            margin-top: 60px;
+            margin-top: 56px;
             font-size: 0.85rem;
             color: var(--text-sub);
             position: relative;
@@ -1579,12 +1760,22 @@
     <!-- 外層記憶流畫布：繪製罐外快速飛入的 80% 相片 + 20% 信件、以及緩慢沉澱結晶的粒子與煙霧 -->
     <canvas id="memory-stream-canvas"></canvas>
 
+    <!-- 隱藏的幾何取樣路徑：供選單內「罐子 ⇄ 沙漏」3/4圈變形 Loop 動畫取樣使用 -->
+    <svg width="0" height="0" style="position:absolute; visibility:hidden; pointer-events:none;">
+        <defs>
+            <!-- 極簡故事罐輪廓 -->
+            <path id="ref-loop-jar" d="M -5.5 -9.5 L 5.5 -9.5 C 7 -9.5, 7 -7, 5.2 -7 C 6.2 -5, 8.5 -3.5, 8.5 1.5 C 8.5 6.5, 7.5 9.8, 0 9.8 C -7.5 9.8, -8.5 6.5, -8.5 1.5 C -8.5 -3.5, -6.2 -5, -5.2 -7 C -7 -7, -7 -9.5, -5.5 -9.5 Z" />
+            <!-- 極簡沙漏輪廓 (頂底平盤 + 中央收腰曲線) -->
+            <path id="ref-loop-hourglass" d="M -8 -9.5 L 8 -9.5 C 9 -9.5, 9 -7.5, 7.2 -7.5 C 6.8 -3.5, 1.6 -1.5, 1.6 0 C 1.6 1.5, 6.8 3.5, 7.2 7.5 C 9 7.5, 9 9.5, 8 9.5 L -8 9.5 C -9 9.5, -9 7.5, -7.2 7.5 C -6.8 3.5, -1.6 1.5, -1.6 0 C -1.6 -1.5, -6.8 -3.5, -7.2 -7.5 C -9 -7.5, -9 -9.5, -8 -9.5 Z" />
+        </defs>
+    </svg>
+
     <!-- ================= 1. 透明玻璃切面頂部欄 ================= -->
     <div id="glass-top-plate">
         <div class="glass-plate-surface"></div>
         <div class="glass-plate-side-edges"></div>
         <div class="glass-plate-controls">
-            <div class="app-left-badge" title="YourStoryJar">
+            <div class="app-left-badge" title="YourStoryJar" onclick="closeLidAndScrollTop()" style="cursor:pointer;">
                 <span>⊞</span><span>🎨</span>
                 <span class="plus-box">+</span><span>🫙</span>
             </div>
@@ -1596,15 +1787,20 @@
                     <span class="hamburger-line"></span>
                 </button>
 
+                <!-- 隨背景染色同步變色的下拉選單 + 罐子⇄沙漏 Loop 動畫指示器 -->
                 <nav id="top-dropdown-menu" class="glass-dropdown-menu">
-                    <a href="#download-section" class="menu-item active-page" onclick="closeTopMenu()">
+                    <a href="javascript:void(0)" id="menu-link-download" class="menu-item active-page" onclick="switchPageView('download', event)">
                         <span>Download</span>
-                        <span class="menu-badge">Current</span>
+                        <span id="active-loop-badge" class="menu-loop-indicator" title="Current Page">
+                            <svg viewBox="-13 -13 26 26">
+                                <path id="menu-loop-morph-path" fill="none" stroke="currentColor" stroke-width="1.85" stroke-linecap="round" stroke-linejoin="round" />
+                            </svg>
+                        </span>
                     </a>
-                    <a href="#qa-help-section" class="menu-item" onclick="closeTopMenu()">
+                    <a href="javascript:void(0)" id="menu-link-qa" class="menu-item" onclick="switchPageView('qa', event)">
                         <span>Q&amp;A / Help</span>
                     </a>
-                    <a href="#about-developer-section" class="menu-item" onclick="closeTopMenu()">
+                    <a href="javascript:void(0)" id="menu-link-about" class="menu-item" onclick="switchPageView('about', event)">
                         <span>Contact &amp; About Developer</span>
                     </a>
                 </nav>
@@ -1612,9 +1808,9 @@
         </div>
     </div>
 
-    <!-- 固定在玻璃頂部欄正中央的 YourStoryJar + App Icon -->
+    <!-- 固定在玻璃頂部欄正中央的 YourStoryJar + App Icon (點擊即可回到頂部並蓋上蓋子) -->
     <div id="fixed-header-brand-holder">
-        <div id="target-brand-lockup" class="brand-lockup">
+        <div id="target-brand-lockup" class="brand-lockup" onclick="closeLidAndScrollTop()" title="Back to top & Close the lid">
             <div class="wordmark-wrapper">
                 <span class="brand-title-text">YourStory</span><span class="brand-title-text">Jar</span>
             </div>
@@ -1716,395 +1912,392 @@
         </div>
     </div>
 
-    <!-- ================= 3. 主頁面內容區塊 ================= -->
-    <div id="download-section" class="main-wrapper">
+    <!-- ================= 3. 主頁面內容容器 (包含三個獨立介面視圖) ================= -->
+    <div class="main-wrapper">
         
-        <header>
-            <!-- 罐子上方扇形展開的英文句子 -->
-            <div id="fan-subtitle-container" class="fan-subtitle-stage">
-                <div class="jar-mouth-mist"></div>
-                <p id="hero-subtitle"></p>
-            </div>
+        <!-- ==================== 介面 1：Download 主頁視圖 ==================== -->
+        <div id="view-download" class="page-view active-view view-visible">
+            <header>
+                <!-- 罐子上方扇形展開的英文句子 -->
+                <div id="fan-subtitle-container" class="fan-subtitle-stage">
+                    <div class="jar-mouth-mist"></div>
+                    <p id="hero-subtitle"></p>
+                </div>
 
-            <!-- 兩個下載按鈕 + 背面 3D 玻璃故事罐 -->
-            <div class="jar-download-stage">
-                
-                <div id="hero-jar-backdrop" onclick="handleJarOpenClick(event)" title="Tap lid / body to open">
-                    <div id="scroll-reactive-jar">
-                        <div id="interactive-jar-lid" class="hero-jar-lid"></div>
-                        <div id="jar-mouth-anchor" class="hero-jar-neck"></div>
-                        <div id="hero-jar-body-el">
-                            <canvas id="jar-inner-canvas" width="286" height="332"></canvas>
-                            <div class="jar-front-glass-occlusion"></div>
-                            <div id="interactive-jar-sheen" class="hero-jar-sheen"></div>
-                            <div class="hero-jar-rim-light"></div>
-                            <div id="jar-seep-glow" class="jar-bottom-seep-glow"></div>
-                            <div id="jar-open-caption" class="hero-jar-caption">Tap lid / body to open</div>
+                <!-- 兩個下載按鈕 + 背面 3D 玻璃故事罐 -->
+                <div class="jar-download-stage">
+                    
+                    <div id="hero-jar-backdrop" onclick="handleJarOpenClick(event)" title="Tap lid / body to open">
+                        <div id="scroll-reactive-jar">
+                            <div id="interactive-jar-lid" class="hero-jar-lid"></div>
+                            <div id="jar-mouth-anchor" class="hero-jar-neck"></div>
+                            <div id="hero-jar-body-el">
+                                <canvas id="jar-inner-canvas" width="286" height="332"></canvas>
+                                <div class="jar-front-glass-occlusion"></div>
+                                <div id="interactive-jar-sheen" class="hero-jar-sheen"></div>
+                                <div class="hero-jar-rim-light"></div>
+                                <div id="jar-seep-glow" class="jar-bottom-seep-glow"></div>
+                                <div id="jar-open-caption" class="hero-jar-caption">Tap lid / body to open</div>
+                            </div>
                         </div>
                     </div>
+
+                    <!-- 正面兩個下載按鈕 (z-index: 12 穩居最上層) -->
+                    <div id="download-buttons-box" class="store-buttons-group">
+                        <a href="#appstore-link" class="store-btn">
+                            <svg viewBox="0 0 384 512">
+                                <path d="M318.7 268.7c-.2-36.7 16.4-64.4 50-84.8-18.8-26.9-47.2-41.7-84.7-44.6-35.5-2.8-74.3 20.7-88.5 20.7-15 0-49.4-19.7-76.4-19.7C63.3 141.2 4 184.8 4 273.5q0 39.3 14.4 81.2c12.8 36.7 59 126.7 107.2 125.2 25.2-.6 43-17.9 75.8-17.9 31.8 0 48.3 17.9 76.4 17.9 48.6-.7 90.4-82.5 102.6-119.3-65.2-30.7-61.7-90-61.7-91.9zm-56.6-164.2c27.3-32.4 24.8-61.9 24-72.5-24.1 1.4-52 16.4-67.9 34.9-17.5 19.8-27.8 44.3-25.6 71.9 26.1 2 49.9-11.4 69.5-34.3z"/>
+                            </svg>
+                            <div class="store-btn-text">
+                                <span class="store-btn-small">Download on the</span>
+                                <span class="store-btn-large">App Store</span>
+                            </div>
+                        </a>
+
+                        <a href="#googleplay-link" class="store-btn">
+                            <svg viewBox="0 0 512 512">
+                                <path d="M325.3 234.3L104.6 13l280.8 161.2-60.1 60.1zM47 0C34 6.8 25.3 19.2 25.3 35.3v441.3c0 16.1 8.7 28.5 21.7 35.3l256.6-256L47 0zm425.2 225.6l-58.9-34.1-65.7 64.5 65.7 64.5 60.1-34.1c18-14.3 18-46.5-1.2-60.8zM104.6 499l280.8-161.2-60.1-60.1L104.6 499z"/>
+                            </svg>
+                            <div class="store-btn-text">
+                                <span class="store-btn-small">GET IT ON</span>
+                                <span class="store-btn-large">Google Play</span>
+                            </div>
+                        </a>
+                    </div>
+
                 </div>
 
-                <!-- 正面兩個下載按鈕 (z-index: 12 穩居最上層) -->
-                <div id="download-buttons-box" class="store-buttons-group">
-                    <a href="#appstore-link" class="store-btn">
-                        <svg viewBox="0 0 384 512">
-                            <path d="M318.7 268.7c-.2-36.7 16.4-64.4 50-84.8-18.8-26.9-47.2-41.7-84.7-44.6-35.5-2.8-74.3 20.7-88.5 20.7-15 0-49.4-19.7-76.4-19.7C63.3 141.2 4 184.8 4 273.5q0 39.3 14.4 81.2c12.8 36.7 59 126.7 107.2 125.2 25.2-.6 43-17.9 75.8-17.9 31.8 0 48.3 17.9 76.4 17.9 48.6-.7 90.4-82.5 102.6-119.3-65.2-30.7-61.7-90-61.7-91.9zm-56.6-164.2c27.3-32.4 24.8-61.9 24-72.5-24.1 1.4-52 16.4-67.9 34.9-17.5 19.8-27.8 44.3-25.6 71.9 26.1 2 49.9-11.4 69.5-34.3z"/>
-                        </svg>
-                        <div class="store-btn-text">
-                            <span class="store-btn-small">Download on the</span>
-                            <span class="store-btn-large">App Store</span>
-                        </div>
-                    </a>
-
-                    <a href="#googleplay-link" class="store-btn">
-                        <svg viewBox="0 0 512 512">
-                            <path d="M325.3 234.3L104.6 13l280.8 161.2-60.1 60.1zM47 0C34 6.8 25.3 19.2 25.3 35.3v441.3c0 16.1 8.7 28.5 21.7 35.3l256.6-256L47 0zm425.2 225.6l-58.9-34.1-65.7 64.5 65.7 64.5 60.1-34.1c18-14.3 18-46.5-1.2-60.8zM104.6 499l280.8-161.2-60.1-60.1L104.6 499z"/>
-                        </svg>
-                        <div class="store-btn-text">
-                            <span class="store-btn-small">GET IT ON</span>
-                            <span class="store-btn-large">Google Play</span>
-                        </div>
-                    </a>
+                <!-- 單行排版「Your Story, Directed by You.」 -->
+                <div id="director-mist-stage" class="director-philosophy-bridge">
+                    <div class="director-smoke-aura"></div>
+                    <h2 id="director-title-el" class="director-single-line-title">Your Story, Directed by You.</h2>
                 </div>
 
-            </div>
+                <!-- 下方三個視覺化框框 -->
+                <div id="particle-target-cards" class="features-grid">
+                    
+                    <!-- 第 1 框 -->
+                    <div class="feature-card particle-formed-card">
+                        <div class="vignette-visual-box">
+                            <div class="vignette-prism-glow"></div>
+                            <svg class="vignette-svg" viewBox="0 0 240 158" fill="none">
+                                <defs>
+                                    <linearGradient id="polaroid-sky-1" x1="0%" y1="0%" x2="100%" y2="100%">
+                                        <stop offset="0%" stop-color="#ff9a9e" />
+                                        <stop offset="100%" stop-color="#fecfef" />
+                                    </linearGradient>
+                                    <linearGradient id="polaroid-sky-2" x1="0%" y1="0%" x2="100%" y2="100%">
+                                        <stop offset="0%" stop-color="#a1c4fd" />
+                                        <stop offset="100%" stop-color="#c2e9fb" />
+                                    </linearGradient>
+                                    <linearGradient id="app-jar-glass" x1="0%" y1="0%" x2="100%" y2="100%">
+                                        <stop offset="0%" stop-color="rgba(205, 220, 245, 0.55)" />
+                                        <stop offset="50%" stop-color="rgba(165, 160, 200, 0.35)" />
+                                        <stop offset="100%" stop-color="rgba(215, 145, 175, 0.48)" />
+                                    </linearGradient>
+                                    <linearGradient id="grand-monoline-grad" x1="0%" y1="0%" x2="100%" y2="100%">
+                                        <stop offset="0%" stop-color="#ffffff" />
+                                        <stop offset="48%" stop-color="#f6e3ba" />
+                                        <stop offset="100%" stop-color="#cde6ff" />
+                                    </linearGradient>
+                                    <linearGradient id="grand-fill-veil" x1="50%" y1="0%" x2="50%" y2="100%">
+                                        <stop offset="0%" stop-color="rgba(255, 255, 255, 0.28)" />
+                                        <stop offset="100%" stop-color="rgba(210, 230, 255, 0.06)" />
+                                    </linearGradient>
 
-            <!-- 單行排版「Your Story, Directed by You.」 -->
-            <div id="director-mist-stage" class="director-philosophy-bridge">
-                <div class="director-smoke-aura"></div>
-                <h2 id="director-title-el" class="director-single-line-title">Your Story, Directed by You.</h2>
-            </div>
+                                    <g id="shared-app-ui-shell">
+                                        <rect x="52" y="8" width="136" height="142" rx="18" fill="rgba(14, 11, 24, 0.85)" stroke="rgba(255, 255, 255, 0.28)" stroke-width="1.5" />
+                                        <path d="M 53 26 Q 120 31 187 26" stroke="rgba(212, 163, 115, 0.55)" stroke-width="1" fill="none" />
+                                        <rect x="61" y="14" width="3.5" height="3.5" rx="0.8" stroke="#c89d6c" stroke-width="0.8" />
+                                        <rect x="66" y="14" width="3.5" height="3.5" rx="0.8" stroke="#c89d6c" stroke-width="0.8" />
+                                        <rect x="61" y="19" width="3.5" height="3.5" rx="0.8" fill="#a67449" />
+                                        <rect x="66" y="19" width="3.5" height="3.5" rx="0.8" stroke="#c89d6c" stroke-width="0.8" />
+                                        <text x="120" y="20.5" fill="#ffffff" font-size="7.5" font-weight="700" text-anchor="middle" letter-spacing="-0.2">YourStoryJar</text>
+                                        <rect x="171" y="14" width="3.2" height="3.2" rx="0.6" fill="#c89d6c" />
+                                        <rect x="175.5" y="14" width="3.2" height="3.2" rx="0.6" fill="#c89d6c" />
+                                        <rect x="171" y="18.5" width="3.2" height="3.2" rx="0.6" fill="#c89d6c" />
+                                        <rect x="175.5" y="18.5" width="3.2" height="3.2" rx="0.6" fill="#c89d6c" />
+                                        <line x1="53" y1="132" x2="187" y2="132" stroke="rgba(255, 255, 255, 0.1)" stroke-width="1" />
+                                        <rect x="64" y="135" width="26" height="11" rx="5.5" fill="rgba(255, 255, 255, 0.1)" stroke="rgba(255, 255, 255, 0.2)" stroke-width="0.8" />
+                                        <circle cx="120" cy="140.5" r="5.5" fill="#ffffff" stroke="rgba(255, 255, 255, 0.35)" stroke-width="1.5" />
+                                        <circle cx="164" cy="140.5" r="3" stroke="rgba(255, 255, 255, 0.55)" stroke-width="1.2" />
+                                    </g>
+                                </defs>
 
-            <!-- 下方三個視覺化框框：簡約大氣幾何細線圖示 + 連續生長變形 (每階段停留 0.2秒) -->
-            <div id="particle-target-cards" class="features-grid">
-                
-                <!-- 第 1 框：半透明框與相片合二為一 -> 裝進罐子並蓋上蓋子 -> 罐內連續生長切換 (極簡幾何毛毛蟲 -> 晶體懸蛹 -> 大氣幾何展翅蝶，每階段停留 0.2秒) -->
-                <div class="feature-card particle-formed-card">
-                    <div class="vignette-visual-box">
-                        <div class="vignette-prism-glow"></div>
-                        <svg class="vignette-svg" viewBox="0 0 240 158" fill="none">
-                            <defs>
-                                <linearGradient id="polaroid-sky-1" x1="0%" y1="0%" x2="100%" y2="100%">
-                                    <stop offset="0%" stop-color="#ff9a9e" />
-                                    <stop offset="100%" stop-color="#fecfef" />
-                                </linearGradient>
-                                <linearGradient id="polaroid-sky-2" x1="0%" y1="0%" x2="100%" y2="100%">
-                                    <stop offset="0%" stop-color="#a1c4fd" />
-                                    <stop offset="100%" stop-color="#c2e9fb" />
-                                </linearGradient>
-                                <linearGradient id="app-jar-glass" x1="0%" y1="0%" x2="100%" y2="100%">
-                                    <stop offset="0%" stop-color="rgba(205, 220, 245, 0.55)" />
-                                    <stop offset="50%" stop-color="rgba(165, 160, 200, 0.35)" />
-                                    <stop offset="100%" stop-color="rgba(215, 145, 175, 0.48)" />
-                                </linearGradient>
-                                <!-- 正式大氣的香檳珍珠白與冰晶藍流光線條漸層 -->
-                                <linearGradient id="grand-monoline-grad" x1="0%" y1="0%" x2="100%" y2="100%">
-                                    <stop offset="0%" stop-color="#ffffff" />
-                                    <stop offset="48%" stop-color="#f6e3ba" />
-                                    <stop offset="100%" stop-color="#cde6ff" />
-                                </linearGradient>
-                                <linearGradient id="grand-fill-veil" x1="50%" y1="0%" x2="50%" y2="100%">
-                                    <stop offset="0%" stop-color="rgba(255, 255, 255, 0.28)" />
-                                    <stop offset="100%" stop-color="rgba(210, 230, 255, 0.06)" />
-                                </linearGradient>
-
-                                <!-- 共用微縮 App 介面模板 -->
-                                <g id="shared-app-ui-shell">
-                                    <rect x="52" y="8" width="136" height="142" rx="18" fill="rgba(14, 11, 24, 0.85)" stroke="rgba(255, 255, 255, 0.28)" stroke-width="1.5" />
-                                    <path d="M 53 26 Q 120 31 187 26" stroke="rgba(212, 163, 115, 0.55)" stroke-width="1" fill="none" />
-                                    <rect x="61" y="14" width="3.5" height="3.5" rx="0.8" stroke="#c89d6c" stroke-width="0.8" />
-                                    <rect x="66" y="14" width="3.5" height="3.5" rx="0.8" stroke="#c89d6c" stroke-width="0.8" />
-                                    <rect x="61" y="19" width="3.5" height="3.5" rx="0.8" fill="#a67449" />
-                                    <rect x="66" y="19" width="3.5" height="3.5" rx="0.8" stroke="#c89d6c" stroke-width="0.8" />
-                                    <text x="120" y="20.5" fill="#ffffff" font-size="7.5" font-weight="700" text-anchor="middle" letter-spacing="-0.2">YourStoryJar</text>
-                                    <rect x="171" y="14" width="3.2" height="3.2" rx="0.6" fill="#c89d6c" />
-                                    <rect x="175.5" y="14" width="3.2" height="3.2" rx="0.6" fill="#c89d6c" />
-                                    <rect x="171" y="18.5" width="3.2" height="3.2" rx="0.6" fill="#c89d6c" />
-                                    <rect x="175.5" y="18.5" width="3.2" height="3.2" rx="0.6" fill="#c89d6c" />
-                                    <line x1="53" y1="132" x2="187" y2="132" stroke="rgba(255, 255, 255, 0.1)" stroke-width="1" />
-                                    <rect x="64" y="135" width="26" height="11" rx="5.5" fill="rgba(255, 255, 255, 0.1)" stroke="rgba(255, 255, 255, 0.2)" stroke-width="0.8" />
-                                    <circle cx="120" cy="140.5" r="5.5" fill="#ffffff" stroke="rgba(255, 255, 255, 0.35)" stroke-width="1.5" />
-                                    <circle cx="164" cy="140.5" r="3" stroke="rgba(255, 255, 255, 0.55)" stroke-width="1.2" />
+                                <g class="c1-app-ui-frame">
+                                    <use href="#shared-app-ui-shell" />
                                 </g>
-                            </defs>
 
-                            <!-- 微縮 App 介面外框 -->
-                            <g class="c1-app-ui-frame">
+                                <g class="c1-back-imagined">
+                                    <rect x="98" y="52" width="44" height="52" rx="5" fill="rgba(185, 215, 255, 0.22)" stroke="rgba(255, 255, 255, 0.65)" stroke-width="1.4" stroke-dasharray="3 2.5" />
+                                    <circle cx="120" cy="70" r="5" fill="rgba(255, 255, 255, 0.4)" />
+                                    <path d="M 106 86 Q 118 76 132 84" stroke="rgba(255, 255, 255, 0.5)" stroke-width="1.3" stroke-linecap="round" />
+                                </g>
+
+                                <g class="c1-front-photo">
+                                    <rect x="98" y="52" width="44" height="52" rx="4.5" fill="#ffffff" filter="drop-shadow(0 4px 10px rgba(0,0,0,0.35))" />
+                                    <rect x="102" y="56" width="36" height="33" rx="2.5" fill="url(#polaroid-sky-1)" />
+                                    <circle cx="128" cy="65" r="4.5" fill="#fff6b0" />
+                                    <line x1="109" y1="96.5" x2="131" y2="96.5" stroke="rgba(30, 28, 36, 0.35)" stroke-width="1.8" stroke-linecap="round" />
+                                </g>
+
+                                <circle class="c1-merge-flash" cx="120" cy="78" r="24" fill="rgba(255, 240, 250, 0.65)" />
+
+                                <g class="c1-jar-body-wrap">
+                                    <ellipse cx="120" cy="122" rx="34" ry="7" fill="rgba(235, 135, 110, 0.42)" />
+                                    <rect x="95" y="44" width="50" height="4" rx="1" fill="rgba(255, 255, 255, 0.75)" />
+                                    <rect x="83" y="48" width="74" height="72" rx="14" fill="url(#app-jar-glass)" stroke="rgba(255, 255, 255, 0.88)" stroke-width="2" />
+                                    <path d="M 92 54 L 102 54 L 97 112 L 87 112 Z" fill="rgba(255, 255, 255, 0.35)" />
+                                    <line x1="152" y1="56" x2="152" y2="110" stroke="rgba(255, 255, 255, 0.75)" stroke-width="1.5" stroke-linecap="round" />
+
+                                    <g class="c1-stage-caterpillar" stroke="url(#grand-monoline-grad)" stroke-linecap="round" stroke-linejoin="round">
+                                        <path d="M 98 95 Q 120 99 142 93" stroke="rgba(255, 255, 255, 0.4)" stroke-width="1.1" />
+                                        <path d="M 103 91 C 107 82, 113 82, 116 88 C 119 79, 125 79, 128 87 C 131 80, 136 81, 138 87" fill="none" stroke-width="1.8" />
+                                        <circle cx="109.5" cy="86.5" r="3.2" fill="url(#grand-fill-veil)" stroke-width="1.2" />
+                                        <circle cx="122" cy="83.5" r="3.8" fill="url(#grand-fill-veil)" stroke-width="1.2" />
+                                        <circle cx="133.5" cy="84.5" r="3.4" fill="url(#grand-fill-veil)" stroke-width="1.2" />
+                                        <path d="M 135 81.5 Q 139 75 143 76.5 M 133 81.5 Q 135 74.5 138.5 74.5" stroke-width="1.1" />
+                                    </g>
+
+                                    <g class="c1-stage-chrysalis" stroke="url(#grand-monoline-grad)" stroke-linecap="round" stroke-linejoin="round">
+                                        <line x1="120" y1="58" x2="120" y2="66" stroke="rgba(255, 255, 255, 0.55)" stroke-width="1.1" />
+                                        <path d="M 120 65 C 131 73, 130 92, 120 105 C 110 92, 109 73, 120 65 Z" fill="url(#grand-fill-veil)" stroke-width="1.6" />
+                                        <line x1="120" y1="65" x2="120" y2="105" stroke="rgba(255, 255, 255, 0.45)" stroke-width="1" />
+                                        <path d="M 112.5 78 Q 120 83 127.5 78 M 111.5 86 Q 120 91 128.5 86 M 114 94 Q 120 97.5 126 94" fill="none" stroke-width="1.1" />
+                                    </g>
+
+                                    <g class="c1-stage-butterfly" stroke="url(#grand-monoline-grad)" stroke-linecap="round" stroke-linejoin="round">
+                                        <path d="M 120 84 C 106 62, 91 67, 96 81 C 99 88, 111 86, 120 84 Z" fill="url(#grand-fill-veil)" stroke-width="1.5" />
+                                        <path d="M 120 84 C 134 62, 149 67, 144 81 C 141 88, 129 86, 120 84 Z" fill="url(#grand-fill-veil)" stroke-width="1.5" />
+                                        <path d="M 120 84 C 110 71, 101 73, 103 81 M 120 84 C 130 71, 139 73, 137 81" fill="none" stroke="rgba(255, 255, 255, 0.5)" stroke-width="1" />
+                                        <path d="M 120 85 C 107 87, 102 99, 110 103 C 115 105, 119 95, 120 85 Z" fill="url(#grand-fill-veil)" stroke-width="1.35" />
+                                        <path d="M 120 85 C 133 87, 138 99, 130 103 C 125 105, 121 95, 120 85 Z" fill="url(#grand-fill-veil)" stroke-width="1.35" />
+                                        <line x1="120" y1="73" x2="120" y2="98" stroke="#ffffff" stroke-width="1.8" />
+                                        <path d="M 120 74 C 116 66, 111 66, 109 69 M 120 74 C 124 66, 129 66, 131 69" fill="none" stroke-width="1.1" />
+                                    </g>
+                                </g>
+
+                                <g class="c1-jar-lid-wrap">
+                                    <rect x="90" y="34" width="60" height="10" rx="2.5" fill="#18181c" stroke="rgba(255, 255, 255, 0.4)" stroke-width="1" />
+                                    <line x1="96" y1="35" x2="96" y2="43" stroke="#3a3a42" stroke-width="1.5" />
+                                    <line x1="102" y1="35" x2="102" y2="43" stroke="#3a3a42" stroke-width="1.5" />
+                                    <line x1="108" y1="35" x2="108" y2="43" stroke="#3a3a42" stroke-width="1.5" />
+                                    <line x1="114" y1="35" x2="114" y2="43" stroke="#3a3a42" stroke-width="1.5" />
+                                    <line x1="120" y1="35" x2="120" y2="43" stroke="#3a3a42" stroke-width="1.5" />
+                                    <line x1="126" y1="35" x2="126" y2="43" stroke="#3a3a42" stroke-width="1.5" />
+                                    <line x1="132" y1="35" x2="132" y2="43" stroke="#3a3a42" stroke-width="1.5" />
+                                    <line x1="138" y1="35" x2="138" y2="43" stroke="#3a3a42" stroke-width="1.5" />
+                                    <line x1="144" y1="35" x2="144" y2="43" stroke="#3a3a42" stroke-width="1.5" />
+                                </g>
+                            </svg>
+                        </div>
+                        <p class="vignette-prose">
+                            Turn the intangible moments of your life into <span class="prose-accent">something you can see and hold</span>. Whether real memories or imagined worlds, you are the <span class="prose-accent">director of your own story</span>.
+                        </p>
+                    </div>
+
+                    <!-- 第 2 框 -->
+                    <div class="feature-card particle-formed-card">
+                        <div class="vignette-visual-box">
+                            <div class="vignette-prism-glow" style="animation-delay: -4s;"></div>
+                            <svg class="vignette-svg" viewBox="0 0 240 158" fill="none">
+                                <defs>
+                                    <radialGradient id="core-glow-2" cx="50%" cy="50%" r="50%">
+                                        <stop offset="0%" stop-color="#ffffff" stop-opacity="1" />
+                                        <stop offset="45%" stop-color="#ffd6e8" stop-opacity="0.88" />
+                                        <stop offset="100%" stop-color="#a2d2ff" stop-opacity="0" />
+                                    </radialGradient>
+                                </defs>
+
                                 <use href="#shared-app-ui-shell" />
-                            </g>
 
-                            <!-- 步驟 1：後層半透明框 -->
-                            <g class="c1-back-imagined">
-                                <rect x="98" y="52" width="44" height="52" rx="5" fill="rgba(185, 215, 255, 0.22)" stroke="rgba(255, 255, 255, 0.65)" stroke-width="1.4" stroke-dasharray="3 2.5" />
-                                <circle cx="120" cy="70" r="5" fill="rgba(255, 255, 255, 0.4)" />
-                                <path d="M 106 86 Q 118 76 132 84" stroke="rgba(255, 255, 255, 0.5)" stroke-width="1.3" stroke-linecap="round" />
-                            </g>
-
-                            <!-- 步驟 2：前層有形相片 (與半透明框合二為一) -->
-                            <g class="c1-front-photo">
-                                <rect x="98" y="52" width="44" height="52" rx="4.5" fill="#ffffff" filter="drop-shadow(0 4px 10px rgba(0,0,0,0.35))" />
-                                <rect x="102" y="56" width="36" height="33" rx="2.5" fill="url(#polaroid-sky-1)" />
-                                <circle cx="128" cy="65" r="4.5" fill="#fff6b0" />
-                                <line x1="109" y1="96.5" x2="131" y2="96.5" stroke="rgba(30, 28, 36, 0.35)" stroke-width="1.8" stroke-linecap="round" />
-                            </g>
-
-                            <circle class="c1-merge-flash" cx="120" cy="78" r="24" fill="rgba(255, 240, 250, 0.65)" />
-
-                            <!-- 步驟 3：故事罐罐身裝入 -->
-                            <g class="c1-jar-body-wrap">
-                                <ellipse cx="120" cy="122" rx="34" ry="7" fill="rgba(235, 135, 110, 0.42)" />
-                                <rect x="95" y="44" width="50" height="4" rx="1" fill="rgba(255, 255, 255, 0.75)" />
-                                <rect x="83" y="48" width="74" height="72" rx="14" fill="url(#app-jar-glass)" stroke="rgba(255, 255, 255, 0.88)" stroke-width="2" />
-                                <path d="M 92 54 L 102 54 L 97 112 L 87 112 Z" fill="rgba(255, 255, 255, 0.35)" />
-                                <line x1="152" y1="56" x2="152" y2="110" stroke="rgba(255, 255, 255, 0.75)" stroke-width="1.5" stroke-linecap="round" />
-
-                                <!-- 步驟 4：罐內「簡約大氣幾何細線」連續生長變形 (每階段精準停留 0.2秒) -->
-                                <!-- 型態 1：極簡幾何波紋幼蟲 (Minimalist Geometric Caterpillar) -->
-                                <g class="c1-stage-caterpillar" stroke="url(#grand-monoline-grad)" stroke-linecap="round" stroke-linejoin="round">
-                                    <!-- 纖細流線棲枝 -->
-                                    <path d="M 98 95 Q 120 99 142 93" stroke="rgba(255, 255, 255, 0.4)" stroke-width="1.1" />
-                                    <!-- 簡約幾何節環主體 -->
-                                    <path d="M 103 91 C 107 82, 113 82, 116 88 C 119 79, 125 79, 128 87 C 131 80, 136 81, 138 87" fill="none" stroke-width="1.8" />
-                                    <circle cx="109.5" cy="86.5" r="3.2" fill="url(#grand-fill-veil)" stroke-width="1.2" />
-                                    <circle cx="122" cy="83.5" r="3.8" fill="url(#grand-fill-veil)" stroke-width="1.2" />
-                                    <circle cx="133.5" cy="84.5" r="3.4" fill="url(#grand-fill-veil)" stroke-width="1.2" />
-                                    <!-- 極簡流線觸角 -->
-                                    <path d="M 135 81.5 Q 139 75 143 76.5 M 133 81.5 Q 135 74.5 138.5 74.5" stroke-width="1.1" />
+                                <g>
+                                    <ellipse cx="120" cy="122" rx="30" ry="6" fill="rgba(235, 135, 110, 0.35)" />
+                                    <rect x="98" y="52" width="44" height="4" rx="1" fill="rgba(255, 255, 255, 0.7)" />
+                                    <rect x="86" y="56" width="68" height="66" rx="13" fill="url(#app-jar-glass)" stroke="rgba(255, 255, 255, 0.82)" stroke-width="1.8" />
+                                    <path d="M 94 62 L 103 62 L 99 114 L 90 114 Z" fill="rgba(255, 255, 255, 0.32)" />
                                 </g>
 
-                                <!-- 型態 2：由幼蟲向中央收攏立起生長而成的「幾何晶體懸蛹 (Architectural Chrysalis)」 -->
-                                <g class="c1-stage-chrysalis" stroke="url(#grand-monoline-grad)" stroke-linecap="round" stroke-linejoin="round">
-                                    <!-- 頂部懸絲 -->
-                                    <line x1="120" y1="58" x2="120" y2="66" stroke="rgba(255, 255, 255, 0.55)" stroke-width="1.1" />
-                                    <!-- 正式大氣的對稱梭形晶體外輪廓 -->
-                                    <path d="M 120 65 C 131 73, 130 92, 120 105 C 110 92, 109 73, 120 65 Z" fill="url(#grand-fill-veil)" stroke-width="1.6" />
-                                    <!-- 內部幾何切面脊線 -->
-                                    <line x1="120" y1="65" x2="120" y2="105" stroke="rgba(255, 255, 255, 0.45)" stroke-width="1" />
-                                    <path d="M 112.5 78 Q 120 83 127.5 78 M 111.5 86 Q 120 91 128.5 86 M 114 94 Q 120 97.5 126 94" fill="none" stroke-width="1.1" />
+                                <g class="c2-jar-lid-open">
+                                    <rect x="93" y="42" width="54" height="9.5" rx="2.2" fill="#18181c" stroke="rgba(255, 255, 255, 0.4)" stroke-width="1" />
+                                    <line x1="100" y1="43" x2="100" y2="50.5" stroke="#3a3a42" stroke-width="1.4" />
+                                    <line x1="107" y1="43" x2="107" y2="50.5" stroke="#3a3a42" stroke-width="1.4" />
+                                    <line x1="114" y1="43" x2="114" y2="50.5" stroke="#3a3a42" stroke-width="1.4" />
+                                    <line x1="121" y1="43" x2="121" y2="50.5" stroke="#3a3a42" stroke-width="1.4" />
+                                    <line x1="128" y1="43" x2="128" y2="50.5" stroke="#3a3a42" stroke-width="1.4" />
+                                    <line x1="135" y1="43" x2="135" y2="50.5" stroke="#3a3a42" stroke-width="1.4" />
+                                    <line x1="141" y1="43" x2="141" y2="50.5" stroke="#3a3a42" stroke-width="1.4" />
                                 </g>
 
-                                <!-- 型態 3：由晶體蛹向兩側破繭綻放生長而成的「大氣幾何流光蝶 (Grand Monoline Butterfly)」 -->
-                                <g class="c1-stage-butterfly" stroke="url(#grand-monoline-grad)" stroke-linecap="round" stroke-linejoin="round">
-                                    <!-- 雙層對稱大氣上翼 -->
-                                    <path d="M 120 84 C 106 62, 91 67, 96 81 C 99 88, 111 86, 120 84 Z" fill="url(#grand-fill-veil)" stroke-width="1.5" />
-                                    <path d="M 120 84 C 134 62, 149 67, 144 81 C 141 88, 129 86, 120 84 Z" fill="url(#grand-fill-veil)" stroke-width="1.5" />
-                                    <!-- 上翼內部幾何流線脈絡 -->
-                                    <path d="M 120 84 C 110 71, 101 73, 103 81 M 120 84 C 130 71, 139 73, 137 81" fill="none" stroke="rgba(255, 255, 255, 0.5)" stroke-width="1" />
-                                    <!-- 修長優雅下翼 -->
-                                    <path d="M 120 85 C 107 87, 102 99, 110 103 C 115 105, 119 95, 120 85 Z" fill="url(#grand-fill-veil)" stroke-width="1.35" />
-                                    <path d="M 120 85 C 133 87, 138 99, 130 103 C 125 105, 121 95, 120 85 Z" fill="url(#grand-fill-veil)" stroke-width="1.35" />
-                                    <!-- 中軸蝶身與弧形觸角 -->
-                                    <line x1="120" y1="73" x2="120" y2="98" stroke="#ffffff" stroke-width="1.8" />
-                                    <path d="M 120 74 C 116 66, 111 66, 109 69 M 120 74 C 124 66, 129 66, 131 69" fill="none" stroke-width="1.1" />
+                                <g class="c2-memory-core">
+                                    <circle cx="120" cy="84" r="26" fill="url(#core-glow-2)" />
+                                    <circle cx="120" cy="84" r="8" fill="#ffffff" stroke="rgba(255, 215, 235, 0.9)" stroke-width="2" />
                                 </g>
-                            </g>
 
-                            <!-- 黑色直紋瓶蓋降下蓋緊 -->
-                            <g class="c1-jar-lid-wrap">
-                                <rect x="90" y="34" width="60" height="10" rx="2.5" fill="#18181c" stroke="rgba(255, 255, 255, 0.4)" stroke-width="1" />
-                                <line x1="96" y1="35" x2="96" y2="43" stroke="#3a3a42" stroke-width="1.5" />
-                                <line x1="102" y1="35" x2="102" y2="43" stroke="#3a3a42" stroke-width="1.5" />
-                                <line x1="108" y1="35" x2="108" y2="43" stroke="#3a3a42" stroke-width="1.5" />
-                                <line x1="114" y1="35" x2="114" y2="43" stroke="#3a3a42" stroke-width="1.5" />
-                                <line x1="120" y1="35" x2="120" y2="43" stroke="#3a3a42" stroke-width="1.5" />
-                                <line x1="126" y1="35" x2="126" y2="43" stroke="#3a3a42" stroke-width="1.5" />
-                                <line x1="132" y1="35" x2="132" y2="43" stroke="#3a3a42" stroke-width="1.5" />
-                                <line x1="138" y1="35" x2="138" y2="43" stroke="#3a3a42" stroke-width="1.5" />
-                                <line x1="144" y1="35" x2="144" y2="43" stroke="#3a3a42" stroke-width="1.5" />
-                            </g>
-                        </svg>
+                                <g class="c2-orbit-system">
+                                    <ellipse cx="120" cy="82" rx="68" ry="26" transform="rotate(-14 120 82)" stroke="rgba(255, 255, 255, 0.48)" stroke-width="1.3" stroke-dasharray="4 4" />
+                                    <ellipse cx="120" cy="82" rx="56" ry="19" transform="rotate(16 120 82)" stroke="rgba(185, 225, 255, 0.4)" stroke-width="1.2" />
+
+                                    <g class="c2-revolving-letter">
+                                        <g transform="translate(62, 62) rotate(-12)">
+                                            <rect x="-15" y="-10" width="30" height="20" rx="3" fill="#fff9f0" />
+                                            <path d="M -13.5 -8.5 L 0 2.2 L 13.5 -8.5" stroke="#d8bfa3" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round" fill="none" />
+                                            <circle cx="0" cy="1.8" r="3.2" fill="#e06355" />
+                                        </g>
+                                    </g>
+
+                                    <g class="c2-revolving-photo">
+                                        <g transform="translate(176, 92) rotate(12)">
+                                            <rect x="-13" y="-15" width="26" height="30" rx="3.2" fill="#ffffff" />
+                                            <rect x="-10.5" y="-12.5" width="21" height="19" rx="1.8" fill="url(#polaroid-sky-2)" />
+                                            <circle cx="4" cy="-6" r="3.1" fill="#fff6b0" />
+                                            <line x1="-6" y1="10.5" x2="6" y2="10.5" stroke="rgba(30, 28, 36, 0.35)" stroke-width="1.4" stroke-linecap="round" />
+                                        </g>
+                                    </g>
+
+                                    <circle cx="168" cy="52" r="3.2" fill="#a2d2ff" />
+                                    <circle cx="72" cy="108" r="2.8" fill="#ffc8dd" />
+                                </g>
+                            </svg>
+                        </div>
+                        <p class="vignette-prose">
+                            Your jar can hold <span class="prose-accent">anything that surrounds you</span>—what you cherish, what carries meaning, <span class="prose-accent">reflections of yourself</span>, or even fleeting, random moments passing by. <span class="prose-accent">Every time you open it, a new discovery awaits.</span>
+                        </p>
                     </div>
-                    <p class="vignette-prose">
-                        Turn the intangible moments of your life into <span class="prose-accent">something you can see and hold</span>. Whether real memories or imagined worlds, you are the <span class="prose-accent">director of your own story</span>.
-                    </p>
-                </div>
 
-                <!-- 第 2 框：App 介面 -> 罐子打開 -> 出現中心核心與同款拍立得相片/火漆信件環繞 -->
-                <div class="feature-card particle-formed-card">
-                    <div class="vignette-visual-box">
-                        <div class="vignette-prism-glow" style="animation-delay: -4s;"></div>
-                        <svg class="vignette-svg" viewBox="0 0 240 158" fill="none">
-                            <defs>
-                                <radialGradient id="core-glow-2" cx="50%" cy="50%" r="50%">
-                                    <stop offset="0%" stop-color="#ffffff" stop-opacity="1" />
-                                    <stop offset="45%" stop-color="#ffd6e8" stop-opacity="0.88" />
-                                    <stop offset="100%" stop-color="#a2d2ff" stop-opacity="0" />
-                                </radialGradient>
-                            </defs>
+                    <!-- 第 3 框 -->
+                    <div class="feature-card particle-formed-card">
+                        <div class="vignette-visual-box">
+                            <div class="vignette-prism-glow" style="animation-delay: -8s;"></div>
+                            <svg class="vignette-svg" viewBox="0 0 240 158" fill="none">
+                                <use href="#shared-app-ui-shell" />
 
-                            <use href="#shared-app-ui-shell" />
-
-                            <g>
-                                <ellipse cx="120" cy="122" rx="30" ry="6" fill="rgba(235, 135, 110, 0.35)" />
-                                <rect x="98" y="52" width="44" height="4" rx="1" fill="rgba(255, 255, 255, 0.7)" />
-                                <rect x="86" y="56" width="68" height="66" rx="13" fill="url(#app-jar-glass)" stroke="rgba(255, 255, 255, 0.82)" stroke-width="1.8" />
-                                <path d="M 94 62 L 103 62 L 99 114 L 90 114 Z" fill="rgba(255, 255, 255, 0.32)" />
-                            </g>
-
-                            <g class="c2-jar-lid-open">
-                                <rect x="93" y="42" width="54" height="9.5" rx="2.2" fill="#18181c" stroke="rgba(255, 255, 255, 0.4)" stroke-width="1" />
-                                <line x1="100" y1="43" x2="100" y2="50.5" stroke="#3a3a42" stroke-width="1.4" />
-                                <line x1="107" y1="43" x2="107" y2="50.5" stroke="#3a3a42" stroke-width="1.4" />
-                                <line x1="114" y1="43" x2="114" y2="50.5" stroke="#3a3a42" stroke-width="1.4" />
-                                <line x1="121" y1="43" x2="121" y2="50.5" stroke="#3a3a42" stroke-width="1.4" />
-                                <line x1="128" y1="43" x2="128" y2="50.5" stroke="#3a3a42" stroke-width="1.4" />
-                                <line x1="135" y1="43" x2="135" y2="50.5" stroke="#3a3a42" stroke-width="1.4" />
-                                <line x1="141" y1="43" x2="141" y2="50.5" stroke="#3a3a42" stroke-width="1.4" />
-                            </g>
-
-                            <g class="c2-memory-core">
-                                <circle cx="120" cy="84" r="26" fill="url(#core-glow-2)" />
-                                <circle cx="120" cy="84" r="8" fill="#ffffff" stroke="rgba(255, 215, 235, 0.9)" stroke-width="2" />
-                            </g>
-
-                            <g class="c2-orbit-system">
-                                <ellipse cx="120" cy="82" rx="68" ry="26" transform="rotate(-14 120 82)" stroke="rgba(255, 255, 255, 0.48)" stroke-width="1.3" stroke-dasharray="4 4" />
-                                <ellipse cx="120" cy="82" rx="56" ry="19" transform="rotate(16 120 82)" stroke="rgba(185, 225, 255, 0.4)" stroke-width="1.2" />
-
-                                <g class="c2-revolving-letter">
-                                    <g transform="translate(62, 62) rotate(-12)">
-                                        <rect x="-15" y="-10" width="30" height="20" rx="3" fill="#fff9f0" />
-                                        <path d="M -13.5 -8.5 L 0 2.2 L 13.5 -8.5" stroke="#d8bfa3" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round" fill="none" />
-                                        <circle cx="0" cy="1.8" r="3.2" fill="#e06355" />
+                                <g class="c3-other-three-jars">
+                                    <g transform="translate(144, 61)">
+                                        <rect x="-12" y="-21" width="24" height="4.5" rx="1.2" fill="#18181c" stroke="rgba(255,255,255,0.35)" stroke-width="0.8" />
+                                        <rect x="-15" y="-16" width="30" height="31" rx="6.5" fill="url(#app-jar-glass)" stroke="rgba(255,255,255,0.75)" stroke-width="1.2" />
+                                        <path d="M -11 -13 L -7 -13 L -9 11 L -13 11 Z" fill="rgba(255,255,255,0.3)" />
+                                    </g>
+                                    <g transform="translate(96, 105)">
+                                        <rect x="-12" y="-21" width="24" height="4.5" rx="1.2" fill="#18181c" stroke="rgba(255,255,255,0.35)" stroke-width="0.8" />
+                                        <rect x="-15" y="-16" width="30" height="31" rx="6.5" fill="url(#app-jar-glass)" stroke="rgba(255,255,255,0.75)" stroke-width="1.2" />
+                                        <path d="M -11 -13 L -7 -13 L -9 11 L -13 11 Z" fill="rgba(255,255,255,0.3)" />
+                                    </g>
+                                    <g transform="translate(144, 105)">
+                                        <rect x="-12" y="-21" width="24" height="4.5" rx="1.2" fill="#18181c" stroke="rgba(255,255,255,0.35)" stroke-width="0.8" />
+                                        <rect x="-15" y="-16" width="30" height="31" rx="6.5" fill="url(#app-jar-glass)" stroke="rgba(255,255,255,0.75)" stroke-width="1.2" />
+                                        <path d="M -11 -13 L -7 -13 L -9 11 L -13 11 Z" fill="rgba(255,255,255,0.3)" />
                                     </g>
                                 </g>
 
-                                <g class="c2-revolving-photo">
-                                    <g transform="translate(176, 92) rotate(12)">
-                                        <rect x="-13" y="-15" width="26" height="30" rx="3.2" fill="#ffffff" />
-                                        <rect x="-10.5" y="-12.5" width="21" height="19" rx="1.8" fill="url(#polaroid-sky-2)" />
-                                        <circle cx="4" cy="-6" r="3.1" fill="#fff6b0" />
-                                        <line x1="-6" y1="10.5" x2="6" y2="10.5" stroke="rgba(30, 28, 36, 0.35)" stroke-width="1.4" stroke-linecap="round" />
+                                <g class="c3-hero-zoom-jar">
+                                    <ellipse cx="120" cy="121" rx="32" ry="6.5" fill="rgba(235, 135, 110, 0.4)" />
+                                    <rect x="91" y="36" width="58" height="9.5" rx="2.2" fill="#18181c" stroke="rgba(255, 255, 255, 0.42)" stroke-width="1" />
+                                    <line x1="98" y1="37" x2="98" y2="44.5" stroke="#3a3a42" stroke-width="1.4" />
+                                    <line x1="105" y1="37" x2="105" y2="44.5" stroke="#3a3a42" stroke-width="1.4" />
+                                    <line x1="112" y1="37" x2="112" y2="44.5" stroke="#3a3a42" stroke-width="1.4" />
+                                    <line x1="119" y1="37" x2="119" y2="44.5" stroke="#3a3a42" stroke-width="1.4" />
+                                    <line x1="126" y1="37" x2="126" y2="44.5" stroke="#3a3a42" stroke-width="1.4" />
+                                    <line x1="133" y1="37" x2="133" y2="44.5" stroke="#3a3a42" stroke-width="1.4" />
+                                    <line x1="140" y1="37" x2="140" y2="44.5" stroke="#3a3a42" stroke-width="1.4" />
+                                    <rect x="96" y="45.5" width="48" height="3.5" rx="1" fill="rgba(255, 255, 255, 0.75)" />
+                                    <rect x="85" y="49" width="70" height="70" rx="14" fill="url(#app-jar-glass)" stroke="rgba(255, 255, 255, 0.9)" stroke-width="2" />
+                                    <path d="M 93 55 L 103 55 L 98 112 L 88 112 Z" fill="rgba(255, 255, 255, 0.35)" />
+                                    <line x1="150" y1="57" x2="150" y2="110" stroke="rgba(255, 255, 255, 0.75)" stroke-width="1.4" stroke-linecap="round" />
+
+                                    <g class="c3-stage-sprout" stroke="url(#grand-monoline-grad)" stroke-linecap="round" stroke-linejoin="round">
+                                        <path d="M 102 104 Q 120 100 138 104" stroke="rgba(255, 255, 255, 0.45)" stroke-width="1.2" />
+                                        <line x1="120" y1="102" x2="120" y2="80" stroke-width="1.7" />
+                                        <path d="M 120 88 C 110 86, 107 76, 115 74 C 119 76, 120 82, 120 88 Z" fill="url(#grand-fill-veil)" stroke-width="1.4" />
+                                        <path d="M 120 84 C 130 82, 133 72, 125 70 C 121 72, 120 78, 120 84 Z" fill="url(#grand-fill-veil)" stroke-width="1.4" />
+                                    </g>
+
+                                    <g class="c3-stage-flower" stroke="url(#grand-monoline-grad)" stroke-linecap="round" stroke-linejoin="round">
+                                        <path d="M 102 104 Q 120 100 138 104" stroke="rgba(255, 255, 255, 0.45)" stroke-width="1.2" />
+                                        <line x1="120" y1="102" x2="120" y2="82" stroke-width="1.7" />
+                                        <path d="M 120 93 C 111 91, 108 85, 114 84 M 120 93 C 129 91, 132 85, 126 84" fill="none" stroke-width="1.2" />
+                                        <path d="M 120 83 C 107 79, 105 67, 113 64 C 117 68, 119 75, 120 83 Z" fill="url(#grand-fill-veil)" stroke-width="1.35" />
+                                        <path d="M 120 83 C 133 79, 135 67, 127 64 C 123 68, 121 75, 120 83 Z" fill="url(#grand-fill-veil)" stroke-width="1.35" />
+                                        <path d="M 120 83 C 113 73, 113 61, 120 57 C 127 61, 127 73, 120 83 Z" fill="url(#grand-fill-veil)" stroke-width="1.5" />
+                                    </g>
+
+                                    <g class="c3-stage-tree" stroke="url(#grand-monoline-grad)" stroke-linecap="round" stroke-linejoin="round">
+                                        <path d="M 98 105 Q 120 100 142 105" stroke="rgba(255, 255, 255, 0.55)" stroke-width="1.3" />
+                                        <circle cx="120" cy="73" r="17" fill="url(#grand-fill-veil)" stroke-width="1.5" />
+                                        <path d="M 107 82 C 99 77, 100 65, 109 62 M 133 82 C 141 77, 140 65, 131 62" fill="none" stroke-width="1.3" />
+                                        <path d="M 116 103 C 118 95, 119 86, 120 62 C 121 86, 122 95, 124 103" fill="none" stroke-width="1.7" />
+                                        <path d="M 120 84 L 110 74 M 120 80 L 130 70 M 120 74 L 113 66 M 120 72 L 127 65" stroke-width="1.3" />
                                     </g>
                                 </g>
-
-                                <circle cx="168" cy="52" r="3.2" fill="#a2d2ff" />
-                                <circle cx="72" cy="108" r="2.8" fill="#ffc8dd" />
-                            </g>
-                        </svg>
+                            </svg>
+                        </div>
+                        <p class="vignette-prose">
+                            <span class="prose-accent">Shake or open your time jar whenever you wish—to reconnect with your past states of mind, evolving thoughts, inner beliefs, and the quiet moods of days gone by.</span>
+                        </p>
                     </div>
-                    <p class="vignette-prose">
-                        Your jar can hold <span class="prose-accent">anything that surrounds you</span>—what you cherish, what carries meaning, <span class="prose-accent">reflections of yourself</span>, or even fleeting, random moments passing by. <span class="prose-accent">Every time you open it, a new discovery awaits.</span>
-                    </p>
+
                 </div>
 
-                <!-- 第 3 框：App 介面內有 4 個故事罐 -> 放大其中一個 -> 罐內連續向上生長切換 (極簡新芽樹苗 -> 幾何聖潔蓮花 -> 大氣生命之樹，每階段停留 0.2秒) -->
-                <div class="feature-card particle-formed-card">
-                    <div class="vignette-visual-box">
-                        <div class="vignette-prism-glow" style="animation-delay: -8s;"></div>
-                        <svg class="vignette-svg" viewBox="0 0 240 158" fill="none">
-                            <use href="#shared-app-ui-shell" />
-
-                            <!-- 其餘 3 個背景故事罐 -->
-                            <g class="c3-other-three-jars">
-                                <g transform="translate(144, 61)">
-                                    <rect x="-12" y="-21" width="24" height="4.5" rx="1.2" fill="#18181c" stroke="rgba(255,255,255,0.35)" stroke-width="0.8" />
-                                    <rect x="-15" y="-16" width="30" height="31" rx="6.5" fill="url(#app-jar-glass)" stroke="rgba(255,255,255,0.75)" stroke-width="1.2" />
-                                    <path d="M -11 -13 L -7 -13 L -9 11 L -13 11 Z" fill="rgba(255,255,255,0.3)" />
-                                </g>
-                                <g transform="translate(96, 105)">
-                                    <rect x="-12" y="-21" width="24" height="4.5" rx="1.2" fill="#18181c" stroke="rgba(255,255,255,0.35)" stroke-width="0.8" />
-                                    <rect x="-15" y="-16" width="30" height="31" rx="6.5" fill="url(#app-jar-glass)" stroke="rgba(255,255,255,0.75)" stroke-width="1.2" />
-                                    <path d="M -11 -13 L -7 -13 L -9 11 L -13 11 Z" fill="rgba(255,255,255,0.3)" />
-                                </g>
-                                <g transform="translate(144, 105)">
-                                    <rect x="-12" y="-21" width="24" height="4.5" rx="1.2" fill="#18181c" stroke="rgba(255,255,255,0.35)" stroke-width="0.8" />
-                                    <rect x="-15" y="-16" width="30" height="31" rx="6.5" fill="url(#app-jar-glass)" stroke="rgba(255,255,255,0.75)" stroke-width="1.2" />
-                                    <path d="M -11 -13 L -7 -13 L -9 11 L -13 11 Z" fill="rgba(255,255,255,0.3)" />
-                                </g>
-                            </g>
-
-                            <!-- 被放大至 App 介面中央的主故事罐 -->
-                            <g class="c3-hero-zoom-jar">
-                                <ellipse cx="120" cy="121" rx="32" ry="6.5" fill="rgba(235, 135, 110, 0.4)" />
-                                <rect x="91" y="36" width="58" height="9.5" rx="2.2" fill="#18181c" stroke="rgba(255, 255, 255, 0.42)" stroke-width="1" />
-                                <line x1="98" y1="37" x2="98" y2="44.5" stroke="#3a3a42" stroke-width="1.4" />
-                                <line x1="105" y1="37" x2="105" y2="44.5" stroke="#3a3a42" stroke-width="1.4" />
-                                <line x1="112" y1="37" x2="112" y2="44.5" stroke="#3a3a42" stroke-width="1.4" />
-                                <line x1="119" y1="37" x2="119" y2="44.5" stroke="#3a3a42" stroke-width="1.4" />
-                                <line x1="126" y1="37" x2="126" y2="44.5" stroke="#3a3a42" stroke-width="1.4" />
-                                <line x1="133" y1="37" x2="133" y2="44.5" stroke="#3a3a42" stroke-width="1.4" />
-                                <line x1="140" y1="37" x2="140" y2="44.5" stroke="#3a3a42" stroke-width="1.4" />
-                                <rect x="96" y="45.5" width="48" height="3.5" rx="1" fill="rgba(255, 255, 255, 0.75)" />
-                                <rect x="85" y="49" width="70" height="70" rx="14" fill="url(#app-jar-glass)" stroke="rgba(255, 255, 255, 0.9)" stroke-width="2" />
-                                <path d="M 93 55 L 103 55 L 98 112 L 88 112 Z" fill="rgba(255, 255, 255, 0.35)" />
-                                <line x1="150" y1="57" x2="150" y2="110" stroke="rgba(255, 255, 255, 0.75)" stroke-width="1.4" stroke-linecap="round" />
-
-                                <!-- 罐內「簡約大氣幾何細線」連續向上生長變形 (每階段精準停留 0.2秒) -->
-                                <!-- 型態 1：極簡幾何新芽樹苗 (Minimalist Architectural Sprout) -->
-                                <g class="c3-stage-sprout" stroke="url(#grand-monoline-grad)" stroke-linecap="round" stroke-linejoin="round">
-                                    <path d="M 102 104 Q 120 100 138 104" stroke="rgba(255, 255, 255, 0.45)" stroke-width="1.2" />
-                                    <line x1="120" y1="102" x2="120" y2="80" stroke-width="1.7" />
-                                    <!-- 對稱幾何嫩葉 -->
-                                    <path d="M 120 88 C 110 86, 107 76, 115 74 C 119 76, 120 82, 120 88 Z" fill="url(#grand-fill-veil)" stroke-width="1.4" />
-                                    <path d="M 120 84 C 130 82, 133 72, 125 70 C 121 72, 120 78, 120 84 Z" fill="url(#grand-fill-veil)" stroke-width="1.4" />
-                                </g>
-
-                                <!-- 型態 2：順著抽高的新芽頂端綻放而成的「大氣聖潔幾何蓮花 (Formal Sacred Lotus Blossom)」 -->
-                                <g class="c3-stage-flower" stroke="url(#grand-monoline-grad)" stroke-linecap="round" stroke-linejoin="round">
-                                    <path d="M 102 104 Q 120 100 138 104" stroke="rgba(255, 255, 255, 0.45)" stroke-width="1.2" />
-                                    <line x1="120" y1="102" x2="120" y2="82" stroke-width="1.7" />
-                                    <!-- 承接自樹苗的左右托葉 -->
-                                    <path d="M 120 93 C 111 91, 108 85, 114 84 M 120 93 C 129 91, 132 85, 126 84" fill="none" stroke-width="1.2" />
-                                    <!-- 中央與左右對稱幾何花瓣 -->
-                                    <path d="M 120 83 C 107 79, 105 67, 113 64 C 117 68, 119 75, 120 83 Z" fill="url(#grand-fill-veil)" stroke-width="1.35" />
-                                    <path d="M 120 83 C 133 79, 135 67, 127 64 C 123 68, 121 75, 120 83 Z" fill="url(#grand-fill-veil)" stroke-width="1.35" />
-                                    <path d="M 120 83 C 113 73, 113 61, 120 57 C 127 61, 127 73, 120 83 Z" fill="url(#grand-fill-veil)" stroke-width="1.5" />
-                                </g>
-
-                                <!-- 型態 3：由蓮花花冠向外擴張、主幹加粗生長而成的「正式大氣生命之樹 (Grand Architectural Tree of Life)」 -->
-                                <g class="c3-stage-tree" stroke="url(#grand-monoline-grad)" stroke-linecap="round" stroke-linejoin="round">
-                                    <path d="M 98 105 Q 120 100 142 105" stroke="rgba(255, 255, 255, 0.55)" stroke-width="1.3" />
-                                    <!-- 雙層對稱幾何樹冠光環 -->
-                                    <circle cx="120" cy="73" r="17" fill="url(#grand-fill-veil)" stroke-width="1.5" />
-                                    <path d="M 107 82 C 99 77, 100 65, 109 62 M 133 82 C 141 77, 140 65, 131 62" fill="none" stroke-width="1.3" />
-                                    <!-- 穩重流線主幹與對稱分枝 -->
-                                    <path d="M 116 103 C 118 95, 119 86, 120 62 C 121 86, 122 95, 124 103" fill="none" stroke-width="1.7" />
-                                    <path d="M 120 84 L 110 74 M 120 80 L 130 70 M 120 74 L 113 66 M 120 72 L 127 65" stroke-width="1.3" />
-                                </g>
-                            </g>
+                <!-- Download 頁面底部：「蓋上蓋子 (Close the Lid)」回到頂部按鈕 -->
+                <div class="close-lid-action-wrap content-fade-up">
+                    <button type="button" class="close-lid-btn" onclick="closeLidAndScrollTop()">
+                        <svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <!-- 蓋子向下蓋合 + 向上回到頂部象徵圖示 -->
+                            <rect x="5" y="4" width="14" height="3.5" rx="1" />
+                            <path d="M7 10h10a2 2 0 0 1 2 2v6a3 3 0 0 1-3 3H8a3 3 0 0 1-3-3v-6a2 2 0 0 1 2-2z" />
+                            <path d="M12 17v-4m-2.5 2L12 12.5l2.5 2.5" />
                         </svg>
-                    </div>
-                    <p class="vignette-prose">
-                        <span class="prose-accent">Shake or open your time jar whenever you wish—to reconnect with your past states of mind, evolving thoughts, inner beliefs, and the quiet moods of days gone by.</span>
-                    </p>
+                        <span>Close the Lid</span>
+                    </button>
                 </div>
+            </header>
+        </div>
 
+        <!-- ==================== 介面 2：Q&A / Help 獨立視圖 ==================== -->
+        <div id="view-qa" class="page-view">
+            <div class="subpage-header-bar">
+                <button type="button" class="back-to-jar-btn" onclick="switchPageView('download')">
+                    <span>← Back to Story Jar</span>
+                </button>
             </div>
-        </header>
+            <section id="qa-help-section" class="qa-section">
+                <span class="section-tag">Q&amp;A / Help</span>
+                <h2>常見問題與幫助</h2>
+                <div class="qa-item">
+                    <h4>Q: 我的照片與故事保存在哪裡？安全嗎？</h4>
+                    <p>你的所有記錄預設保存在你的手機本地空間，並支援綁定你個人的雲端空間進行私密備份，我們不會將你的私人故事上傳至任何公開伺服器。</p>
+                </div>
+                <div class="qa-item">
+                    <h4>Q: 如何更換故事罐的瓶蓋與瓶身材質？</h4>
+                    <p>在主頁點擊故事罐進入「Jar Studio」，即可自由搭配拉絲鈦金、黑金鑲嵌、玫瑰金等多種瓶蓋與玻璃主題。</p>
+                </div>
+            </section>
+        </div>
 
-        <!-- Q&A / Help 區塊 -->
-        <section id="qa-help-section" class="qa-section content-fade-up">
-            <span class="section-tag">Q&amp;A / Help</span>
-            <h2>常見問題與幫助</h2>
-            <div class="qa-item">
-                <h4>Q: 我的照片與故事保存在哪裡？安全嗎？</h4>
-                <p>你的所有記錄預設保存在你的手機本地空間，並支援綁定你個人的雲端空間進行私密備份，我們不會將你的私人故事上傳至任何公開伺服器。</p>
+        <!-- ==================== 介面 3：Contact & About Developer 獨立視圖 ==================== -->
+        <div id="view-about" class="page-view">
+            <div class="subpage-header-bar">
+                <button type="button" class="back-to-jar-btn" onclick="switchPageView('download')">
+                    <span>← Back to Story Jar</span>
+                </button>
             </div>
-            <div class="qa-item">
-                <h4>Q: 如何更換故事罐的瓶蓋與瓶身材質？</h4>
-                <p>在主頁點擊故事罐進入「Jar Studio」，即可自由搭配拉絲鈦金、黑金鑲嵌、玫瑰金等多種瓶蓋與玻璃主題。</p>
-            </div>
-        </section>
+            <section id="about-developer-section" class="philosophy-section">
+                <span class="section-tag">Contact &amp; About Developer</span>
+                <h2>創作理念：為什麼打造 YourStoryJar？</h2>
+                <p>在快節奏、充滿無數通知推播的日常裡，我們每天接收大量資訊，卻很容易忘記自己生活中那些微小卻珍貴的瞬間。</p>
+                <p>這是我利用業餘時間獨立設計與開發的作品。我希望打造一個如同「透明玻璃罐」般純粹的空間，讓你可以隨手把一段回憶、一句靈感或一個故事摺好放進罐子裡，不被演算法打擾，也不需要迎合任何人的目光。</p>
+                <p>每一個微小的日常，都值得被好好收藏。</p>
+            </section>
 
-        <!-- 創作理念與關於作者 -->
-        <section id="about-developer-section" class="philosophy-section content-fade-up">
-            <span class="section-tag">Contact &amp; About Developer</span>
-            <h2>創作理念：為什麼打造 YourStoryJar？</h2>
-            <p>在快節奏、充滿無數通知推播的日常裡，我們每天接收大量資訊，卻很容易忘記自己生活中那些微小卻珍貴的瞬間。</p>
-            <p>這是我利用業餘時間獨立設計與開發的作品。我希望打造一個如同「透明玻璃罐」般純粹的空間，讓你可以隨手把一段回憶、一句靈感或一個故事摺好放進罐子裡，不被演算法打擾，也不需要迎合任何人的目光。</p>
-            <p>每一個微小的日常，都值得被好好收藏。</p>
-        </section>
-
-        <!-- 支持開發 (Buy me a coffee) -->
-        <section class="support-section content-fade-up">
-            <h2>支持獨立開發</h2>
-            <p>YourStoryJar 由個人獨立維護，堅持純粹的使用體驗。如果這個小罐子曾為你帶來一點平靜或溫暖，歡迎請我喝杯咖啡，支持我持續為它注入新功能。</p>
-            
-            <a href="https://www.buymeacoffee.com/你的帳號" target="_blank" class="coffee-button">
-                ☕ Buy me a coffee
-            </a>
-        </section>
+            <section class="support-section">
+                <h2>支持獨立開發</h2>
+                <p>YourStoryJar 由個人獨立維護，堅持純粹的使用體驗。如果這個小罐子曾為你帶來一點平靜或溫暖，歡迎請我喝杯咖啡，支持我持續為它注入新功能。</p>
+                
+                <a href="https://www.buymeacoffee.com/你的帳號" target="_blank" class="coffee-button">
+                    ☕ Buy me a coffee
+                </a>
+            </section>
+        </div>
 
         <footer class="content-fade-up">
             <p>© 2026 YourStoryJar. All rights reserved.</p>
@@ -2113,7 +2306,7 @@
 
     </div>
 
-    <!-- ================= 4. 動畫引擎 ================= -->
+    <!-- ================= 4. 動畫與多視圖切換引擎 ================= -->
     <script>
         // 1. 自動偵測 GitHub 倉庫中的 icon2.png
         (function detectCustomIcon2() {
@@ -2181,7 +2374,9 @@
         }
         buildFanSubtitleText(SUBTITLE_INITIAL_EN, false, false);
 
-        // 3. 右上角三橫線漢堡選單開關邏輯
+        // 3. 右上角三橫線漢堡選單開關與獨立頁面切換邏輯
+        let currentActiveView = 'download';
+
         function toggleTopMenu(e) {
             e.stopPropagation();
             const btn = document.getElementById('menu-toggle-btn');
@@ -2199,7 +2394,98 @@
 
         window.addEventListener('click', closeTopMenu);
 
-        // ================= 4. 雙速記憶系統 (已針對手機版優化記憶體與防止自動刷新) =================
+        // 切換至不同獨立介面 (Download / Q&A / Contact & About Developer)，並將罐子⇄沙漏 Loop 圖示移至當前頁面選項
+        function switchPageView(viewName, e) {
+            if (e) e.stopPropagation();
+            closeTopMenu();
+
+            const views = {
+                download: document.getElementById('view-download'),
+                qa: document.getElementById('view-qa'),
+                about: document.getElementById('view-about')
+            };
+            const links = {
+                download: document.getElementById('menu-link-download'),
+                qa: document.getElementById('menu-link-qa'),
+                about: document.getElementById('menu-link-about')
+            };
+            const loopBadge = document.getElementById('active-loop-badge');
+
+            if (!views[viewName]) return;
+            currentActiveView = viewName;
+
+            // 更新選單高亮狀態與 Loop 動畫圖示掛載位置
+            Object.keys(links).forEach(k => {
+                if (links[k]) {
+                    if (k === viewName) {
+                        links[k].classList.add('active-page');
+                        if (loopBadge) links[k].appendChild(loopBadge);
+                    } else {
+                        links[k].classList.remove('active-page');
+                    }
+                }
+            });
+
+            if (viewName === 'download') {
+                document.body.classList.remove('non-download-view');
+            } else {
+                document.body.classList.add('non-download-view');
+            }
+
+            // 切換視圖顯示與淡入過渡
+            Object.keys(views).forEach(k => {
+                const v = views[k];
+                if (!v) return;
+                if (k === viewName) {
+                    v.classList.add('active-view');
+                    requestAnimationFrame(() => {
+                        v.classList.add('view-visible');
+                    });
+                } else {
+                    v.classList.remove('view-visible', 'active-view');
+                }
+            });
+
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+
+        // 點擊「Close the Lid (蓋上蓋子)」按鈕或點擊頂部欄「YourStoryJar + App Icon」：回到頂部並蓋上故事罐蓋子
+        function closeLidAndScrollTop(e) {
+            if (e) e.stopPropagation();
+            closeTopMenu();
+
+            if (currentActiveView !== 'download') {
+                switchPageView('download');
+            }
+
+            const jarBackdrop = document.getElementById('hero-jar-backdrop');
+            if (isJarClickedOpen) {
+                isJarClickedOpen = false;
+                if (jarBackdrop) jarBackdrop.classList.remove('jar-clicked-open');
+                buildFanSubtitleText(SUBTITLE_INITIAL_EN, true, false);
+                continuousMemories = [];
+                continuousTitleSmoke = [];
+                continuousMistParticles = [];
+                collectiveAppearTimestamp = null;
+                delayedFlameFactor = 0;
+            }
+
+            // 觸發瓶蓋向下壓緊密封的視覺回饋 (.jar-lid-sealed)
+            if (jarBackdrop) {
+                jarBackdrop.classList.remove('jar-lid-open');
+                jarBackdrop.classList.add('jar-lid-sealed');
+                setTimeout(() => {
+                    if (!isJarClickedOpen && jarBackdrop) {
+                        jarBackdrop.classList.remove('jar-lid-sealed');
+                        jarBackdrop.classList.add('jar-lid-open');
+                    }
+                }, 1100);
+            }
+
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+
+        // ================= 4. 雙速記憶系統 + 選單內「罐子 ⇄ 沙漏」3/4圈變形 Loop 動畫引擎 =================
         const cosmicCanvas = document.getElementById('cosmic-bg-canvas');
         const cosmicCtx = cosmicCanvas.getContext('2d');
 
@@ -2258,7 +2544,84 @@
         let collectiveNodes = [];
         let flameWisps = [];
 
-        // 【關鍵修復】僅在螢幕寬度改變時才重設畫布緩衝區，避免手機滑動時網址列伸縮造成 GPU 記憶體溢位自動重整
+        // 選單內「罐子 ⇄ 沙漏」幾何頂點陣列
+        let loopJarPts = [];
+        let loopHourglassPts = [];
+        const LOOP_PTS_COUNT = 64;
+
+        function initMenuLoopShapes() {
+            const jarEl = document.getElementById('ref-loop-jar');
+            const hgEl = document.getElementById('ref-loop-hourglass');
+            if (!jarEl || !hgEl) return;
+
+            const jarLen = jarEl.getTotalLength();
+            const hgLen = hgEl.getTotalLength();
+            loopJarPts = [];
+            loopHourglassPts = [];
+
+            for (let i = 0; i <= LOOP_PTS_COUNT; i++) {
+                const pj = jarEl.getPointAtLength((i / LOOP_PTS_COUNT) * jarLen);
+                const ph = hgEl.getPointAtLength((i / LOOP_PTS_COUNT) * hgLen);
+                loopJarPts.push({ x: pj.x, y: pj.y });
+                loopHourglassPts.push({ x: ph.x, y: ph.y });
+            }
+        }
+        window.addEventListener('DOMContentLoaded', initMenuLoopShapes);
+
+        // 渲染選單內「罐子轉一圈(轉到3/4圈變沙漏) -> 停0.5秒 -> 沙漏轉一圈(轉到3/4圈變回罐子) -> 停0.5秒」Loop 動畫
+        function updateMenuLoopIcon(now) {
+            const pathEl = document.getElementById('menu-loop-morph-path');
+            if (!pathEl || loopJarPts.length === 0) return;
+
+            // 單次旋轉時間 = 920ms，停頓時間 = 500ms (0.5秒)，總週期 = 2840ms
+            const T_SPIN = 920;
+            const T_PAUSE = 500;
+            const T_HALF_CYCLE = T_SPIN + T_PAUSE;
+            const T_TOTAL = T_HALF_CYCLE * 2;
+
+            const cycleTime = now % T_TOTAL;
+            let angleDeg = 0;
+            let morphT = 0; // 0 = 罐子 (Jar), 1 = 沙漏 (Hourglass)
+
+            if (cycleTime < T_SPIN) {
+                // 第一階段：罐子旋轉一圈 (0° -> 360°)，在轉至 3/4 圈 (270°) 時變形為沙漏
+                const rawP = cycleTime / T_SPIN;
+                const spinP = easeInOutCubic(rawP);
+                angleDeg = spinP * 360;
+                // 在 spinP 介於 0.45 ~ 0.78 (抵達 270° 四分之三圈時) 完成變形為沙漏
+                const mRaw = Math.min(1, Math.max(0, (spinP - 0.42) / 0.35));
+                morphT = easeInOutCubic(mRaw);
+            } else if (cycleTime < T_HALF_CYCLE) {
+                // 第二階段：沙漏停頓 0.5 秒 (500ms)
+                angleDeg = 0;
+                morphT = 1;
+            } else if (cycleTime < T_HALF_CYCLE + T_SPIN) {
+                // 第三階段：沙漏旋轉一圈 (0° -> 360°)，在轉至 3/4 圈 (270°) 時變回罐子
+                const rawP = (cycleTime - T_HALF_CYCLE) / T_SPIN;
+                const spinP = easeInOutCubic(rawP);
+                angleDeg = spinP * 360;
+                const mRaw = Math.min(1, Math.max(0, (spinP - 0.42) / 0.35));
+                morphT = 1 - easeInOutCubic(mRaw);
+            } else {
+                // 第四階段：罐子停頓 0.5 秒 (500ms)
+                angleDeg = 0;
+                morphT = 0;
+            }
+
+            const rad = (angleDeg * Math.PI) / 180;
+            const cos = Math.cos(rad);
+            const sin = Math.sin(rad);
+            let d = '';
+            for (let i = 0; i <= LOOP_PTS_COUNT; i++) {
+                const x = loopJarPts[i].x + (loopHourglassPts[i].x - loopJarPts[i].x) * morphT;
+                const y = loopJarPts[i].y + (loopHourglassPts[i].y - loopJarPts[i].y) * morphT;
+                const rx = x * cos - y * sin;
+                const ry = x * sin + y * cos;
+                d += (i === 0 ? `M ${rx.toFixed(2)} ${ry.toFixed(2)}` : ` L ${rx.toFixed(2)} ${ry.toFixed(2)}`);
+            }
+            pathEl.setAttribute('d', d + ' Z');
+        }
+
         function resizeCanvases(force = false) {
             const w = Math.max(document.documentElement.clientWidth || 0, window.innerWidth || 0);
             if (!force && Math.abs(w - canvasW) < 3) return;
@@ -2422,6 +2785,7 @@
 
             isJarClickedOpen = !isJarClickedOpen;
             if (isJarClickedOpen) {
+                jarBackdrop.classList.remove('jar-lid-sealed');
                 jarBackdrop.classList.add('jar-clicked-open');
                 buildFanSubtitleText(SUBTITLE_OPENED_EN, true, true);
             } else {
@@ -2822,7 +3186,7 @@
         }
 
         window.addEventListener('scroll', () => {
-            if (document.body.classList.contains('animating')) return;
+            if (document.body.classList.contains('animating') || currentActiveView !== 'download') return;
             const scrollY = window.scrollY;
             targetFastScrollP = Math.min(1, Math.max(0, scrollY / 440));
             targetSlowScrollP = Math.min(1, Math.max(0, scrollY / 640));
@@ -2833,6 +3197,9 @@
         function mainRenderLoop(now) {
             const dt = Math.min(50, now - lastFrameTime);
             lastFrameTime = now;
+
+            // 持續更新選單內「罐子 ⇄ 沙漏」Loop 動畫圖示
+            updateMenuLoopIcon(now);
 
             streamCtx.clearRect(0, 0, canvasW, canvasH);
             jarInnerCtx.clearRect(0, 0, 286, 332);
@@ -2874,8 +3241,8 @@
                     const jarRect = jarBodyEl.getBoundingClientRect();
                     const titleRect = directorTitleEl ? directorTitleEl.getBoundingClientRect() : null;
 
-                    const mouthX = mouthRect.left + mouthRect.width / 2;
-                    const mouthY = mouthRect.top + mouthRect.height / 2;
+                    const mouthX = currentActiveView === 'download' ? (mouthRect.left + mouthRect.width / 2) : (canvasW / 2);
+                    const mouthY = currentActiveView === 'download' ? (mouthRect.top + mouthRect.height / 2) : (canvasH * 0.35);
 
                     const collectiveScreenX = jarRect.left + jarRect.width / 2;
                     const collectiveScreenY = jarRect.top + jarRect.height * 0.68;
@@ -2883,263 +3250,265 @@
 
                     renderCosmicDyeCanvas(now, effectiveDyeProgress, mouthX, mouthY);
 
-                    const isCollectiveInView = (jarRect.bottom > 0 && jarRect.top < window.innerHeight);
+                    if (currentActiveView === 'download') {
+                        const isCollectiveInView = (jarRect.bottom > 0 && jarRect.top < window.innerHeight);
 
-                    const isContinuousActive = isJarClickedOpen && (clickDyeProgress >= 0.78) && isCollectiveInView;
-                    if (isContinuousActive) {
-                        continuousBlend = Math.min(1, continuousBlend + dt / 500);
-                    } else {
-                        continuousBlend = Math.max(0, continuousBlend - dt / 400);
-                    }
-
-                    const activeEnergy = Math.max(fastScrollP, continuousBlend * 0.92);
-
-                    const directorFormProgress = Math.min(1, Math.max(slowScrollP * 2.1, clickDyeProgress * 1.25, continuousBlend));
-                    const cardFormProgress = Math.min(1, Math.max(slowScrollP * 1.18, continuousBlend));
-
-                    document.documentElement.style.setProperty('--director-materialize', directorFormProgress.toFixed(3));
-                    document.documentElement.style.setProperty('--card-materialize', cardFormProgress.toFixed(3));
-
-                    cardEls.forEach(card => {
-                        card.style.setProperty('--card-materialize', cardFormProgress.toFixed(3));
-                        card.style.setProperty('--card-glow-top', (0.65 + 0.35 * Math.sin(now * 0.0025)) * cardFormProgress);
-                    });
-
-                    if (activeEnergy > 0.02 && isCollectiveInView) {
-                        if (collectiveAppearTimestamp === null) {
-                            collectiveAppearTimestamp = now;
-                        }
-                        const elapsedSinceAppear = now - collectiveAppearTimestamp;
-                        if (elapsedSinceAppear >= 500) {
-                            delayedFlameFactor = Math.min(1, (elapsedSinceAppear - 500) / 550);
+                        const isContinuousActive = isJarClickedOpen && (clickDyeProgress >= 0.78) && isCollectiveInView;
+                        if (isContinuousActive) {
+                            continuousBlend = Math.min(1, continuousBlend + dt / 500);
                         } else {
-                            delayedFlameFactor = 0;
-                        }
-                    } else {
-                        collectiveAppearTimestamp = null;
-                        delayedFlameFactor = Math.max(0, delayedFlameFactor - dt / 250);
-                    }
-
-                    const effectiveFlameEnergy = activeEnergy * easeOutCubic(delayedFlameFactor);
-
-                    const seepGlow = document.getElementById('jar-seep-glow');
-                    if (seepGlow) {
-                        seepGlow.style.setProperty('--seep-glow-opacity', Math.min(1, activeEnergy * 1.2).toFixed(2));
-                    }
-
-                    // ================= (一) 罐內畫布 (#jar-inner-canvas) =================
-                    if (activeEnergy > 0.01 && isCollectiveInView) {
-                        const localCX = 143;
-                        const localCY = 226;
-
-                        const coreRadius = (42 + activeEnergy * 68) + Math.sin(now * 0.003) * 4;
-                        const auraGrad = jarInnerCtx.createRadialGradient(localCX, localCY, 6, localCX, localCY, coreRadius);
-                        auraGrad.addColorStop(0, `rgba(255, 240, 200, ${0.78 * activeEnergy})`);
-                        auraGrad.addColorStop(0.45, `rgba(255, 195, 215, ${0.5 * activeEnergy})`);
-                        auraGrad.addColorStop(0.8, `rgba(181, 255, 233, ${0.28 * activeEnergy})`);
-                        auraGrad.addColorStop(1, 'rgba(181, 255, 233, 0)');
-                        jarInnerCtx.fillStyle = auraGrad;
-                        jarInnerCtx.beginPath();
-                        jarInnerCtx.arc(localCX, localCY, coreRadius, 0, Math.PI * 2);
-                        jarInnerCtx.fill();
-
-                        if (effectiveFlameEnergy > 0.01) {
-                            drawColorfulMemoryFlames(jarInnerCtx, now, localCX, localCY, effectiveFlameEnergy);
+                            continuousBlend = Math.max(0, continuousBlend - dt / 400);
                         }
 
-                        const visibleNodes = Math.floor(collectiveNodes.length * Math.min(1, activeEnergy * 1.15));
-                        const orbitPhase = slowScrollP * Math.PI * 2.5 + (continuousBlend > 0 ? now * 0.0007 : 0);
+                        const activeEnergy = Math.max(fastScrollP, continuousBlend * 0.92);
 
-                        for (let i = 0; i < visibleNodes; i++) {
-                            const node = collectiveNodes[i];
-                            const curAngle = node.baseAngle + orbitPhase * node.orbitDir;
-                            const spread = 0.32 + activeEnergy * 0.68;
-                            const nx = localCX + Math.cos(curAngle) * node.rx * spread;
-                            const ny = localCY + Math.sin(curAngle) * node.ry * spread;
+                        const directorFormProgress = Math.min(1, Math.max(slowScrollP * 2.1, clickDyeProgress * 1.25, continuousBlend));
+                        const cardFormProgress = Math.min(1, Math.max(slowScrollP * 1.18, continuousBlend));
 
-                            const isAtBottom = Math.sin(curAngle) > 0.45;
-                            const itemAlpha = (isAtBottom ? 0.55 : 0.88) * activeEnergy;
+                        document.documentElement.style.setProperty('--director-materialize', directorFormProgress.toFixed(3));
+                        document.documentElement.style.setProperty('--card-materialize', cardFormProgress.toFixed(3));
 
-                            if (node.isPhoto) {
-                                drawMiniPhoto(jarInnerCtx, nx, ny, node.scale, node.rot + curAngle * 0.15, node.palette, itemAlpha);
-                            } else {
-                                drawMiniLetter(jarInnerCtx, nx, ny, node.scale, node.rot + curAngle * 0.15, itemAlpha);
-                            }
-
-                            if (isAtBottom) {
-                                jarInnerCtx.fillStyle = '#e4d0ff';
-                                jarInnerCtx.globalAlpha = 0.85 * activeEnergy;
-                                jarInnerCtx.beginPath();
-                                jarInnerCtx.arc(nx, ny + 8, 2.3, 0, Math.PI * 2);
-                                jarInnerCtx.fill();
-                            }
-                        }
-
-                        if (effectiveFlameEnergy > 0.01) {
-                            drawColorfulMemoryFlames(jarInnerCtx, now + 450, localCX, localCY + 4, effectiveFlameEnergy * 0.45);
-                        }
-                    }
-
-                    const cardRects = Array.from(cardEls).map(el => el.getBoundingClientRect());
-
-                    // ================= (二) 滑動模式 =================
-                    if ((fastScrollP > 0.002 || slowScrollP > 0.002) && isCollectiveInView && continuousBlend < 1) {
-                        const scrollAlphaWeight = 1 - continuousBlend;
-
-                        scrollBoundMemories.forEach(item => {
-                            const localT = (fastScrollP - item.startP) / item.durationP;
-                            if (localT > 0 && localT < 1) {
-                                const sx = item.normStartX * canvasW;
-                                const sy = item.normStartY * window.innerHeight;
-                                const ctrlX = mouthX + (sx - mouthX) * 0.35 + item.ctrlOffsetX;
-                                const ctrlY = Math.min(sy, mouthY) - item.ctrlLiftY;
-
-                                let curX, curY, curScale, curAlpha;
-                                if (localT < 0.74) {
-                                    const u = localT / 0.74;
-                                    const inv = 1 - u;
-                                    curX = inv * inv * sx + 2 * inv * u * ctrlX + u * u * mouthX;
-                                    curY = inv * inv * sy + 2 * inv * u * ctrlY + u * u * mouthY;
-                                    curScale = item.scale * (1 - u * 0.22);
-                                    curAlpha = Math.min(1, u * 3.5) * scrollAlphaWeight;
-                                } else {
-                                    const v = (localT - 0.74) / 0.26;
-                                    curX = mouthX + (collectiveScreenX - mouthX) * v;
-                                    curY = mouthY + (collectiveScreenY - mouthY) * (v * v);
-                                    curScale = item.scale * (0.78 - v * 0.2);
-                                    curAlpha = (1 - v) * scrollAlphaWeight;
-                                }
-
-                                const curRot = item.baseRot + localT * item.rotSpan;
-                                if (item.isPhoto) {
-                                    drawMiniPhoto(streamCtx, curX, curY, curScale, curRot, item.palette, curAlpha);
-                                } else {
-                                    drawMiniLetter(streamCtx, curX, curY, curScale, curRot, curAlpha);
-                                }
-                            }
+                        cardEls.forEach(card => {
+                            card.style.setProperty('--card-materialize', cardFormProgress.toFixed(3));
+                            card.style.setProperty('--card-glow-top', (0.65 + 0.35 * Math.sin(now * 0.0025)) * cardFormProgress);
                         });
 
-                        if (titleRect) {
-                            scrollBoundTitleSmoke.forEach(pt => {
-                                const localT = (slowScrollP - pt.startP) / pt.durationP;
-                                if (localT > 0 && localT < 1) {
-                                    const startX = collectiveScreenX + pt.offsetXNorm * 115;
-                                    const startY = jarBottomY - 6;
-                                    const endX = titleRect.left + pt.targetXNorm * titleRect.width;
-                                    const endY = titleRect.top + pt.targetYNorm * titleRect.height;
-                                    const ctrlX = startX + (endX - startX) * 0.3 + pt.ctrlShiftX;
-                                    const ctrlY = startY + (endY - startY) * 0.5;
-
-                                    const inv = 1 - localT;
-                                    const px = inv * inv * startX + 2 * inv * localT * ctrlX + localT * localT * endX;
-                                    const py = inv * inv * startY + 2 * inv * localT * ctrlY + localT * localT * endY;
-
-                                    drawSmokeDispersingParticle(streamCtx, px, py, localT, pt.baseRadius, pt.smokeMaxRadius, pt.rgb, scrollAlphaWeight);
-                                }
-                            });
-                        }
-
-                        if (cardRects.length > 0) {
-                            scrollBoundMistParticles.forEach(pt => {
-                                const localT = (slowScrollP - pt.startP) / pt.durationP;
-                                if (localT > 0 && localT < 1) {
-                                    const targetCard = cardRects[pt.cardIdx % cardRects.length];
-                                    const startX = collectiveScreenX + pt.offsetXNorm * 130;
-                                    const startY = jarBottomY - 8;
-                                    const endX = targetCard.left + pt.targetXNorm * targetCard.width;
-                                    const endY = targetCard.top + pt.targetYNorm * Math.min(90, targetCard.height);
-                                    const ctrlX = startX + (endX - startX) * 0.3 + pt.ctrlShiftX;
-                                    const ctrlY = startY + (endY - startY) * 0.55;
-
-                                    const inv = 1 - localT;
-                                    const px = inv * inv * startX + 2 * inv * localT * ctrlX + localT * localT * endX;
-                                    const py = inv * inv * startY + 2 * inv * localT * ctrlY + localT * localT * endY;
-
-                                    drawSmokeDispersingParticle(streamCtx, px, py, localT, pt.baseRadius, pt.smokeMaxRadius, pt.rgb, scrollAlphaWeight);
-                                }
-                            });
-                        }
-                    }
-
-                    // ================= (三) 點擊開蓋且背景染達 78% 後絲滑接入的持續動畫 =================
-                    if (isContinuousActive) {
-                        if (Math.random() < 0.42) {
-                            spawnContinuousMemory(mouthX, mouthY);
-                        }
-                        if (Math.random() < 0.24) {
-                            spawnContinuousTitleSmoke(collectiveScreenX, jarBottomY, titleRect);
-                        }
-                        if (Math.random() < 0.45) {
-                            spawnContinuousMistParticle(collectiveScreenX, jarBottomY, cardRects);
-                        }
-                    }
-
-                    for (let i = continuousMemories.length - 1; i >= 0; i--) {
-                        const m = continuousMemories[i];
-                        if (m.t < 0.74) {
-                            m.t += m.speed;
-                            m.rot += m.rotSpeed;
+                        if (activeEnergy > 0.02 && isCollectiveInView) {
+                            if (collectiveAppearTimestamp === null) {
+                                collectiveAppearTimestamp = now;
+                            }
+                            const elapsedSinceAppear = now - collectiveAppearTimestamp;
+                            if (elapsedSinceAppear >= 500) {
+                                delayedFlameFactor = Math.min(1, (elapsedSinceAppear - 500) / 550);
+                            } else {
+                                delayedFlameFactor = 0;
+                            }
                         } else {
-                            m.t += m.speed * 0.45;
-                            m.rot += m.rotSpeed * 0.45;
+                            collectiveAppearTimestamp = null;
+                            delayedFlameFactor = Math.max(0, delayedFlameFactor - dt / 250);
                         }
 
-                        if (m.t >= 1) {
-                            continuousMemories.splice(i, 1);
-                            continue;
+                        const effectiveFlameEnergy = activeEnergy * easeOutCubic(delayedFlameFactor);
+
+                        const seepGlow = document.getElementById('jar-seep-glow');
+                        if (seepGlow) {
+                            seepGlow.style.setProperty('--seep-glow-opacity', Math.min(1, activeEnergy * 1.2).toFixed(2));
                         }
 
-                        let curX, curY, curScale, curAlpha;
-                        if (m.t < 0.74) {
-                            const u = m.t / 0.74;
+                        // (一) 罐內畫布 (#jar-inner-canvas)
+                        if (activeEnergy > 0.01 && isCollectiveInView) {
+                            const localCX = 143;
+                            const localCY = 226;
+
+                            const coreRadius = (42 + activeEnergy * 68) + Math.sin(now * 0.003) * 4;
+                            const auraGrad = jarInnerCtx.createRadialGradient(localCX, localCY, 6, localCX, localCY, coreRadius);
+                            auraGrad.addColorStop(0, `rgba(255, 240, 200, ${0.78 * activeEnergy})`);
+                            auraGrad.addColorStop(0.45, `rgba(255, 195, 215, ${0.5 * activeEnergy})`);
+                            auraGrad.addColorStop(0.8, `rgba(181, 255, 233, ${0.28 * activeEnergy})`);
+                            auraGrad.addColorStop(1, 'rgba(181, 255, 233, 0)');
+                            jarInnerCtx.fillStyle = auraGrad;
+                            jarInnerCtx.beginPath();
+                            jarInnerCtx.arc(localCX, localCY, coreRadius, 0, Math.PI * 2);
+                            jarInnerCtx.fill();
+
+                            if (effectiveFlameEnergy > 0.01) {
+                                drawColorfulMemoryFlames(jarInnerCtx, now, localCX, localCY, effectiveFlameEnergy);
+                            }
+
+                            const visibleNodes = Math.floor(collectiveNodes.length * Math.min(1, activeEnergy * 1.15));
+                            const orbitPhase = slowScrollP * Math.PI * 2.5 + (continuousBlend > 0 ? now * 0.0007 : 0);
+
+                            for (let i = 0; i < visibleNodes; i++) {
+                                const node = collectiveNodes[i];
+                                const curAngle = node.baseAngle + orbitPhase * node.orbitDir;
+                                const spread = 0.32 + activeEnergy * 0.68;
+                                const nx = localCX + Math.cos(curAngle) * node.rx * spread;
+                                const ny = localCY + Math.sin(curAngle) * node.ry * spread;
+
+                                const isAtBottom = Math.sin(curAngle) > 0.45;
+                                const itemAlpha = (isAtBottom ? 0.55 : 0.88) * activeEnergy;
+
+                                if (node.isPhoto) {
+                                    drawMiniPhoto(jarInnerCtx, nx, ny, node.scale, node.rot + curAngle * 0.15, node.palette, itemAlpha);
+                                } else {
+                                    drawMiniLetter(jarInnerCtx, nx, ny, node.scale, node.rot + curAngle * 0.15, itemAlpha);
+                                }
+
+                                if (isAtBottom) {
+                                    jarInnerCtx.fillStyle = '#e4d0ff';
+                                    jarInnerCtx.globalAlpha = 0.85 * activeEnergy;
+                                    jarInnerCtx.beginPath();
+                                    jarInnerCtx.arc(nx, ny + 8, 2.3, 0, Math.PI * 2);
+                                    jarInnerCtx.fill();
+                                }
+                            }
+
+                            if (effectiveFlameEnergy > 0.01) {
+                                drawColorfulMemoryFlames(jarInnerCtx, now + 450, localCX, localCY + 4, effectiveFlameEnergy * 0.45);
+                            }
+                        }
+
+                        const cardRects = Array.from(cardEls).map(el => el.getBoundingClientRect());
+
+                        // (二) 滑動模式
+                        if ((fastScrollP > 0.002 || slowScrollP > 0.002) && isCollectiveInView && continuousBlend < 1) {
+                            const scrollAlphaWeight = 1 - continuousBlend;
+
+                            scrollBoundMemories.forEach(item => {
+                                const localT = (fastScrollP - item.startP) / item.durationP;
+                                if (localT > 0 && localT < 1) {
+                                    const sx = item.normStartX * canvasW;
+                                    const sy = item.normStartY * window.innerHeight;
+                                    const ctrlX = mouthX + (sx - mouthX) * 0.35 + item.ctrlOffsetX;
+                                    const ctrlY = Math.min(sy, mouthY) - item.ctrlLiftY;
+
+                                    let curX, curY, curScale, curAlpha;
+                                    if (localT < 0.74) {
+                                        const u = localT / 0.74;
+                                        const inv = 1 - u;
+                                        curX = inv * inv * sx + 2 * inv * u * ctrlX + u * u * mouthX;
+                                        curY = inv * inv * sy + 2 * inv * u * ctrlY + u * u * mouthY;
+                                        curScale = item.scale * (1 - u * 0.22);
+                                        curAlpha = Math.min(1, u * 3.5) * scrollAlphaWeight;
+                                    } else {
+                                        const v = (localT - 0.74) / 0.26;
+                                        curX = mouthX + (collectiveScreenX - mouthX) * v;
+                                        curY = mouthY + (collectiveScreenY - mouthY) * (v * v);
+                                        curScale = item.scale * (0.78 - v * 0.2);
+                                        curAlpha = (1 - v) * scrollAlphaWeight;
+                                    }
+
+                                    const curRot = item.baseRot + localT * item.rotSpan;
+                                    if (item.isPhoto) {
+                                        drawMiniPhoto(streamCtx, curX, curY, curScale, curRot, item.palette, curAlpha);
+                                    } else {
+                                        drawMiniLetter(streamCtx, curX, curY, curScale, curRot, curAlpha);
+                                    }
+                                }
+                            });
+
+                            if (titleRect) {
+                                scrollBoundTitleSmoke.forEach(pt => {
+                                    const localT = (slowScrollP - pt.startP) / pt.durationP;
+                                    if (localT > 0 && localT < 1) {
+                                        const startX = collectiveScreenX + pt.offsetXNorm * 115;
+                                        const startY = jarBottomY - 6;
+                                        const endX = titleRect.left + pt.targetXNorm * titleRect.width;
+                                        const endY = titleRect.top + pt.targetYNorm * titleRect.height;
+                                        const ctrlX = startX + (endX - startX) * 0.3 + pt.ctrlShiftX;
+                                        const ctrlY = startY + (endY - startY) * 0.5;
+
+                                        const inv = 1 - localT;
+                                        const px = inv * inv * startX + 2 * inv * localT * ctrlX + localT * localT * endX;
+                                        const py = inv * inv * startY + 2 * inv * localT * ctrlY + localT * localT * endY;
+
+                                        drawSmokeDispersingParticle(streamCtx, px, py, localT, pt.baseRadius, pt.smokeMaxRadius, pt.rgb, scrollAlphaWeight);
+                                    }
+                                });
+                            }
+
+                            if (cardRects.length > 0) {
+                                scrollBoundMistParticles.forEach(pt => {
+                                    const localT = (slowScrollP - pt.startP) / pt.durationP;
+                                    if (localT > 0 && localT < 1) {
+                                        const targetCard = cardRects[pt.cardIdx % cardRects.length];
+                                        const startX = collectiveScreenX + pt.offsetXNorm * 130;
+                                        const startY = jarBottomY - 8;
+                                        const endX = targetCard.left + pt.targetXNorm * targetCard.width;
+                                        const endY = targetCard.top + pt.targetYNorm * Math.min(90, targetCard.height);
+                                        const ctrlX = startX + (endX - startX) * 0.3 + pt.ctrlShiftX;
+                                        const ctrlY = startY + (endY - startY) * 0.55;
+
+                                        const inv = 1 - localT;
+                                        const px = inv * inv * startX + 2 * inv * localT * ctrlX + localT * localT * endX;
+                                        const py = inv * inv * startY + 2 * inv * localT * ctrlY + localT * localT * endY;
+
+                                        drawSmokeDispersingParticle(streamCtx, px, py, localT, pt.baseRadius, pt.smokeMaxRadius, pt.rgb, scrollAlphaWeight);
+                                    }
+                                });
+                            }
+                        }
+
+                        // (三) 點擊開蓋且背景染達 78% 後絲滑接入的持續動畫
+                        if (isContinuousActive) {
+                            if (Math.random() < 0.42) {
+                                spawnContinuousMemory(mouthX, mouthY);
+                            }
+                            if (Math.random() < 0.24) {
+                                spawnContinuousTitleSmoke(collectiveScreenX, jarBottomY, titleRect);
+                            }
+                            if (Math.random() < 0.45) {
+                                spawnContinuousMistParticle(collectiveScreenX, jarBottomY, cardRects);
+                            }
+                        }
+
+                        for (let i = continuousMemories.length - 1; i >= 0; i--) {
+                            const m = continuousMemories[i];
+                            if (m.t < 0.74) {
+                                m.t += m.speed;
+                                m.rot += m.rotSpeed;
+                            } else {
+                                m.t += m.speed * 0.45;
+                                m.rot += m.rotSpeed * 0.45;
+                            }
+
+                            if (m.t >= 1) {
+                                continuousMemories.splice(i, 1);
+                                continue;
+                            }
+
+                            let curX, curY, curScale, curAlpha;
+                            if (m.t < 0.74) {
+                                const u = m.t / 0.74;
+                                const inv = 1 - u;
+                                curX = inv * inv * m.startX + 2 * inv * u * m.ctrlX + u * u * mouthX;
+                                curY = inv * inv * m.startY + 2 * inv * u * m.ctrlY + u * u * mouthY;
+                                curScale = m.scale * (1 - u * 0.22);
+                                curAlpha = Math.min(1, u * 3.2) * continuousBlend;
+                            } else {
+                                const v = (m.t - 0.74) / 0.26;
+                                curX = mouthX + (collectiveScreenX - mouthX) * v + Math.sin(v * Math.PI * 2) * 8;
+                                curY = mouthY + (collectiveScreenY - mouthY) * (v * v);
+                                curScale = m.scale * (0.78 - v * 0.2);
+                                curAlpha = (1 - v) * continuousBlend;
+                            }
+
+                            if (m.isPhoto) {
+                                drawMiniPhoto(streamCtx, curX, curY, curScale, m.rot, m.palette, curAlpha);
+                            } else {
+                                drawMiniLetter(streamCtx, curX, curY, curScale, m.rot, curAlpha);
+                            }
+                        }
+
+                        for (let i = continuousTitleSmoke.length - 1; i >= 0; i--) {
+                            const pt = continuousTitleSmoke[i];
+                            pt.t += pt.speed;
+                            if (pt.t >= 1) {
+                                continuousTitleSmoke.splice(i, 1);
+                                continue;
+                            }
+                            const u = pt.t;
                             const inv = 1 - u;
-                            curX = inv * inv * m.startX + 2 * inv * u * m.ctrlX + u * u * mouthX;
-                            curY = inv * inv * m.startY + 2 * inv * u * m.ctrlY + u * u * mouthY;
-                            curScale = m.scale * (1 - u * 0.22);
-                            curAlpha = Math.min(1, u * 3.2) * continuousBlend;
-                        } else {
-                            const v = (m.t - 0.74) / 0.26;
-                            curX = mouthX + (collectiveScreenX - mouthX) * v + Math.sin(v * Math.PI * 2) * 8;
-                            curY = mouthY + (collectiveScreenY - mouthY) * (v * v);
-                            curScale = m.scale * (0.78 - v * 0.2);
-                            curAlpha = (1 - v) * continuousBlend;
+                            const px = inv * inv * pt.startX + 2 * inv * u * pt.ctrlX + u * u * pt.endX;
+                            const py = inv * inv * pt.startY + 2 * inv * u * pt.ctrlY + u * u * pt.endY;
+                            drawSmokeDispersingParticle(streamCtx, px, py, u, pt.baseRadius, pt.smokeMaxRadius, pt.rgb, continuousBlend);
                         }
 
-                        if (m.isPhoto) {
-                            drawMiniPhoto(streamCtx, curX, curY, curScale, m.rot, m.palette, curAlpha);
-                        } else {
-                            drawMiniLetter(streamCtx, curX, curY, curScale, m.rot, curAlpha);
+                        for (let i = continuousMistParticles.length - 1; i >= 0; i--) {
+                            const pt = continuousMistParticles[i];
+                            pt.t += pt.speed;
+                            if (pt.t >= 1) {
+                                continuousMistParticles.splice(i, 1);
+                                continue;
+                            }
+
+                            const u = pt.t;
+                            const inv = 1 - u;
+                            const px = inv * inv * pt.startX + 2 * inv * u * pt.ctrlX + u * u * pt.endX;
+                            const py = inv * inv * pt.startY + 2 * inv * u * pt.ctrlY + u * u * pt.endY;
+
+                            drawSmokeDispersingParticle(streamCtx, px, py, u, pt.baseRadius, pt.smokeMaxRadius, pt.rgb, continuousBlend);
                         }
-                    }
-
-                    for (let i = continuousTitleSmoke.length - 1; i >= 0; i--) {
-                        const pt = continuousTitleSmoke[i];
-                        pt.t += pt.speed;
-                        if (pt.t >= 1) {
-                            continuousTitleSmoke.splice(i, 1);
-                            continue;
-                        }
-                        const u = pt.t;
-                        const inv = 1 - u;
-                        const px = inv * inv * pt.startX + 2 * inv * u * pt.ctrlX + u * u * pt.endX;
-                        const py = inv * inv * pt.startY + 2 * inv * u * pt.ctrlY + u * u * pt.endY;
-                        drawSmokeDispersingParticle(streamCtx, px, py, u, pt.baseRadius, pt.smokeMaxRadius, pt.rgb, continuousBlend);
-                    }
-
-                    for (let i = continuousMistParticles.length - 1; i >= 0; i--) {
-                        const pt = continuousMistParticles[i];
-                        pt.t += pt.speed;
-                        if (pt.t >= 1) {
-                            continuousMistParticles.splice(i, 1);
-                            continue;
-                        }
-
-                        const u = pt.t;
-                        const inv = 1 - u;
-                        const px = inv * inv * pt.startX + 2 * inv * u * pt.ctrlX + u * u * pt.endX;
-                        const py = inv * inv * pt.startY + 2 * inv * u * pt.ctrlY + u * u * pt.endY;
-
-                        drawSmokeDispersingParticle(streamCtx, px, py, u, pt.baseRadius, pt.smokeMaxRadius, pt.rgb, continuousBlend);
                     }
                 }
             }
@@ -3195,6 +3564,7 @@
         function playIntroAnimation() {
             clearTimers();
             closeTopMenu();
+            switchPageView('download');
 
             targetFastScrollP = 0;
             fastScrollP = 0;
@@ -3246,7 +3616,6 @@
             const downloadButtonsBox = document.getElementById('download-buttons-box');
             const fanSubtitleContainer = document.getElementById('fan-subtitle-container');
 
-            // 強制瞬間回到頁面最頂端
             window.scrollTo({ top: 0, left: 0, behavior: 'instant' });
             document.documentElement.scrollTop = 0;
             document.body.scrollTop = 0;
@@ -3256,7 +3625,7 @@
             targetLockup.classList.remove('docked');
 
             glassTopPlate.classList.remove('slide-down');
-            heroJarBackdrop.classList.remove('jar-fade-up', 'jar-lid-open', 'jar-clicked-open');
+            heroJarBackdrop.classList.remove('jar-fade-up', 'jar-lid-open', 'jar-clicked-open', 'jar-lid-sealed');
             downloadButtonsBox.classList.remove('buttons-ready');
             fanSubtitleContainer.classList.remove('release-fan');
 
