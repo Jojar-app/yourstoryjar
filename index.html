@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
     <title>YourStoryJar - Make your story infinite...</title>
     <style>
         :root {
@@ -22,6 +22,10 @@
 
         html {
             scroll-behavior: smooth;
+            width: 100%;
+            max-width: 100%;
+            overflow-x: clip;
+            background-color: var(--bg-color);
         }
 
         * {
@@ -35,19 +39,23 @@
             background-color: var(--bg-color);
             color: var(--text-main);
             line-height: 1.7;
-            overflow-x: hidden;
+            width: 100%;
+            max-width: 100%;
+            overflow-x: clip;
+            position: relative;
         }
 
         body.animating {
             overflow: hidden;
         }
 
-        /* ================= 1. 頂部透明玻璃導航欄 (中間完全無線條，僅保留左右兩側清晰金棕+亮白玻璃切面邊緣) ================= */
+        /* ================= 1. 頂部透明玻璃導航欄 (中間完全無線條，僅保留左右兩側金棕+亮白玻璃切面邊緣) ================= */
         #glass-top-plate {
             position: fixed;
             top: 0;
             left: 0;
-            width: 100vw;
+            right: 0;
+            width: 100%;
             height: 112px;
             z-index: 900;
             transform: translateY(-115%);
@@ -60,7 +68,6 @@
             pointer-events: auto;
         }
 
-        /* 主玻璃板本體：不設全寬底邊線，確保正中間完全乾淨無任何線條 */
         .glass-plate-surface {
             position: absolute;
             inset: 0;
@@ -84,7 +91,6 @@
             transition: background-color 0.2s ease;
         }
 
-        /* 左右兩側專屬邊緣層：向下預留 6px 空間避免陰影被遮罩裁切，中間 (30% ~ 70%) 完全透明無任何上下線，左右兩側清晰呈現原版金棕邊緣 */
         .glass-plate-side-edges {
             position: absolute;
             top: 0;
@@ -281,7 +287,8 @@
             position: fixed;
             top: 0;
             left: 0;
-            width: 100vw;
+            right: 0;
+            width: 100%;
             height: 112px;
             display: flex;
             align-items: center;
@@ -307,7 +314,7 @@
         }
 
         .brand-title-text {
-            font-size: clamp(1.65rem, 4.8vw, 2.35rem);
+            font-size: clamp(1.6rem, 4.8vw, 2.35rem);
             font-weight: 800;
             letter-spacing: -0.03em;
             color: var(--text-main);
@@ -440,12 +447,15 @@
         #splash-overlay {
             position: fixed;
             inset: 0;
+            width: 100%;
+            height: 100%;
             background-color: var(--bg-color);
             z-index: 9999;
             display: flex;
             align-items: center;
             justify-content: center;
             pointer-events: all;
+            overflow: hidden;
             transition: background-color 0.75s ease;
         }
 
@@ -484,7 +494,8 @@
             top: calc(50% + 66px);
             left: 50%;
             transform: translateX(-50%);
-            width: 320px;
+            width: 300px;
+            max-width: 90vw;
             height: 28px;
             display: flex;
             align-items: center;
@@ -550,11 +561,14 @@
             opacity: 1;
         }
 
-        /* ================= 4. 全螢幕背景與記憶流畫布 ================= */
+        /* ================= 4. 全螢幕背景與記憶流畫布 (修正手機滑動網址列收起時的白邊問題) ================= */
         #cosmic-bg-canvas {
             position: fixed;
             top: 0;
             left: 0;
+            width: 100%;
+            height: 100lvh;
+            min-height: 100vh;
             pointer-events: none;
             z-index: 0;
         }
@@ -563,15 +577,20 @@
             position: fixed;
             top: 0;
             left: 0;
+            width: 100%;
+            height: 100lvh;
+            min-height: 100vh;
             pointer-events: none;
             z-index: 4;
         }
 
         .main-wrapper {
             max-width: 860px;
+            width: 100%;
             margin: 0 auto;
-            padding: 136px 24px 100px;
+            padding: 136px 20px 100px;
             position: relative;
+            overflow-x: clip;
         }
 
         header {
@@ -590,7 +609,8 @@
             margin: 12px auto 18px;
             z-index: 10;
             perspective: 600px;
-            padding: 0 12px;
+            padding: 0 8px;
+            max-width: 100%;
         }
 
         .jar-mouth-mist {
@@ -598,7 +618,7 @@
             bottom: -28px;
             left: 50%;
             transform: translateX(-50%) scale(0.4);
-            width: 260px;
+            width: min(260px, 80vw);
             height: 90px;
             background: radial-gradient(ellipse at 50% 100%, rgba(255, 210, 175, 0.55) 0%, rgba(190, 215, 255, 0.25) 45%, transparent 75%);
             opacity: 0;
@@ -613,11 +633,12 @@
         }
 
         #hero-subtitle {
-            font-size: clamp(0.98rem, 2.5vw, 1.12rem);
+            font-size: clamp(0.95rem, 2.5vw, 1.12rem);
             font-weight: 500;
             font-style: italic;
             color: var(--text-sub);
             max-width: 610px;
+            width: 100%;
             line-height: 1.68;
             display: flex;
             flex-wrap: wrap;
@@ -653,10 +674,11 @@
             transform: translate(0px, 0px) rotate(0deg) scale(1);
         }
 
-        /* ===== 故事罐與下載按鈕舞台 (恢復原本清透淺色澤 + 集合體位置透明度再提升 40% + 移除球體與罐子本身滑動位移) ===== */
+        /* ===== 故事罐與下載按鈕舞台 ===== */
         .jar-download-stage {
             position: relative;
-            max-width: 420px;
+            max-width: 100%;
+            width: 340px;
             height: 430px;
             margin: 36px auto 44px;
             display: flex;
@@ -729,7 +751,6 @@
             position: relative;
         }
 
-        /* 罐身外框與環境光暈：不重複疊加深色底，由單一玻璃層控制色澤，恢復原本清透淺色感 */
         #hero-jar-body-el {
             width: 286px;
             height: 332px;
@@ -744,7 +765,6 @@
             overflow: hidden;
         }
 
-        /* 罐內記憶集合體畫布 (z-index: 1) */
         #jar-inner-canvas {
             position: absolute;
             inset: 0;
@@ -754,7 +774,6 @@
             z-index: 1;
         }
 
-        /* 單一前置毛玻璃層：恢復原本清透的淡藍紫與莓果色澤，且在集合體位置 (50% 68%) 將透明度再提升 40% */
         .jar-front-glass-occlusion {
             position: absolute;
             inset: 0;
@@ -803,7 +822,6 @@
             z-index: 4;
         }
 
-        /* 罐底滲出微光：改為非金色的極光青與星雲紫粉微光 */
         .jar-bottom-seep-glow {
             position: absolute;
             bottom: -4px;
@@ -840,7 +858,6 @@
             pointer-events: none !important;
         }
 
-        /* 正面兩個下載按鈕 (z-index: 12 穩居最上層) */
         .store-buttons-group {
             position: relative;
             z-index: 12;
@@ -911,28 +928,28 @@
             letter-spacing: -0.01em;
         }
 
-        /* ================= 5. 單行排版「Your Story, Directed by You.」：加寬虹光寬度(包覆三個多單詞) + 放慢流動速度 + 移除下方虛線 ================= */
+        /* ================= 5. 「Your Story, Directed by You.」：與罐子同款的「粉色蓋藍色與白色混合體」+ 極緩慢流動漸變 ================= */
         .director-philosophy-bridge {
             position: relative;
             z-index: 7;
-            margin: 8px auto 28px;
-            padding: 12px 12px 6px;
+            margin: 8px auto 30px;
+            padding: 12px 8px 6px;
+            max-width: 100%;
             display: flex;
             flex-direction: column;
             align-items: center;
         }
 
-        /* 非金色的星雲紫與極光青柔和煙霧背景光暈 */
         .director-smoke-aura {
             position: absolute;
             top: 50%;
             left: 50%;
-            width: 380px;
+            width: min(360px, 88vw);
             height: 92px;
-            transform: translate(-50%, -50%) scale(calc(0.65 + var(--director-materialize, 0) * 0.5));
+            transform: translate(-50%, -50%) scale(calc(0.65 + var(--director-materialize, 0) * 0.45));
             background: radial-gradient(ellipse at 50% 50%, 
-                rgba(210, 190, 245, calc(0.32 * (1 - var(--director-materialize, 0) * 0.5))) 0%, 
-                rgba(181, 240, 235, calc(0.22 * (1 - var(--director-materialize, 0) * 0.55))) 48%, 
+                rgba(235, 175, 205, calc(0.32 * (1 - var(--director-materialize, 0) * 0.45))) 0%, 
+                rgba(175, 210, 245, calc(0.24 * (1 - var(--director-materialize, 0) * 0.5))) 48%, 
                 transparent 76%);
             filter: blur(16px);
             opacity: calc(var(--director-materialize, 0) * 1.1);
@@ -940,65 +957,64 @@
             z-index: 1;
         }
 
-        /* 單行置中：加寬虹光區段 (約佔漸層中央 36% 跨度，配合 230% 寬度可同時包覆 3.5 個以上單詞)，並放慢速度至 18.5s */
+        /* 罐子同款色系：柔霧莓果粉蓋在冰晶藍與珍珠白之上，並以 32 秒超慢速優雅流動 */
         .director-single-line-title {
             position: relative;
             z-index: 3;
             margin: 4px 0;
             text-align: center;
-            white-space: nowrap;
-            font-size: clamp(1.3rem, 4.2vw, 2.05rem);
+            max-width: 100%;
+            font-size: clamp(1.18rem, 4.6vw, 2.05rem);
             font-weight: 800;
             font-style: italic;
-            line-height: 1.25;
-            letter-spacing: calc(-0.02em + (1 - var(--director-materialize, 0)) * 0.1em);
+            line-height: 1.28;
+            letter-spacing: calc(-0.02em + (1 - var(--director-materialize, 0)) * 0.08em);
             opacity: var(--director-materialize, 0);
+            /* 柔和深色立體襯底陰影，讓珍珠白、冰晶藍與柔粉在淺色與深色背景上都清晰浮現 */
             filter: blur(calc((1 - var(--director-materialize, 0)) * 11px))
-                    drop-shadow(0 4px 14px rgba(20, 16, 28, calc(var(--director-materialize, 0) * 0.14)));
+                    drop-shadow(0 2px 8px rgba(75, 62, 102, calc(var(--director-materialize, 0) * 0.36)))
+                    drop-shadow(0 1px 2px rgba(45, 38, 68, calc(var(--director-materialize, 0) * 0.28)));
             transform: translateY(calc((1 - var(--director-materialize, 0)) * 14px))
                        scale(calc(0.94 + var(--director-materialize, 0) * 0.06));
             background: linear-gradient(
-                110deg,
-                #14111a 0%,
-                #1c1724 22%,
-                #54402b 31%,
-                #a37c4c 37%,
-                #cfb284 42%,
-                #cfa4b2 48%,
-                #a89ec9 53.5%,
-                #94bcb8 59%,
-                #c4a678 64.5%,
-                #7d5c36 70%,
-                #1c1724 79%,
-                #14111a 100%
+                115deg,
+                #82a8d9 0%,
+                #eef5ff 14%,
+                #e08eb4 28%,
+                #f6bfd8 42%,
+                #ffffff 54%,
+                #94b9e8 68%,
+                #df92b8 84%,
+                #82a8d9 100%
             );
-            background-size: 230% auto;
+            background-size: 320% 100%;
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
-            animation: subtleDarkGoldHoloFlow 18.5s ease-in-out infinite;
+            /* 32 秒極緩慢流動漸變感 */
+            animation: jarPinkBlueWhiteSlowFlow 32s ease-in-out infinite;
             will-change: opacity, filter, transform, background-position;
         }
 
         body.cosmic-text-mode .director-single-line-title {
+            filter: blur(calc((1 - var(--director-materialize, 0)) * 11px))
+                    drop-shadow(0 4px 16px rgba(10, 8, 22, 0.75));
             background: linear-gradient(
-                110deg,
-                #856c4e 0%,
-                #967b5a 22%,
-                #b89b72 32%,
-                #dec69e 39%,
-                #e3b6c4 46%,
-                #c7b8e6 52.5%,
-                #aee0d8 59%,
-                #d9c098 65%,
-                #9e8260 76%,
-                #856c4e 100%
+                115deg,
+                #9ec4f2 0%,
+                #ffffff 15%,
+                #f09ec2 30%,
+                #ffd1e6 45%,
+                #ffffff 58%,
+                #a8ccf7 72%,
+                #eb9ec2 86%,
+                #9ec4f2 100%
             );
-            background-size: 230% auto;
+            background-size: 320% 100%;
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
         }
 
-        @keyframes subtleDarkGoldHoloFlow {
+        @keyframes jarPinkBlueWhiteSlowFlow {
             0% { background-position: 100% center; }
             50% { background-position: 0% center; }
             100% { background-position: 100% center; }
@@ -1019,7 +1035,7 @@
             }
         }
 
-        /* 粒子煙消雲散構成框框 */
+        /* 粒子日積月累結晶構成框框 */
         .feature-card.particle-formed-card {
             background: rgba(255, 255, 255, calc(0.06 + var(--card-materialize, 0) * 0.88));
             padding: 30px 24px;
@@ -1031,7 +1047,7 @@
             opacity: calc(0.05 + var(--card-materialize, 0) * 0.95);
             transform: translateY(calc((1 - var(--card-materialize, 0)) * 24px)) scale(calc(0.96 + var(--card-materialize, 0) * 0.04));
             filter: blur(calc((1 - var(--card-materialize, 0)) * 5px));
-            transition: transform 0.25s ease, box-shadow 0.25s ease, background 0.35s ease, color 0.35s ease;
+            transition: transform 0.35s ease, box-shadow 0.35s ease, background 0.35s ease, color 0.35s ease;
             position: relative;
             overflow: hidden;
             backdrop-filter: blur(14px);
@@ -1114,7 +1130,7 @@
         .qa-section,
         .philosophy-section {
             margin: 56px 0;
-            padding: 42px 34px;
+            padding: 42px 30px;
             background: rgba(255, 255, 255, 0.94);
             border-radius: 24px;
             border: 1px solid var(--border-light);
@@ -1174,7 +1190,7 @@
 
         .support-section {
             text-align: center;
-            padding: 52px 30px;
+            padding: 52px 24px;
             background: linear-gradient(180deg, rgba(255, 255, 255, 0.96) 0%, rgba(243, 242, 247, 0.94) 100%);
             border-radius: 24px;
             border: 1px solid var(--border-light);
@@ -1257,10 +1273,10 @@
     <!-- 底層畫布：圖二深色宇宙星雲與星星從罐口釋放並染滿背景 -->
     <canvas id="cosmic-bg-canvas"></canvas>
 
-    <!-- 外層記憶流畫布：繪製罐外飛入的 80% 相片 + 20% 信件、粒子化為煙霧幻化出單行標題與下方三個介紹框 -->
+    <!-- 外層記憶流畫布：繪製罐外飛入的 80% 相片 + 20% 信件、以及緩慢沉澱結晶的粒子與煙霧 -->
     <canvas id="memory-stream-canvas"></canvas>
 
-    <!-- ================= 1. 透明玻璃切面頂部欄 (中間完全無邊緣線，僅保留左右兩側清晰金棕+亮白玻璃切面) ================= -->
+    <!-- ================= 1. 透明玻璃切面頂部欄 ================= -->
     <div id="glass-top-plate">
         <div class="glass-plate-surface"></div>
         <div class="glass-plate-side-edges"></div>
@@ -1407,7 +1423,7 @@
                 <p id="hero-subtitle"></p>
             </div>
 
-            <!-- 兩個下載按鈕 + 背面 3D 玻璃故事罐 (已移除球體與罐子本身滑動位移) -->
+            <!-- 兩個下載按鈕 + 背面 3D 玻璃故事罐 -->
             <div class="jar-download-stage">
                 
                 <div id="hero-jar-backdrop" onclick="handleJarOpenClick(event)" title="Tap lid / body to open">
@@ -1417,7 +1433,7 @@
                         <div id="hero-jar-body-el">
                             <!-- 1. 罐內底層畫布：繪製集合體與延遲 0.5s 的彩色火焰 -->
                             <canvas id="jar-inner-canvas" width="286" height="332"></canvas>
-                            <!-- 2. 單一前置毛玻璃層：恢復原本明亮淺色澤，且集合體位置透明度再提升 40% -->
+                            <!-- 2. 單一前置毛玻璃層 -->
                             <div class="jar-front-glass-occlusion"></div>
                             <!-- 3. 玻璃罐左斜高光與右側反光條 -->
                             <div id="interactive-jar-sheen" class="hero-jar-sheen"></div>
@@ -1453,13 +1469,13 @@
 
             </div>
 
-            <!-- 單行排版「Your Story, Directed by You.」：已移除下方虛線，加寬微虹光包覆超過三個單詞並放慢流動速度 -->
+            <!-- 單行排版「Your Story, Directed by You.」：罐子同款粉色蓋藍色與白色混合體 + 32秒極緩慢流動漸變 -->
             <div id="director-mist-stage" class="director-philosophy-bridge">
                 <div class="director-smoke-aura"></div>
                 <h2 id="director-title-el" class="director-single-line-title">Your Story, Directed by You.</h2>
             </div>
 
-            <!-- 下方三個全英文介紹框：由罐底滲出的非金色雲霧粒子（僅保留 4 粒金色）煙消雲散凝聚構成 -->
+            <!-- 下方三個全英文介紹框：由緩慢沉澱結晶的粒子與煙霧凝聚構成 -->
             <div id="particle-target-cards" class="features-grid">
                 <div class="feature-card particle-formed-card">
                     <span class="card-step-num">Scene I · Visualize</span>
@@ -1565,7 +1581,7 @@
 
                 const norm = total > 1 ? (i - mid) / mid : 0;
                 const fanAngle = (norm * (fromJarCenter ? 32 : 38)).toFixed(1) + 'deg';
-                const startX = (-norm * (fromJarCenter ? 150 : 135)).toFixed(1) + 'px';
+                const startX = (-norm * (fromJarCenter ? 130 : 115)).toFixed(1) + 'px';
                 const startY = (baseStartY + Math.abs(norm) * arcCurveY).toFixed(1) + 'px';
                 const delay = (Math.abs(norm) * (fromJarCenter ? 0.34 : 0.28)).toFixed(2) + 's';
 
@@ -1607,7 +1623,7 @@
 
         window.addEventListener('click', closeTopMenu);
 
-        // ================= 4. 三畫布系統 =================
+        // ================= 4. 三畫布系統 (修正手機滑動時網址列隱藏導致的底邊與右邊白邊) =================
         const cosmicCanvas = document.getElementById('cosmic-bg-canvas');
         const cosmicCtx = cosmicCanvas.getContext('2d');
 
@@ -1616,6 +1632,9 @@
 
         const jarInnerCanvas = document.getElementById('jar-inner-canvas');
         const jarInnerCtx = jarInnerCanvas.getContext('2d');
+
+        let canvasW = window.innerWidth;
+        let canvasH = window.innerHeight;
 
         const PHOTO_PALETTES = [
             ['#ff9a9e', '#fecfef', '#fff6b0'],
@@ -1632,12 +1651,11 @@
             { core: 'rgba(230, 255, 250, 0.85)', mid: 'rgba(85, 235, 215, 0.52)',  outer: 'rgba(35, 175, 210, 0)' }
         ];
 
-        // 罐底粒子與煙霧調色盤：去除金色，改用櫻花粉、極光青、星雲紫、冰晶藍；全場僅保留 4 粒金色點綴
         const NON_GOLD_MIST_COLORS = [
-            { r: 255, g: 200, b: 220 }, // 櫻花粉
-            { r: 181, g: 255, b: 233 }, // 極光青
-            { r: 222, g: 198, b: 255 }, // 星雲紫
-            { r: 185, g: 225, b: 255 }  // 冰晶藍
+            { r: 255, g: 200, b: 220 },
+            { r: 181, g: 255, b: 233 },
+            { r: 222, g: 198, b: 255 },
+            { r: 185, g: 225, b: 255 }
         ];
         const RARE_GOLD_COLOR = { r: 242, g: 205, b: 135 };
 
@@ -1660,10 +1678,15 @@
         let collectiveNodes = [];
         let flameWisps = [];
 
+        // 針對手機瀏覽器網址列伸縮：畫布高度涵蓋最大螢幕高度 (含 +120px 緩衝區)，絕不露出底部或右側白邊
         function resizeCanvases() {
             const dpr = window.devicePixelRatio || 1;
-            const w = document.documentElement.clientWidth || window.innerWidth;
-            const h = window.innerHeight;
+            const w = Math.max(document.documentElement.clientWidth || 0, window.innerWidth || 0);
+            const screenH = window.screen ? window.screen.height : 0;
+            const h = Math.max(window.innerHeight || 0, document.documentElement.clientHeight || 0, screenH) + 120;
+
+            canvasW = w;
+            canvasH = h;
 
             cosmicCanvas.style.width = w + 'px';
             cosmicCanvas.style.height = h + 'px';
@@ -1682,6 +1705,9 @@
             jarInnerCtx.setTransform(dpr, 0, 0, dpr, 0, 0);
         }
         window.addEventListener('resize', resizeCanvases);
+        if (window.visualViewport) {
+            window.visualViewport.addEventListener('resize', resizeCanvases);
+        }
         resizeCanvases();
 
         function initCosmicStars() {
@@ -1722,8 +1748,8 @@
                     normStartY = 0.55 + ((i * 11) % 38) / 100;
                 }
 
-                const startP = 0.01 + (i / totalItems) * 0.68;
-                const durationP = 0.28;
+                const startP = 0.01 + (i / totalItems) * 0.65;
+                const durationP = 0.32;
 
                 scrollBoundMemories.push({
                     isPhoto,
@@ -1740,37 +1766,37 @@
                 });
             }
 
-            // (A) 飛往單行標題的煙霧粒子：去除金色，僅保留 1 粒金色點綴 (k === 15)
+            // (A) 飛往單行標題的結晶煙霧粒子：拉長 durationP 讓結晶過程更緩慢從容，僅保留 1 粒金色
             scrollBoundTitleSmoke = [];
-            for (let k = 0; k < 44; k++) {
+            for (let k = 0; k < 42; k++) {
                 const isRareGold = (k === 15);
                 scrollBoundTitleSmoke.push({
                     offsetXNorm: ((k * 23) % 100) / 100 - 0.5,
                     targetXNorm: 0.08 + ((k * 29) % 84) / 100,
                     targetYNorm: 0.2 + ((k * 17) % 60) / 100,
-                    ctrlShiftX: ((k * 19) % 50) - 25,
-                    startP: 0.01 + (k / 44) * 0.36,
-                    durationP: 0.24,
-                    baseRadius: 2.4 + (k % 3) * 0.8,
-                    smokeMaxRadius: 32 + (k % 4) * 11,
+                    ctrlShiftX: ((k * 19) % 44) - 22,
+                    startP: 0.01 + (k / 42) * 0.42,
+                    durationP: 0.36,
+                    baseRadius: 2.3 + (k % 3) * 0.75,
+                    smokeMaxRadius: 28 + (k % 4) * 10,
                     rgb: isRareGold ? RARE_GOLD_COLOR : NON_GOLD_MIST_COLORS[k % NON_GOLD_MIST_COLORS.length]
                 });
             }
 
-            // (B) 飛往三個介紹框的煙霧粒子：去除金色，僅保留 3 粒金色點綴 (j === 12, 45, 76)，合計全場僅 4 粒金色
+            // (B) 飛往三個介紹框的結晶煙霧粒子：拉長 durationP 呈現日積月累的結晶感，僅保留 3 粒金色
             scrollBoundMistParticles = [];
-            for (let j = 0; j < 90; j++) {
+            for (let j = 0; j < 84; j++) {
                 const isRareGold = (j === 12 || j === 45 || j === 76);
                 scrollBoundMistParticles.push({
                     cardIdx: j % 3,
                     offsetXNorm: ((j * 19) % 100) / 100 - 0.5,
                     targetXNorm: 0.05 + ((j * 31) % 90) / 100,
                     targetYNorm: 0.02 + ((j * 17) % 55) / 100,
-                    ctrlShiftX: ((j * 23) % 70) - 35,
-                    startP: 0.08 + (j / 90) * 0.62,
-                    durationP: 0.28,
-                    baseRadius: 2.2 + (j % 3) * 0.8,
-                    smokeMaxRadius: 26 + (j % 4) * 10,
+                    ctrlShiftX: ((j * 23) % 60) - 30,
+                    startP: 0.06 + (j / 84) * 0.56,
+                    durationP: 0.38,
+                    baseRadius: 2.2 + (j % 3) * 0.75,
+                    smokeMaxRadius: 24 + (j % 4) * 9,
                     rgb: isRareGold ? RARE_GOLD_COLOR : NON_GOLD_MIST_COLORS[j % NON_GOLD_MIST_COLORS.length]
                 });
             }
@@ -1834,9 +1860,9 @@
         }
 
         function spawnContinuousMemory(mouthX, mouthY) {
-            if (continuousMemories.length > 50) return;
+            if (continuousMemories.length > 36) return;
             const isPhoto = Math.random() < 0.8;
-            const w = document.documentElement.clientWidth || window.innerWidth;
+            const w = canvasW;
             const h = window.innerHeight;
 
             const side = Math.floor(Math.random() * 4);
@@ -1865,15 +1891,14 @@
                 ctrlX,
                 ctrlY,
                 t: 0,
-                speed: 0.013 + Math.random() * 0.011,
+                speed: 0.0065 + Math.random() * 0.0045, // 放慢飛入速度，溫柔優雅
                 rot: (Math.random() - 0.5) * 1.5,
-                rotSpeed: (Math.random() - 0.5) * 0.05,
+                rotSpeed: (Math.random() - 0.5) * 0.025,
                 scale: 0.85 + Math.random() * 0.35,
                 palette: PHOTO_PALETTES[Math.floor(Math.random() * PHOTO_PALETTES.length)]
             });
         }
 
-        // 持續模式下的煙霧與粒子：同樣控制全場最多僅出現 3~4 粒金色粒子
         function countCurrentGoldParticles() {
             let count = 0;
             continuousTitleSmoke.forEach(p => { if (p.isGold) count++; });
@@ -1881,8 +1906,9 @@
             return count;
         }
 
+        // 【緩慢結晶感】將持續滲出粒子的速度大幅放慢約 4 倍 (0.0032 ~ 0.0052)，呈現一點一滴日積月累沉澱結晶的過程
         function spawnContinuousTitleSmoke(jarBottomX, jarBottomY, titleRect) {
-            if (continuousTitleSmoke.length > 42 || !titleRect) return;
+            if (continuousTitleSmoke.length > 28 || !titleRect) return;
             const startX = jarBottomX + (Math.random() - 0.5) * 110;
             const startY = jarBottomY - 10 + (Math.random() - 0.5) * 10;
             const endX = titleRect.left + titleRect.width * (0.1 + Math.random() * 0.8);
@@ -1895,20 +1921,20 @@
                 isGold: allowGold,
                 startX,
                 startY,
-                ctrlX: startX + (endX - startX) * 0.3 + (Math.random() - 0.5) * 35,
+                ctrlX: startX + (endX - startX) * 0.3 + (Math.random() - 0.5) * 32,
                 ctrlY: startY + (endY - startY) * 0.5,
                 endX,
                 endY,
                 t: 0,
-                speed: 0.018 + Math.random() * 0.014,
-                baseRadius: 2.3 + Math.random() * 1.8,
-                smokeMaxRadius: 30 + Math.random() * 16,
+                speed: 0.0036 + Math.random() * 0.0022, // 緩慢飄落結晶
+                baseRadius: 2.3 + Math.random() * 1.6,
+                smokeMaxRadius: 26 + Math.random() * 14,
                 rgb: chosenRgb
             });
         }
 
         function spawnContinuousMistParticle(jarBottomX, jarBottomY, cardRects) {
-            if (continuousMistParticles.length > 110 || cardRects.length === 0) return;
+            if (continuousMistParticles.length > 68 || cardRects.length === 0) return;
             const targetCard = cardRects[Math.floor(Math.random() * cardRects.length)];
             const startX = jarBottomX + (Math.random() - 0.5) * 130;
             const startY = jarBottomY - 14 + (Math.random() - 0.5) * 12;
@@ -1922,40 +1948,55 @@
                 isGold: allowGold,
                 startX,
                 startY,
-                ctrlX: startX + (endX - startX) * 0.25 + (Math.random() - 0.5) * 45,
+                ctrlX: startX + (endX - startX) * 0.25 + (Math.random() - 0.5) * 40,
                 ctrlY: startY + (endY - startY) * 0.55,
                 endX,
                 endY,
                 t: 0,
-                speed: 0.015 + Math.random() * 0.013,
-                baseRadius: 2.2 + Math.random() * 2.2,
-                smokeMaxRadius: 24 + Math.random() * 18,
+                speed: 0.0028 + Math.random() * 0.0020, // 緩慢沉澱結晶至三個框框
+                baseRadius: 2.2 + Math.random() * 1.8,
+                smokeMaxRadius: 22 + Math.random() * 15,
                 rgb: chosenRgb
             });
         }
 
+        // 繪製帶有「日積月累結晶感」的緩慢粒子與雲霧：前段帶有晶瑩十字星芒核心，後段緩緩化為柔和結晶雲霧融入框框
         function drawSmokeDispersingParticle(ctx, px, py, progressT, baseR, smokeMaxR, rgb, weightAlpha) {
             if (weightAlpha <= 0.01) return;
             ctx.save();
 
-            if (progressT < 0.55) {
-                const u = progressT / 0.55;
-                const alpha = Math.min(1, u * 2.5) * 0.9 * weightAlpha;
+            if (progressT < 0.52) {
+                const u = progressT / 0.52;
+                const alpha = Math.min(1, u * 2.2) * 0.9 * weightAlpha;
                 ctx.globalAlpha = alpha;
                 ctx.fillStyle = `rgb(${rgb.r}, ${rgb.g}, ${rgb.b})`;
                 ctx.shadowColor = `rgb(${rgb.r}, ${rgb.g}, ${rgb.b})`;
-                ctx.shadowBlur = 8;
+                ctx.shadowBlur = 7;
+
+                // 結晶圓核
                 ctx.beginPath();
                 ctx.arc(px, py, baseR, 0, Math.PI * 2);
                 ctx.fill();
+
+                // 微小結晶十字星芒高光
+                ctx.strokeStyle = `rgba(255, 255, 255, ${alpha * 0.85})`;
+                ctx.lineWidth = 0.9;
+                const arm = baseR * 1.9;
+                ctx.beginPath();
+                ctx.moveTo(px - arm, py);
+                ctx.lineTo(px + arm, py);
+                ctx.moveTo(px, py - arm);
+                ctx.lineTo(px, py + arm);
+                ctx.stroke();
             } else {
-                const v = (progressT - 0.55) / 0.45;
+                const v = (progressT - 0.52) / 0.48;
                 const currentRadius = baseR + easeOutCubic(v) * smokeMaxR;
-                const smokeAlpha = (1 - v) * 0.58 * weightAlpha;
+                const smokeAlpha = Math.sin((1 - v) * Math.PI * 0.5) * 0.55 * weightAlpha;
 
                 const mistGrad = ctx.createRadialGradient(px, py, 0.5, px, py, currentRadius);
-                mistGrad.addColorStop(0, `rgba(${rgb.r}, ${rgb.g}, ${rgb.b}, ${smokeAlpha})`);
-                mistGrad.addColorStop(0.5, `rgba(${rgb.r}, ${rgb.g}, ${rgb.b}, ${smokeAlpha * 0.45})`);
+                mistGrad.addColorStop(0, `rgba(255, 255, 255, ${smokeAlpha * 0.8})`);
+                mistGrad.addColorStop(0.28, `rgba(${rgb.r}, ${rgb.g}, ${rgb.b}, ${smokeAlpha})`);
+                mistGrad.addColorStop(0.65, `rgba(${rgb.r}, ${rgb.g}, ${rgb.b}, ${smokeAlpha * 0.42})`);
                 mistGrad.addColorStop(1, `rgba(${rgb.r}, ${rgb.g}, ${rgb.b}, 0)`);
 
                 ctx.fillStyle = mistGrad;
@@ -2106,9 +2147,17 @@
         }
 
         function renderCosmicDyeCanvas(now, dyeProgress, mouthX, mouthY) {
-            const w = document.documentElement.clientWidth || window.innerWidth;
-            const h = window.innerHeight;
+            const w = canvasW;
+            const h = canvasH;
             cosmicCtx.clearRect(0, 0, w, h);
+
+            // 同步更新 html 與 body 的底色，確保手機在任何網址列伸縮或下拉回彈時都絕不露出白邊
+            const r = Math.round(247 + (19 - 247) * dyeProgress);
+            const g = Math.round(247 + (12 - 247) * dyeProgress);
+            const b = Math.round(250 + (36 - 250) * dyeProgress);
+            const syncedBg = `rgb(${r}, ${g}, ${b})`;
+            document.documentElement.style.backgroundColor = syncedBg;
+            document.body.style.backgroundColor = syncedBg;
 
             if (dyeProgress <= 0.005) return;
 
@@ -2196,11 +2245,11 @@
             cosmicCtx.restore();
         }
 
-        // 監聽頁面滑動：已移除罐子本身的位移/搖擺動畫與球體移動，僅保留滑動進度更新
+        // 監聽頁面滑動：拉長滑動映射距離 (640px)，配合緩慢阻尼呈現日積月累的結晶感
         window.addEventListener('scroll', () => {
             if (document.body.classList.contains('animating')) return;
             const scrollY = window.scrollY;
-            targetScrollP = Math.min(1, Math.max(0, scrollY / 440));
+            targetScrollP = Math.min(1, Math.max(0, scrollY / 640));
         }, { passive: true });
 
         // 60fps 主渲染迴圈
@@ -2209,14 +2258,13 @@
             const dt = Math.min(50, now - lastFrameTime);
             lastFrameTime = now;
 
-            const vw = document.documentElement.clientWidth || window.innerWidth;
-            const vh = window.innerHeight;
-            streamCtx.clearRect(0, 0, vw, vh);
+            streamCtx.clearRect(0, 0, canvasW, canvasH);
             jarInnerCtx.clearRect(0, 0, 286, 332);
 
             if (!document.body.classList.contains('animating')) {
-                smoothScrollP += (targetScrollP - smoothScrollP) * 0.14;
-                if (Math.abs(targetScrollP - smoothScrollP) < 0.0005) {
+                // 【緩慢結晶阻尼】將滑動追隨係數由 0.14 調慢為 0.048，讓滑動時的粒子與煙霧呈現緩慢沉澱結晶的節奏
+                smoothScrollP += (targetScrollP - smoothScrollP) * 0.048;
+                if (Math.abs(targetScrollP - smoothScrollP) < 0.0003) {
                     smoothScrollP = targetScrollP;
                 }
 
@@ -2255,26 +2303,26 @@
 
                     renderCosmicDyeCanvas(now, effectiveDyeProgress, mouthX, mouthY);
 
-                    const isCollectiveInView = (jarRect.bottom > 0 && jarRect.top < vh);
+                    const isCollectiveInView = (jarRect.bottom > 0 && jarRect.top < window.innerHeight);
 
                     const isContinuousActive = isJarClickedOpen && (clickDyeProgress >= 0.78) && isCollectiveInView;
                     if (isContinuousActive) {
-                        continuousBlend = Math.min(1, continuousBlend + dt / 500);
+                        continuousBlend = Math.min(1, continuousBlend + dt / 800);
                     } else {
-                        continuousBlend = Math.max(0, continuousBlend - dt / 400);
+                        continuousBlend = Math.max(0, continuousBlend - dt / 500);
                     }
 
                     const activeEnergy = Math.max(smoothScrollP, continuousBlend * 0.92);
 
-                    const directorFormProgress = Math.min(1, Math.max(smoothScrollP * 2.35, clickDyeProgress * 1.35, continuousBlend));
-                    const cardFormProgress = Math.min(1, Math.max(smoothScrollP * 1.25, continuousBlend));
+                    const directorFormProgress = Math.min(1, Math.max(smoothScrollP * 2.1, clickDyeProgress * 1.25, continuousBlend));
+                    const cardFormProgress = Math.min(1, Math.max(smoothScrollP * 1.18, continuousBlend));
 
                     document.documentElement.style.setProperty('--director-materialize', directorFormProgress.toFixed(3));
                     document.documentElement.style.setProperty('--card-materialize', cardFormProgress.toFixed(3));
 
                     cardEls.forEach(card => {
                         card.style.setProperty('--card-materialize', cardFormProgress.toFixed(3));
-                        card.style.setProperty('--card-glow-top', (0.65 + 0.35 * Math.sin(now * 0.004)) * cardFormProgress);
+                        card.style.setProperty('--card-glow-top', (0.65 + 0.35 * Math.sin(now * 0.0025)) * cardFormProgress);
                     });
 
                     // 彩色火焰延遲 0.5 秒 (500ms) 後才點燃
@@ -2305,7 +2353,7 @@
                         const localCX = 143;
                         const localCY = 226;
 
-                        const coreRadius = (42 + activeEnergy * 68) + Math.sin(now * 0.004) * 4;
+                        const coreRadius = (42 + activeEnergy * 68) + Math.sin(now * 0.003) * 4;
                         const auraGrad = jarInnerCtx.createRadialGradient(localCX, localCY, 6, localCX, localCY, coreRadius);
                         auraGrad.addColorStop(0, `rgba(255, 240, 200, ${0.78 * activeEnergy})`);
                         auraGrad.addColorStop(0.45, `rgba(255, 195, 215, ${0.5 * activeEnergy})`);
@@ -2321,7 +2369,7 @@
                         }
 
                         const visibleNodes = Math.floor(collectiveNodes.length * Math.min(1, activeEnergy * 1.15));
-                        const orbitPhase = smoothScrollP * Math.PI * 3 + (continuousBlend > 0 ? now * 0.0012 : 0);
+                        const orbitPhase = smoothScrollP * Math.PI * 2.5 + (continuousBlend > 0 ? now * 0.0007 : 0);
 
                         for (let i = 0; i < visibleNodes; i++) {
                             const node = collectiveNodes[i];
@@ -2355,15 +2403,15 @@
 
                     const cardRects = Array.from(cardEls).map(el => el.getBoundingClientRect());
 
-                    // ================= (二) 隨用戶滑動畫面而動的相片/信件 + 非金色煙霧幻化標題與介紹框 =================
+                    // ================= (二) 隨用戶滑動畫面而動的相片/信件 + 緩慢沉澱結晶的粒子與煙霧 =================
                     if (smoothScrollP > 0.002 && isCollectiveInView && continuousBlend < 1) {
                         const scrollAlphaWeight = 1 - continuousBlend;
 
                         scrollBoundMemories.forEach(item => {
                             const localT = (smoothScrollP - item.startP) / item.durationP;
                             if (localT > 0 && localT < 1) {
-                                const sx = item.normStartX * vw;
-                                const sy = item.normStartY * vh;
+                                const sx = item.normStartX * canvasW;
+                                const sy = item.normStartY * window.innerHeight;
                                 const ctrlX = mouthX + (sx - mouthX) * 0.35 + item.ctrlOffsetX;
                                 const ctrlY = Math.min(sy, mouthY) - item.ctrlLiftY;
 
@@ -2434,18 +2482,16 @@
                         }
                     }
 
-                    // ================= (三) 點擊開蓋且背景染達 78% 後絲滑接入的「持續不斷播放」動畫 =================
+                    // ================= (三) 點擊開蓋且背景染達 78% 後絲滑接入的「緩慢日積月累結晶」持續動畫 =================
                     if (isContinuousActive) {
-                        if (Math.random() < 0.42) {
+                        if (Math.random() < 0.22) {
                             spawnContinuousMemory(mouthX, mouthY);
                         }
-                        if (Math.random() < 0.55) {
+                        if (Math.random() < 0.24) {
                             spawnContinuousTitleSmoke(collectiveScreenX, jarBottomY, titleRect);
                         }
-                        for (let s = 0; s < 3; s++) {
-                            if (Math.random() < 0.68) {
-                                spawnContinuousMistParticle(collectiveScreenX, jarBottomY, cardRects);
-                            }
+                        if (Math.random() < 0.45) {
+                            spawnContinuousMistParticle(collectiveScreenX, jarBottomY, cardRects);
                         }
                     }
 
@@ -2582,6 +2628,8 @@
             document.documentElement.style.setProperty('--cosmic-dye', '0');
             document.documentElement.style.setProperty('--director-materialize', '0');
             document.documentElement.style.setProperty('--card-materialize', '0');
+            document.documentElement.style.backgroundColor = '#f7f7fa';
+            document.body.style.backgroundColor = '#f7f7fa';
             document.body.classList.remove('cosmic-text-mode');
             document.querySelectorAll('.particle-formed-card').forEach(c => {
                 c.style.setProperty('--card-materialize', '0');
