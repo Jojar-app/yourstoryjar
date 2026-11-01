@@ -585,7 +585,7 @@
         }
 
         .main-wrapper {
-            max-width: 880px;
+            max-width: 900px;
             width: 100%;
             margin: 0 auto;
             padding: 136px 20px 100px;
@@ -1021,7 +1021,7 @@
             100% { background-position: 100% center; }
         }
 
-        /* ================= 6. 全新三個框框設計：無老套標題、無編號，改為「微光玻璃視覺意象舞台 + 詩意輕亮點敘事」 ================= */
+        /* ================= 6. 三個框框：無框重點流光字色 + 與 App 介面/故事罐絲滑連接的動態圖示 ================= */
         .features-grid {
             display: grid;
             grid-template-columns: repeat(3, 1fr);
@@ -1031,10 +1031,10 @@
             z-index: 7;
         }
 
-        @media (max-width: 780px) {
+        @media (max-width: 820px) {
             .features-grid {
                 grid-template-columns: 1fr;
-                gap: 20px;
+                gap: 22px;
             }
         }
 
@@ -1087,38 +1087,38 @@
             transition: opacity 0.3s ease;
         }
 
-        /* 每個框框上半部的「微縮玻璃視覺舞台 (Visual Vignette Stage)」 */
+        /* 每個框框上半部的「App 介面與故事罐連接舞台」 */
         .vignette-visual-box {
             width: 100%;
-            height: 128px;
+            height: 158px;
             border-radius: 18px;
             background: 
-                radial-gradient(circle at 50% 50%, rgba(235, 210, 245, 0.32) 0%, rgba(195, 225, 255, 0.18) 55%, rgba(255, 255, 255, 0.45) 100%);
-            border: 1px solid rgba(210, 195, 235, 0.45);
-            box-shadow: inset 0 2px 12px rgba(255, 255, 255, 0.8);
+                radial-gradient(circle at 50% 54%, rgba(45, 34, 72, 0.86) 0%, rgba(20, 16, 34, 0.94) 100%);
+            border: 1px solid rgba(210, 195, 235, 0.38);
+            box-shadow: 
+                0 8px 20px rgba(15, 12, 28, 0.12),
+                inset 0 1px 1px rgba(255, 255, 255, 0.22);
             display: flex;
             align-items: center;
             justify-content: center;
             position: relative;
             overflow: hidden;
-            transition: background 0.35s ease, border-color 0.35s ease, box-shadow 0.35s ease;
+            transition: background 0.35s ease, border-color 0.35s ease;
         }
 
         body.cosmic-text-mode .vignette-visual-box {
             background: 
-                radial-gradient(circle at 50% 50%, rgba(145, 105, 220, 0.22) 0%, rgba(85, 165, 225, 0.12) 55%, rgba(14, 10, 26, 0.55) 100%);
-            border-color: rgba(255, 255, 255, 0.12);
-            box-shadow: inset 0 1px 10px rgba(255, 255, 255, 0.06);
+                radial-gradient(circle at 50% 54%, rgba(58, 42, 95, 0.48) 0%, rgba(12, 9, 22, 0.82) 100%);
+            border-color: rgba(255, 255, 255, 0.14);
         }
 
-        /* 舞台內的稜鏡虹光微暈 */
         .vignette-prism-glow {
             position: absolute;
-            width: 110px;
-            height: 110px;
+            width: 120px;
+            height: 120px;
             border-radius: 50%;
-            background: conic-gradient(from 45deg, rgba(255, 195, 220, 0.35), rgba(185, 235, 255, 0.35), rgba(225, 200, 255, 0.35), rgba(185, 255, 235, 0.35), rgba(255, 195, 220, 0.35));
-            filter: blur(18px);
+            background: conic-gradient(from 45deg, rgba(255, 195, 220, 0.32), rgba(185, 235, 255, 0.32), rgba(225, 200, 255, 0.32), rgba(185, 255, 235, 0.32), rgba(255, 195, 220, 0.32));
+            filter: blur(20px);
             animation: slowPrismSpin 14s linear infinite;
             pointer-events: none;
         }
@@ -1132,124 +1132,244 @@
         .vignette-svg {
             width: 100%;
             height: 100%;
-            max-width: 200px;
+            max-width: 240px;
             position: relative;
             z-index: 2;
             overflow: visible;
         }
 
-        /* SVG 內部微動畫 */
-        .anim-float-slow {
-            animation: svgFloatSlow 5.2s ease-in-out infinite;
+        /* ===== 第一框動畫時序 (9秒循環)：1.後層半透明框 -> 2.前層有形相片 -> 3.被罐子裝上並蓋上蓋子 -> 4.接合到 App 介面 ===== */
+        .c1-back-imagined {
+            transform-box: fill-box;
             transform-origin: center;
+            animation: c1BackFrameSeq 9s cubic-bezier(0.16, 1, 0.3, 1) infinite;
+        }
+        @keyframes c1BackFrameSeq {
+            0%, 4%   { opacity: 0; transform: translate(-14px, 10px) rotate(-12deg) scale(0.7); }
+            12%, 34% { opacity: 0.85; transform: translate(-10px, -2px) rotate(-8deg) scale(1); }
+            48%, 88% { opacity: 0.55; transform: translate(-3px, 4px) rotate(-4deg) scale(0.58); }
+            95%, 100%{ opacity: 0; transform: translate(-3px, 4px) scale(0.4); }
         }
 
-        .anim-float-delayed {
-            animation: svgFloatSlow 5.2s ease-in-out infinite;
-            animation-delay: -2.6s;
+        .c1-front-photo {
+            transform-box: fill-box;
             transform-origin: center;
+            animation: c1FrontPhotoSeq 9s cubic-bezier(0.16, 1, 0.3, 1) infinite;
+        }
+        @keyframes c1FrontPhotoSeq {
+            0%, 15%  { opacity: 0; transform: translate(16px, 14px) rotate(12deg) scale(0.65); }
+            25%, 36% { opacity: 1; transform: translate(8px, 0px) rotate(6deg) scale(1.04); }
+            48%, 88% { opacity: 0.95; transform: translate(2px, 5px) rotate(3deg) scale(0.60); }
+            95%, 100%{ opacity: 0; transform: translate(2px, 5px) scale(0.4); }
         }
 
-        @keyframes svgFloatSlow {
-            0%, 100% { transform: translateY(0px) rotate(0deg); }
-            50% { transform: translateY(-4.5px) rotate(1.5deg); }
+        .c1-jar-body-wrap {
+            transform-box: fill-box;
+            transform-origin: center;
+            animation: c1JarBodySeq 9s cubic-bezier(0.16, 1, 0.3, 1) infinite;
+        }
+        @keyframes c1JarBodySeq {
+            0%, 34%  { opacity: 0; transform: translateY(36px) scale(0.82); }
+            46%, 62% { opacity: 1; transform: translateY(0px) scale(1); }
+            72%, 88% { opacity: 1; transform: translateY(2px) scale(0.92); }
+            95%, 100%{ opacity: 0; transform: translateY(12px) scale(0.85); }
         }
 
-        .anim-orbit-cw {
-            animation: svgOrbitCW 18s linear infinite;
-            transform-origin: 100px 64px;
+        .c1-jar-lid-wrap {
+            transform-box: fill-box;
+            transform-origin: center;
+            animation: c1JarLidSeq 9s cubic-bezier(0.16, 1, 0.3, 1) infinite;
+        }
+        @keyframes c1JarLidSeq {
+            0%, 42%  { opacity: 0; transform: translateY(-28px) rotate(-8deg); }
+            54%, 62% { opacity: 1; transform: translateY(0px) rotate(0deg); }
+            72%, 88% { opacity: 1; transform: translateY(4px) scale(0.92); }
+            95%, 100%{ opacity: 0; transform: translateY(-10px); }
         }
 
-        .anim-orbit-ccw {
-            animation: svgOrbitCCW 22s linear infinite;
-            transform-origin: 100px 64px;
+        .c1-app-ui-frame {
+            transform-box: fill-box;
+            transform-origin: center;
+            animation: c1AppUiSeq 9s cubic-bezier(0.16, 1, 0.3, 1) infinite;
+        }
+        @keyframes c1AppUiSeq {
+            0%, 58%  { opacity: 0; transform: scale(1.16); }
+            70%, 88% { opacity: 1; transform: scale(1); }
+            95%, 100%{ opacity: 0; transform: scale(0.96); }
         }
 
-        @keyframes svgOrbitCW {
-            0% { transform: rotate(0deg); }
-            100% { transform: rotate(360deg); }
+        /* ===== 第二框動畫時序 (9.5秒循環)：1.App介面罐子打開 -> 2.出現中心核心 -> 3.同款拍立得相片與火漆信件環繞 ===== */
+        .c2-app-jar-base {
+            transform-box: fill-box;
+            transform-origin: center;
+            animation: c2JarBaseSeq 9.5s cubic-bezier(0.16, 1, 0.3, 1) infinite;
+        }
+        @keyframes c2JarBaseSeq {
+            0%, 20%  { opacity: 1; transform: translateY(0px) scale(1); }
+            34%, 84% { opacity: 0.32; transform: translateY(18px) scale(0.82); }
+            94%, 100%{ opacity: 1; transform: translateY(0px) scale(1); }
         }
 
-        @keyframes svgOrbitCCW {
-            0% { transform: rotate(360deg); }
-            100% { transform: rotate(0deg); }
+        .c2-jar-lid-open {
+            transform-box: fill-box;
+            transform-origin: left center;
+            animation: c2LidOpenSeq 9.5s cubic-bezier(0.16, 1, 0.3, 1) infinite;
+        }
+        @keyframes c2LidOpenSeq {
+            0%, 8%   { opacity: 1; transform: translateY(0px) rotate(0deg); }
+            18%, 28% { opacity: 1; transform: translate(-8px, -18px) rotate(-18deg); }
+            38%, 84% { opacity: 0; transform: translate(-14px, -26px) rotate(-25deg); }
+            94%, 100%{ opacity: 1; transform: translateY(0px) rotate(0deg); }
+        }
+
+        .c2-memory-core {
+            transform-box: fill-box;
+            transform-origin: center;
+            animation: c2CoreEmergence 9.5s cubic-bezier(0.16, 1, 0.3, 1) infinite;
+        }
+        @keyframes c2CoreEmergence {
+            0%, 14%  { opacity: 0; transform: translateY(20px) scale(0.2); }
+            28%, 84% { opacity: 1; transform: translateY(-6px) scale(1); }
+            94%, 100%{ opacity: 0; transform: translateY(18px) scale(0.2); }
+        }
+
+        .c2-orbit-system {
+            transform-box: fill-box;
+            transform-origin: center;
+            animation: c2OrbitExpand 9.5s cubic-bezier(0.16, 1, 0.3, 1) infinite;
+        }
+        @keyframes c2OrbitExpand {
+            0%, 24%  { opacity: 0; transform: scale(0.35) rotate(-25deg); }
+            38%, 84% { opacity: 1; transform: scale(1) rotate(0deg); }
+            94%, 100%{ opacity: 0; transform: scale(0.35) rotate(15deg); }
+        }
+
+        .c2-revolving-letter {
+            animation: c2LetterFloat 4.8s ease-in-out infinite;
+        }
+        .c2-revolving-photo {
+            animation: c2PhotoFloat 4.8s ease-in-out infinite;
+            animation-delay: -2.4s;
+        }
+        @keyframes c2LetterFloat {
+            0%, 100% { transform: translate(0px, 0px) rotate(-8deg); }
+            50%      { transform: translate(10px, -9px) rotate(4deg); }
+        }
+        @keyframes c2PhotoFloat {
+            0%, 100% { transform: translate(0px, 0px) rotate(9deg); }
+            50%      { transform: translate(-10px, 9px) rotate(-4deg); }
+        }
+
+        /* ===== 第三框動畫時序 (9.5秒循環)：1.App介面罐子輕搖共鳴 -> 2.開蓋釋放過往章節相片/信件/心情光球扇形投影 ===== */
+        .c3-jar-shake-group {
+            transform-box: fill-box;
+            transform-origin: center bottom;
+            animation: c3JarShakeSeq 9.5s ease-in-out infinite;
+        }
+        @keyframes c3JarShakeSeq {
+            0%, 6%   { transform: rotate(0deg); }
+            10%      { transform: rotate(-6deg); }
+            14%      { transform: rotate(6deg); }
+            18%      { transform: rotate(-4deg); }
+            22%      { transform: rotate(4deg); }
+            26%, 100%{ transform: rotate(0deg); }
+        }
+
+        .c3-lid-pop {
+            transform-box: fill-box;
+            transform-origin: right center;
+            animation: c3LidPopSeq 9.5s cubic-bezier(0.16, 1, 0.3, 1) infinite;
+        }
+        @keyframes c3LidPopSeq {
+            0%, 22%  { transform: translateY(0px) rotate(0deg); }
+            34%, 82% { transform: translate(8px, -16px) rotate(16deg); }
+            92%, 100%{ transform: translateY(0px) rotate(0deg); }
+        }
+
+        .c3-past-projection {
+            transform-box: fill-box;
+            transform-origin: 120px 105px;
+            animation: c3ProjectionFan 9.5s cubic-bezier(0.16, 1, 0.3, 1) infinite;
+        }
+        @keyframes c3ProjectionFan {
+            0%, 24%  { opacity: 0; transform: translateY(24px) scale(0.25); }
+            38%, 82% { opacity: 1; transform: translateY(0px) scale(1); }
+            92%, 100%{ opacity: 0; transform: translateY(20px) scale(0.25); }
         }
 
         .anim-ripple-1 {
             animation: svgRipplePulse 4.2s ease-out infinite;
-            transform-origin: 100px 66px;
+            transform-origin: 120px 88px;
         }
-
         .anim-ripple-2 {
             animation: svgRipplePulse 4.2s ease-out infinite;
             animation-delay: -2.1s;
-            transform-origin: 100px 66px;
+            transform-origin: 120px 88px;
         }
-
         @keyframes svgRipplePulse {
-            0% { transform: scale(0.65); opacity: 0.85; }
-            100% { transform: scale(1.48); opacity: 0; }
+            0% { transform: scale(0.6); opacity: 0.75; }
+            100% { transform: scale(1.55); opacity: 0; }
         }
 
-        .anim-jar-sway {
-            animation: svgJarGentleSway 6s ease-in-out infinite;
-            transform-origin: 100px 66px;
-        }
-
-        .feature-card.particle-formed-card:hover .anim-jar-sway {
-            animation-duration: 1.6s;
-        }
-
-        @keyframes svgJarGentleSway {
-            0%, 100% { transform: rotate(-3deg); }
-            50% { transform: rotate(3deg); }
-        }
-
-        /* 根據日夜/星空模式自動切換 SVG 線條色彩 */
-        .svg-stroke-main {
-            stroke: #423859;
-            transition: stroke 0.35s ease;
-        }
-        body.cosmic-text-mode .svg-stroke-main {
-            stroke: #f0eaff;
-        }
-
-        .svg-stroke-sub {
-            stroke: rgba(110, 95, 145, 0.55);
-            transition: stroke 0.35s ease;
-        }
-        body.cosmic-text-mode .svg-stroke-sub {
-            stroke: rgba(215, 205, 255, 0.45);
-        }
-
-        /* 框框下半部的無標題敘事文字排版 */
+        /* ===== 框框下半部敘事文字：移除重點框線，直接套用與 Your Story, Directed by You. 相同的白底微粉藍流光字色 ===== */
         .vignette-prose {
-            font-size: 0.95rem;
+            font-size: 0.96rem;
             color: var(--text-sub);
-            line-height: 1.76;
+            line-height: 1.78;
             letter-spacing: 0.01em;
             font-weight: 450;
             transition: color 0.35s ease;
         }
 
         body.cosmic-text-mode .vignette-prose {
-            color: rgba(255, 255, 255, 0.74);
+            color: rgba(255, 255, 255, 0.68);
         }
 
-        /* 內文關鍵意境詞的輕柔提亮（取代傳統死板的大標題） */
+        /* 無框線、與 Your Story, Directed by You. 完全同款的「白色主調 + 微粉與微藍緩慢流動漸變」字色 */
         .prose-accent {
-            color: var(--text-main);
-            font-weight: 600;
-            background: linear-gradient(90deg, rgba(235, 185, 215, 0.28), rgba(185, 220, 255, 0.28));
-            padding: 1px 6px;
-            border-radius: 6px;
-            transition: color 0.35s ease, background 0.35s ease;
+            font-weight: 700;
+            padding: 0;
+            border-radius: 0;
+            background: linear-gradient(
+                115deg,
+                #ffffff 0%,
+                #ffffff 18%,
+                #dfecfc 28%,
+                #ffffff 38%,
+                #ffffff 52%,
+                #fbe0ec 62%,
+                #ffffff 72%,
+                #e3effd 84%,
+                #ffffff 93%,
+                #ffffff 100%
+            );
+            background-size: 320% 100%;
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            animation: whiteSubtlePinkBlueSlowFlow 32s ease-in-out infinite;
+            /* 柔和深色立體襯影，確保無底框時在淺色白卡與深色星空卡上都清晰浮現 */
+            filter: drop-shadow(0 1.5px 6px rgba(68, 56, 96, 0.42))
+                    drop-shadow(0 0.5px 1.5px rgba(42, 34, 65, 0.34));
         }
 
         body.cosmic-text-mode .prose-accent {
-            color: #ffffff;
-            background: linear-gradient(90deg, rgba(240, 175, 215, 0.22), rgba(165, 215, 255, 0.22));
-            text-shadow: 0 1px 8px rgba(220, 195, 255, 0.35);
+            filter: drop-shadow(0 2px 10px rgba(10, 8, 22, 0.75));
+            background: linear-gradient(
+                115deg,
+                #ffffff 0%,
+                #ffffff 18%,
+                #d8eaff 28%,
+                #ffffff 38%,
+                #ffffff 52%,
+                #ffdbed 62%,
+                #ffffff 72%,
+                #dcecff 84%,
+                #ffffff 93%,
+                #ffffff 100%
+            );
+            background-size: 320% 100%;
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
         }
 
         /* 其餘內容區塊 */
@@ -1610,42 +1730,96 @@
                 <h2 id="director-title-el" class="director-single-line-title">Your Story, Directed by You.</h2>
             </div>
 
-            <!-- 下方三個視覺化框框：已移除 SCENE I/II/III 與粗體大標題，改用「動態微光視覺舞台 + 輕亮點敘事內文」 -->
+            <!-- 下方三個視覺化框框：圖示絲滑連接 App 介面與故事罐 + 無框線重點流光字色 -->
             <div id="particle-target-cards" class="features-grid">
                 
-                <!-- 第 1 框：光學取景框與稜鏡分鏡 (Visualizing & Directing) -->
+                <!-- 第 1 框：1.後層半透明框 -> 2.前層有形拍立得相片 -> 3.被故事罐裝上並蓋緊蓋子 -> 4.接合到 App 介面 -->
                 <div class="feature-card particle-formed-card">
                     <div class="vignette-visual-box">
                         <div class="vignette-prism-glow"></div>
-                        <svg class="vignette-svg" viewBox="0 0 200 128" fill="none">
+                        <svg class="vignette-svg" viewBox="0 0 240 158" fill="none">
                             <defs>
-                                <linearGradient id="prism-card-1" x1="0%" y1="0%" x2="100%" y2="100%">
-                                    <stop offset="0%" stop-color="#ffc8dd" stop-opacity="0.75" />
-                                    <stop offset="50%" stop-color="#ffffff" stop-opacity="0.9" />
-                                    <stop offset="100%" stop-color="#a2d2ff" stop-opacity="0.75" />
+                                <linearGradient id="polaroid-sky-1" x1="0%" y1="0%" x2="100%" y2="100%">
+                                    <stop offset="0%" stop-color="#ff9a9e" />
+                                    <stop offset="100%" stop-color="#fecfef" />
+                                </linearGradient>
+                                <linearGradient id="polaroid-sky-2" x1="0%" y1="0%" x2="100%" y2="100%">
+                                    <stop offset="0%" stop-color="#a1c4fd" />
+                                    <stop offset="100%" stop-color="#c2e9fb" />
+                                </linearGradient>
+                                <linearGradient id="app-jar-glass" x1="0%" y1="0%" x2="100%" y2="100%">
+                                    <stop offset="0%" stop-color="rgba(205, 220, 245, 0.55)" />
+                                    <stop offset="50%" stop-color="rgba(165, 160, 200, 0.35)" />
+                                    <stop offset="100%" stop-color="rgba(215, 145, 175, 0.48)" />
                                 </linearGradient>
                             </defs>
-                            <!-- 導演取景框四角 (Viewfinder Brackets) -->
-                            <path class="svg-stroke-sub" d="M 38 38 L 38 24 L 54 24" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" />
-                            <path class="svg-stroke-sub" d="M 162 38 L 162 24 L 146 24" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" />
-                            <path class="svg-stroke-sub" d="M 38 90 L 38 104 L 54 104" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" />
-                            <path class="svg-stroke-sub" d="M 162 90 L 162 104 L 146 104" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" />
 
-                            <!-- 後層想像分鏡卡片 -->
-                            <g class="anim-float-delayed">
-                                <rect x="86" y="34" width="46" height="54" rx="7" transform="rotate(8 109 61)" fill="rgba(195, 220, 255, 0.25)" class="svg-stroke-sub" stroke-width="1.4" />
+                            <!-- 步驟 4：微縮 App 介面外框 (頂部欄 + YourStoryJar + 底部導航欄) -->
+                            <g class="c1-app-ui-frame">
+                                <rect x="52" y="8" width="136" height="142" rx="18" fill="rgba(14, 11, 24, 0.85)" stroke="rgba(255, 255, 255, 0.28)" stroke-width="1.5" />
+                                <!-- App 頂部直紋玻璃欄 -->
+                                <path d="M 53 26 Q 120 31 187 26" stroke="rgba(212, 163, 115, 0.55)" stroke-width="1" fill="none" />
+                                <!-- 左上 2x2 小圖示 -->
+                                <rect x="61" y="14" width="3.5" height="3.5" rx="0.8" stroke="#c89d6c" stroke-width="0.8" />
+                                <rect x="66" y="14" width="3.5" height="3.5" rx="0.8" stroke="#c89d6c" stroke-width="0.8" />
+                                <rect x="61" y="19" width="3.5" height="3.5" rx="0.8" fill="#a67449" />
+                                <rect x="66" y="19" width="3.5" height="3.5" rx="0.8" stroke="#c89d6c" stroke-width="0.8" />
+                                <!-- 中央 YourStoryJar 字樣 -->
+                                <text x="120" y="20.5" fill="#ffffff" font-size="7.5" font-weight="700" text-anchor="middle" letter-spacing="-0.2">YourStoryJar</text>
+                                <!-- 右上 2x2 方格 -->
+                                <rect x="171" y="14" width="3.2" height="3.2" rx="0.6" fill="#c89d6c" />
+                                <rect x="175.5" y="14" width="3.2" height="3.2" rx="0.6" fill="#c89d6c" />
+                                <rect x="171" y="18.5" width="3.2" height="3.2" rx="0.6" fill="#c89d6c" />
+                                <rect x="175.5" y="18.5" width="3.2" height="3.2" rx="0.6" fill="#c89d6c" />
+                                <!-- App 底部導航欄 (Jars | Studio | Settings) -->
+                                <line x1="53" y1="132" x2="187" y2="132" stroke="rgba(255, 255, 255, 0.1)" stroke-width="1" />
+                                <rect x="64" y="135" width="26" height="11" rx="5.5" fill="rgba(255, 255, 255, 0.1)" stroke="rgba(255, 255, 255, 0.2)" stroke-width="0.8" />
+                                <circle cx="120" cy="140.5" r="5.5" fill="#ffffff" stroke="rgba(255, 255, 255, 0.35)" stroke-width="1.5" />
+                                <circle cx="164" cy="140.5" r="3" stroke="rgba(255, 255, 255, 0.55)" stroke-width="1.2" />
                             </g>
 
-                            <!-- 前層具象化記憶相框 -->
-                            <g class="anim-float-slow">
-                                <rect x="68" y="34" width="50" height="58" rx="8" transform="rotate(-5 93 63)" fill="url(#prism-card-1)" class="svg-stroke-main" stroke-width="1.8" />
-                                <circle cx="88" cy="52" r="5" fill="#ffafcc" />
-                                <path class="svg-stroke-main" d="M 74 76 Q 86 64 96 73 T 112 69" stroke-width="1.5" stroke-linecap="round" />
+                            <!-- 步驟 1：先出現後層半透明的想像分鏡框 -->
+                            <g class="c1-back-imagined">
+                                <rect x="92" y="48" width="44" height="52" rx="5" fill="rgba(185, 215, 255, 0.18)" stroke="rgba(255, 255, 255, 0.55)" stroke-width="1.4" stroke-dasharray="3 2.5" />
+                                <circle cx="114" cy="68" r="5" fill="rgba(255, 255, 255, 0.35)" />
+                                <path d="M 100 84 Q 112 74 126 82" stroke="rgba(255, 255, 255, 0.45)" stroke-width="1.3" stroke-linecap="round" />
                             </g>
 
-                            <!-- 中心對焦十字星芒 -->
-                            <path class="svg-stroke-main" d="M 134 40 L 134 50 M 129 45 L 139 45" stroke-width="1.5" stroke-linecap="round" />
-                            <circle cx="62" cy="82" r="2.5" fill="#a2d2ff" />
+                            <!-- 步驟 2：再出現前層有形的拍立得相片 (與頂部飛入的相片同款) -->
+                            <g class="c1-front-photo">
+                                <rect x="98" y="50" width="44" height="52" rx="4.5" fill="#ffffff" filter="drop-shadow(0 4px 10px rgba(0,0,0,0.35))" />
+                                <rect x="102" y="54" width="36" height="33" rx="2.5" fill="url(#polaroid-sky-1)" />
+                                <circle cx="128" cy="63" r="4.5" fill="#fff6b0" />
+                                <line x1="109" y1="94.5" x2="131" y2="94.5" stroke="rgba(30, 28, 36, 0.35)" stroke-width="1.8" stroke-linecap="round" />
+                            </g>
+
+                            <!-- 步驟 3A：故事罐罐身升起把相片裝起來 (含 App 罐身左斜高光與底部暖光) -->
+                            <g class="c1-jar-body-wrap">
+                                <!-- 罐底暖橘粉光暈 -->
+                                <ellipse cx="120" cy="122" rx="34" ry="7" fill="rgba(235, 135, 110, 0.42)" filter="blur(4px)" />
+                                <!-- 玻璃瓶頸 -->
+                                <rect x="95" y="44" width="50" height="4" rx="1" fill="rgba(255, 255, 255, 0.75)" />
+                                <!-- 玻璃罐身 -->
+                                <rect x="83" y="48" width="74" height="72" rx="14" fill="url(#app-jar-glass)" stroke="rgba(255, 255, 255, 0.88)" stroke-width="2" />
+                                <!-- 左側標誌性斜長玻璃反光條 -->
+                                <path d="M 92 54 L 102 54 L 97 112 L 87 112 Z" fill="rgba(255, 255, 255, 0.38)" />
+                                <!-- 右側細高光邊 -->
+                                <line x1="152" y1="56" x2="152" y2="110" stroke="rgba(255, 255, 255, 0.75)" stroke-width="1.5" stroke-linecap="round" />
+                            </g>
+
+                            <!-- 步驟 3B：黑色直紋瓶蓋降下蓋緊 -->
+                            <g class="c1-jar-lid-wrap">
+                                <rect x="90" y="34" width="60" height="10" rx="2.5" fill="#18181c" stroke="rgba(255, 255, 255, 0.4)" stroke-width="1" />
+                                <line x1="96" y1="35" x2="96" y2="43" stroke="#3a3a42" stroke-width="1.5" />
+                                <line x1="102" y1="35" x2="102" y2="43" stroke="#3a3a42" stroke-width="1.5" />
+                                <line x1="108" y1="35" x2="108" y2="43" stroke="#3a3a42" stroke-width="1.5" />
+                                <line x1="114" y1="35" x2="114" y2="43" stroke="#3a3a42" stroke-width="1.5" />
+                                <line x1="120" y1="35" x2="120" y2="43" stroke="#3a3a42" stroke-width="1.5" />
+                                <line x1="126" y1="35" x2="126" y2="43" stroke="#3a3a42" stroke-width="1.5" />
+                                <line x1="132" y1="35" x2="132" y2="43" stroke="#3a3a42" stroke-width="1.5" />
+                                <line x1="138" y1="35" x2="138" y2="43" stroke="#3a3a42" stroke-width="1.5" />
+                                <line x1="144" y1="35" x2="144" y2="43" stroke="#3a3a42" stroke-width="1.5" />
+                            </g>
                         </svg>
                     </div>
                     <p class="vignette-prose">
@@ -1653,79 +1827,160 @@
                     </p>
                 </div>
 
-                <!-- 第 2 框：環繞身邊的記憶星軌 (Everything That Surrounds You) -->
+                <!-- 第 2 框：1.App 介面罐子打開 -> 2.出現中心核心 -> 3.與頂部飛入同款的「拍立得相片」與「火漆信件」環繞 -->
                 <div class="feature-card particle-formed-card">
                     <div class="vignette-visual-box">
                         <div class="vignette-prism-glow" style="animation-delay: -4s;"></div>
-                        <svg class="vignette-svg" viewBox="0 0 200 128" fill="none">
+                        <svg class="vignette-svg" viewBox="0 0 240 158" fill="none">
                             <defs>
                                 <radialGradient id="core-glow-2" cx="50%" cy="50%" r="50%">
                                     <stop offset="0%" stop-color="#ffffff" stop-opacity="1" />
-                                    <stop offset="45%" stop-color="#ffd6e8" stop-opacity="0.85" />
+                                    <stop offset="45%" stop-color="#ffd6e8" stop-opacity="0.88" />
                                     <stop offset="100%" stop-color="#a2d2ff" stop-opacity="0" />
                                 </radialGradient>
                             </defs>
-                            <!-- 雙層環繞星軌 -->
-                            <ellipse cx="100" cy="64" rx="64" ry="26" transform="rotate(-14 100 64)" class="svg-stroke-sub" stroke-width="1.3" stroke-dasharray="4 4" />
-                            <ellipse cx="100" cy="64" rx="52" ry="20" transform="rotate(18 100 64)" class="svg-stroke-sub" stroke-width="1.2" />
 
-                            <!-- 中心故事罐記憶核 -->
-                            <circle cx="100" cy="64" r="22" fill="url(#core-glow-2)" />
-                            <circle cx="100" cy="64" r="7.5" fill="#ffffff" class="svg-stroke-main" stroke-width="1.8" />
-
-                            <!-- 軌道上漂浮的珍視之物：微縮信箋、相片與隨機路過的流星 -->
-                            <g class="anim-float-slow">
-                                <!-- 左上微縮信件 -->
-                                <rect x="42" y="38" width="20" height="14" rx="3" transform="rotate(-12 52 45)" fill="rgba(255, 255, 255, 0.85)" class="svg-stroke-main" stroke-width="1.5" />
-                                <path class="svg-stroke-main" d="M 43 40 L 52 46 L 60 40" stroke-width="1.2" stroke-linecap="round" />
-                                <!-- 右下微縮相片 -->
-                                <rect x="138" y="68" width="18" height="21" rx="3" transform="rotate(14 147 78)" fill="rgba(255, 255, 255, 0.85)" class="svg-stroke-main" stroke-width="1.5" />
-                                <circle cx="147" cy="76" r="3" fill="#ffafcc" />
+                            <!-- 步驟 1：微縮 App 介面中的故事罐打開蓋子 -->
+                            <g class="c2-app-jar-base">
+                                <rect x="64" y="18" width="112" height="126" rx="16" fill="rgba(14, 11, 24, 0.65)" stroke="rgba(255, 255, 255, 0.2)" stroke-width="1.2" />
+                                <path d="M 65 32 Q 120 36 175 32" stroke="rgba(212, 163, 115, 0.4)" stroke-width="1" />
+                                <!-- 罐身 -->
+                                <rect x="98" y="54" width="44" height="4" rx="1" fill="rgba(255, 255, 255, 0.7)" />
+                                <rect x="86" y="58" width="68" height="66" rx="13" fill="url(#app-jar-glass)" stroke="rgba(255, 255, 255, 0.82)" stroke-width="1.8" />
+                                <path d="M 94 64 L 103 64 L 99 116 L 90 116 Z" fill="rgba(255, 255, 255, 0.35)" />
                             </g>
 
-                            <!-- 路過的隨機靈感光點 -->
-                            <g class="anim-float-delayed">
-                                <circle cx="146" cy="36" r="4" fill="#a2d2ff" class="svg-stroke-main" stroke-width="1.3" />
-                                <circle cx="56" cy="86" r="3.2" fill="#ffc8dd" />
-                                <path class="svg-stroke-main" d="M 78 26 L 78 34 M 74 30 L 82 30" stroke-width="1.4" stroke-linecap="round" />
+                            <!-- 向上掀開的直紋黑蓋 -->
+                            <g class="c2-jar-lid-open">
+                                <rect x="93" y="44" width="54" height="9.5" rx="2.2" fill="#18181c" stroke="rgba(255, 255, 255, 0.4)" stroke-width="1" />
+                                <line x1="100" y1="45" x2="100" y2="52.5" stroke="#3a3a42" stroke-width="1.4" />
+                                <line x1="107" y1="45" x2="107" y2="52.5" stroke="#3a3a42" stroke-width="1.4" />
+                                <line x1="114" y1="45" x2="114" y2="52.5" stroke="#3a3a42" stroke-width="1.4" />
+                                <line x1="121" y1="45" x2="121" y2="52.5" stroke="#3a3a42" stroke-width="1.4" />
+                                <line x1="128" y1="45" x2="128" y2="52.5" stroke="#3a3a42" stroke-width="1.4" />
+                                <line x1="135" y1="45" x2="135" y2="52.5" stroke="#3a3a42" stroke-width="1.4" />
+                                <line x1="141" y1="45" x2="141" y2="52.5" stroke="#3a3a42" stroke-width="1.4" />
+                            </g>
+
+                            <!-- 步驟 2：從罐口升起的中心記憶核心 -->
+                            <g class="c2-memory-core">
+                                <circle cx="120" cy="78" r="28" fill="url(#core-glow-2)" />
+                                <circle cx="120" cy="78" r="8.5" fill="#ffffff" stroke="rgba(255, 215, 235, 0.9)" stroke-width="2" />
+                            </g>
+
+                            <!-- 步驟 3：雙層環繞星軌 + 與頂部飛入完全同款的「火漆信件 (左)」與「拍立得相片 (右)」 -->
+                            <g class="c2-orbit-system">
+                                <ellipse cx="120" cy="74" rx="78" ry="30" transform="rotate(-14 120 74)" stroke="rgba(255, 255, 255, 0.45)" stroke-width="1.3" stroke-dasharray="4 4" />
+                                <ellipse cx="120" cy="74" rx="64" ry="22" transform="rotate(16 120 74)" stroke="rgba(185, 225, 255, 0.38)" stroke-width="1.2" />
+
+                                <!-- 左側環繞：與頂部飛入同款的「火漆印章信件 (米白信封 + V型折線 + 紅蠟封章)」 -->
+                                <g class="c2-revolving-letter">
+                                    <g transform="translate(54, 52) rotate(-12)">
+                                        <rect x="-17" y="-11" width="34" height="22" rx="3.2" fill="#fff9f0" filter="drop-shadow(0 3px 7px rgba(0,0,0,0.35))" />
+                                        <path d="M -15.5 -9.5 L 0 2.5 L 15.5 -9.5" stroke="#d8bfa3" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round" fill="none" />
+                                        <circle cx="0" cy="2" r="3.6" fill="#e06355" />
+                                    </g>
+                                </g>
+
+                                <!-- 右側環繞：與頂部飛入同款的「拍立得相片 (白框 + 漸層風景 + 太陽亮點 + 底部手寫線)」 -->
+                                <g class="c2-revolving-photo">
+                                    <g transform="translate(184, 86) rotate(12)">
+                                        <rect x="-14" y="-16.5" width="28" height="33" rx="3.5" fill="#ffffff" filter="drop-shadow(0 3px 7px rgba(0,0,0,0.35))" />
+                                        <rect x="-11.2" y="-13.5" width="22.4" height="20.5" rx="2" fill="url(#polaroid-sky-2)" />
+                                        <circle cx="4.5" cy="-6.5" r="3.4" fill="#fff6b0" />
+                                        <line x1="-6.5" y1="11.5" x2="6.5" y2="11.5" stroke="rgba(30, 28, 36, 0.35)" stroke-width="1.5" stroke-linecap="round" />
+                                    </g>
+                                </g>
+
+                                <!-- 隨機路過的靈感星點與十字星芒 -->
+                                <circle cx="174" cy="42" r="3.5" fill="#a2d2ff" />
+                                <circle cx="68" cy="104" r="3" fill="#ffc8dd" />
+                                <path d="M 96 34 L 96 42 M 92 38 L 100 38" stroke="#ffffff" stroke-width="1.4" stroke-linecap="round" />
                             </g>
                         </svg>
                     </div>
                     <p class="vignette-prose">
-                        Your jar can hold <span class="prose-accent">anything that surrounds you</span>—what you cherish, what carries meaning, reflections of yourself, or even fleeting, random moments passing by. Every time you open it, <span class="prose-accent">a new discovery awaits</span>.
+                        Your jar can hold <span class="prose-accent">anything that surrounds you</span>—what you cherish, what carries meaning, <span class="prose-accent">reflections of yourself</span>, or even fleeting, random moments passing by. <span class="prose-accent">Every time you open it, a new discovery awaits.</span>
                     </p>
                 </div>
 
-                <!-- 第 3 框：時光波紋與重遇過去的自己 (Shake or Open Your Time Jar) -->
+                <!-- 第 3 框：App 介面時光罐搖晃共鳴 -> 開蓋扇形釋放過往章節的相片、信件與心情狀態投影 (整段文字皆為重點流光字色) -->
                 <div class="feature-card particle-formed-card">
                     <div class="vignette-visual-box">
                         <div class="vignette-prism-glow" style="animation-delay: -8s;"></div>
-                        <svg class="vignette-svg" viewBox="0 0 200 128" fill="none">
-                            <!-- 向外擴散的時光共鳴波紋 -->
-                            <circle class="anim-ripple-1 svg-stroke-sub" cx="100" cy="66" r="30" stroke-width="1.4" />
-                            <circle class="anim-ripple-2 svg-stroke-sub" cx="100" cy="66" r="30" stroke-width="1.4" />
+                        <svg class="vignette-svg" viewBox="0 0 240 158" fill="none">
+                            <defs>
+                                <linearGradient id="beam-grad-3" x1="50%" y1="100%" x2="50%" y2="0%">
+                                    <stop offset="0%" stop-color="rgba(255, 215, 235, 0.45)" />
+                                    <stop offset="60%" stop-color="rgba(185, 225, 255, 0.18)" />
+                                    <stop offset="100%" stop-color="rgba(185, 225, 255, 0)" />
+                                </linearGradient>
+                            </defs>
 
-                            <!-- 輕微搖晃的極簡玻璃時光瓶 -->
-                            <g class="anim-jar-sway">
-                                <!-- 瓶蓋 -->
-                                <rect x="85" y="28" width="30" height="7" rx="2.5" fill="rgba(255, 255, 255, 0.8)" class="svg-stroke-main" stroke-width="1.7" />
-                                <!-- 瓶身 -->
-                                <rect x="78" y="37" width="44" height="54" rx="12" fill="rgba(255, 255, 255, 0.42)" class="svg-stroke-main" stroke-width="1.8" />
-                                <!-- 瓶內過去章節的記憶光核 -->
-                                <circle cx="100" cy="66" r="11" fill="rgba(255, 200, 221, 0.55)" class="svg-stroke-main" stroke-width="1.5" />
-                                <path class="svg-stroke-main" d="M 95 66 C 95 63, 97 61, 100 61" stroke-width="1.4" stroke-linecap="round" />
-                                <!-- 瓶中升起的微光記憶點 -->
-                                <circle cx="90" cy="50" r="2.2" fill="#a2d2ff" />
-                                <circle cx="110" cy="54" r="2.6" fill="#ffafcc" />
+                            <!-- 微縮 App 介面背景框 -->
+                            <rect x="56" y="10" width="128" height="138" rx="18" fill="rgba(14, 11, 24, 0.72)" stroke="rgba(255, 255, 255, 0.22)" stroke-width="1.3" />
+                            <path d="M 57 26 Q 120 30 183 26" stroke="rgba(212, 163, 115, 0.45)" stroke-width="1" />
+                            <text x="120" y="20" fill="rgba(255,255,255,0.85)" font-size="7" font-weight="700" text-anchor="middle">YourStoryJar</text>
+
+                            <!-- 向外擴散的時光共鳴波紋 -->
+                            <circle class="anim-ripple-1" cx="120" cy="96" r="28" stroke="rgba(225, 205, 255, 0.45)" stroke-width="1.3" />
+                            <circle class="anim-ripple-2" cx="120" cy="96" r="28" stroke="rgba(185, 235, 255, 0.45)" stroke-width="1.3" />
+
+                            <!-- 步驟 2：開蓋後從罐內向上投射出的「過往章節記憶扇形投影 (相片 + 火漆信件 + 心情光球)」 -->
+                            <g class="c3-past-projection">
+                                <!-- 投影光束 -->
+                                <path d="M 98 76 L 68 28 L 172 28 L 142 76 Z" fill="url(#beam-grad-3)" />
+
+                                <!-- 左翼：過往某天的拍立得相片 -->
+                                <g transform="translate(88, 46) rotate(-14) scale(0.78)">
+                                    <rect x="-13" y="-15" width="26" height="30" rx="3.2" fill="#ffffff" filter="drop-shadow(0 3px 6px rgba(0,0,0,0.3))" />
+                                    <rect x="-10.5" y="-12.5" width="21" height="19" rx="1.8" fill="url(#polaroid-sky-1)" />
+                                    <circle cx="4" cy="-6" r="3.2" fill="#fff6b0" />
+                                    <line x1="-6" y1="10.5" x2="6" y2="10.5" stroke="rgba(30, 28, 36, 0.35)" stroke-width="1.4" stroke-linecap="round" />
+                                </g>
+
+                                <!-- 右翼：封存當時想法的火漆信件 -->
+                                <g transform="translate(152, 48) rotate(14) scale(0.8)">
+                                    <rect x="-15" y="-10" width="30" height="20" rx="3" fill="#fff9f0" filter="drop-shadow(0 3px 6px rgba(0,0,0,0.3))" />
+                                    <path d="M -14 -8.5 L 0 2 L 14 -8.5" stroke="#d8bfa3" stroke-width="1.3" fill="none" />
+                                    <circle cx="0" cy="1.8" r="3.2" fill="#e06355" />
+                                </g>
+
+                                <!-- 中央：象徵過去狀態與特別心情的微光記憶球 -->
+                                <circle cx="120" cy="38" r="6" fill="#ffffff" filter="drop-shadow(0 0 8px rgba(255,215,235,0.9))" />
+                                <circle cx="110" cy="56" r="3" fill="#a2d2ff" />
+                                <circle cx="132" cy="54" r="3.5" fill="#ffc8dd" />
                             </g>
 
-                            <!-- 兩側象徵搖晃與時光回響的弧線 -->
-                            <path class="svg-stroke-sub" d="M 64 52 C 59 60, 59 72, 64 80" stroke-width="1.5" stroke-linecap="round" />
-                            <path class="svg-stroke-sub" d="M 136 52 C 141 60, 141 72, 136 80" stroke-width="1.5" stroke-linecap="round" />
+                            <!-- 步驟 1：輕微搖晃 (Shake) 並打開瓶蓋的 App 故事罐 -->
+                            <g class="c3-jar-shake-group">
+                                <!-- 兩側搖晃感應弧線 -->
+                                <path d="M 80 86 C 75 94, 75 104, 80 112" stroke="rgba(255, 255, 255, 0.45)" stroke-width="1.4" stroke-linecap="round" />
+                                <path d="M 160 86 C 165 94, 165 104, 160 112" stroke="rgba(255, 255, 255, 0.45)" stroke-width="1.4" stroke-linecap="round" />
+
+                                <!-- 玻璃瓶頸與罐身 -->
+                                <rect x="100" y="72" width="40" height="3.5" rx="1" fill="rgba(255, 255, 255, 0.75)" />
+                                <rect x="90" y="75.5" width="60" height="58" rx="12" fill="url(#app-jar-glass)" stroke="rgba(255, 255, 255, 0.88)" stroke-width="1.8" />
+                                <path d="M 97 81 L 105 81 L 101 127 L 93 127 Z" fill="rgba(255, 255, 255, 0.38)" />
+                                <circle cx="120" cy="105" r="9" fill="rgba(255, 210, 230, 0.45)" stroke="rgba(255, 255, 255, 0.7)" stroke-width="1.3" />
+
+                                <!-- 彈開的黑色直紋瓶蓋 -->
+                                <g class="c3-lid-pop">
+                                    <rect x="96" y="63" width="48" height="9" rx="2" fill="#18181c" stroke="rgba(255, 255, 255, 0.4)" stroke-width="1" />
+                                    <line x1="102" y1="64" x2="102" y2="71" stroke="#3a3a42" stroke-width="1.3" />
+                                    <line x1="108" y1="64" x2="108" y2="71" stroke="#3a3a42" stroke-width="1.3" />
+                                    <line x1="114" y1="64" x2="114" y2="71" stroke="#3a3a42" stroke-width="1.3" />
+                                    <line x1="120" y1="64" x2="120" y2="71" stroke="#3a3a42" stroke-width="1.3" />
+                                    <line x1="126" y1="64" x2="126" y2="71" stroke="#3a3a42" stroke-width="1.3" />
+                                    <line x1="132" y1="64" x2="132" y2="71" stroke="#3a3a42" stroke-width="1.3" />
+                                    <line x1="138" y1="64" x2="138" y2="71" stroke="#3a3a42" stroke-width="1.3" />
+                                </g>
+                            </g>
                         </svg>
                     </div>
+                    <!-- 第三個框框：全部文字皆套用重點流光字色 -->
                     <p class="vignette-prose">
-                        <span class="prose-accent">Shake or open your time jar</span> whenever you wish—to reconnect with your <span class="prose-accent">past states of mind</span>, evolving thoughts, inner beliefs, and the quiet moods of days gone by.
+                        <span class="prose-accent">Shake or open your time jar whenever you wish—to reconnect with your past states of mind, evolving thoughts, inner beliefs, and the quiet moods of days gone by.</span>
                     </p>
                 </div>
 
