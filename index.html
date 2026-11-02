@@ -691,6 +691,18 @@
             opacity: 0;
         }
 
+        .page-view {
+            display: none;
+            opacity: 0;
+            transform: translateY(18px);
+            transition: opacity 0.55s cubic-bezier(0.16, 1, 0.3, 1),
+                        transform 0.55s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+
+        .page-view.active-view {
+            display: block;
+        }
+
         .page-view.view-visible {
             opacity: 1;
             transform: none;
@@ -861,17 +873,17 @@
             box-shadow: 0 6px 18px rgba(40, 22, 10, 0.28);
         }
 
+        /* 款式 3 (右下新款)：光滑表面暖香檳琥珀金金屬瓶蓋 */
         .hero-jar-lid.lid-style-3 {
             background:
-                repeating-linear-gradient(90deg, 
-                    rgba(255, 242, 205, 0.22) 0px, rgba(255, 242, 205, 0.22) 2px, 
-                    rgba(42, 24, 6, 0.46) 2px, rgba(42, 24, 6, 0.46) 6.5px),
-                linear-gradient(180deg, rgba(255, 255, 255, 0.2) 0%, transparent 45%, rgba(0, 0, 0, 0.28) 100%),
-                linear-gradient(90deg, #5c3a14 0%, #dfb060 28%, #9e6d2b 58%, #3d240a 100%);
-            border: 1px solid rgba(248, 218, 155, 0.6);
-            box-shadow: 0 6px 18px rgba(166, 116, 50, 0.25);
+                linear-gradient(180deg, rgba(255, 255, 255, 0.24) 0%, transparent 32%, rgba(0, 0, 0, 0.25) 100%),
+                linear-gradient(90deg, #4a2c0d 0%, #7d501e 14%, #e5b769 30%, #f7d794 38%, #b88238 56%, #754b1b 78%, #361e07 100%);
+            border: 1px solid rgba(248, 218, 155, 0.62);
+            box-shadow: 
+                0 6px 18px rgba(166, 116, 50, 0.25),
+                inset 0 1px 1.5px rgba(255, 248, 225, 0.55);
         }
-
+        
         .jar-lid-open .hero-jar-lid {
             transform: translateY(-7px) rotate(-1.2deg);
         }
@@ -2349,7 +2361,6 @@
 
         <footer class="content-fade-up">
             <p>© 2026 YourStoryJar. All rights reserved.</p>
-            <button class="replay-btn" onclick="playIntroAnimation()">↻ 重播開場動畫</button>
         </footer>
 
     </div>
